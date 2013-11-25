@@ -2,7 +2,9 @@
 #include "gu_str.h"
 
 #include <check.h>
-
+#ifdef _MSC_VER
+#define snprintf _snprintf
+#endif
 START_TEST(test_append)
 {
     const char* strs[3] = {
