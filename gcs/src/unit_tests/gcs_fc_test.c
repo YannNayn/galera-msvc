@@ -7,10 +7,7 @@
 
 #include <stdbool.h>
 #include <string.h>
-#ifdef _MSC_VER
-#include <msvc_sup.h>
-#define usleep(x) Sleep(x/1000)
-#endif
+
 START_TEST(gcs_fc_test_limits)
 {
     gcs_fc_t fc;
