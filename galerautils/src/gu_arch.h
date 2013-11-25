@@ -18,6 +18,12 @@
 #elif defined(__APPLE__)
 # include <machine/endian.h>
 #elif defined(WIN32) || defined(_MSC_VER)
+#ifndef __BIG_ENDIAN
+#define __BIG_ENDIAN 4321
+#endif
+#ifndef __LITTLE_ENDIAN
+#define __LITTLE_ENDIAN 1234
+#endif
 #define __BYTE_ORDER __LITTLE_ENDIAN
 #else
 # error "No byte order header file detected"
