@@ -37,7 +37,7 @@ gcs_tests_sources = Split('''
 
 
 env.Append(CPPFLAGS = ' -DGCS_USE_GCOMM -DGCS_CORE_TESTING -DGCS_DUMMY_TESTING')
-if sys.paltform.find("win") == 0:
+if sys.platform.find("win") == 0:
     env.Append(LIBS = File('#/gcache/src/gcache.lib'))
     env.Append(LIBS = File('#/galerautils/src/galerautils++.lib'))
     env.Append(LIBS = File('#/galerautils/src/galerautils.lib'))
