@@ -16,7 +16,9 @@
 #define GCS_STATE_MSG_ACCESS
 #include "gcs_state_msg.h"
 #include "gcs_node.h"
-
+#ifdef _MSC_VER
+#define snprintf _snprintf
+#endif
 gcs_state_msg_t*
 gcs_state_msg_create (const gu_uuid_t* state_uuid,
                       const gu_uuid_t* group_uuid,
