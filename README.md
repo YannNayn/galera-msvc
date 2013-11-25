@@ -11,7 +11,7 @@ set INCLUDE=%inst_temp%iinclude;%INCLUDE%
 
 clone https://github.com/YannNayn/msvc_sup.git
 pushd msvc_sup
-nmake CFG=dll-release
+nmake -f Makefile.msvc CFG=dll-release
 popd
 copy /Y msvc_sup\msvc100\src\dll-release\*.dll %inst_temp%bin
 copy /Y msvc_sup\msvc100\src\dll-release\*.lib %inst_temp%lib
@@ -21,11 +21,12 @@ clone https://github.com/YannNayn/check_msvc.git
 pushd check_msvc
 set src_dir=%CD%
 call %msys_bat% -c "cd %src_dir:\=/% && configure --prefix=%temp_inst:\=/% && make && make install"
+LIB /DEF:src\.libs\libcheck-0.dll.def /MACHINE:X86 /OUT:%inst_temp%lib\libcheck.lib
 popd
 
 clone https://github.com/YannNayn/hsregex_msvc.git
 pushd hsregex_msvc
-nmake CFG=dll-release
+nmake -f Makefile.msvc CFG=dll-release
 popd
 
 copy /Y hsregex_msvc\msvc100\src\dll-release\*.dll %inst_temp%bin
