@@ -12,7 +12,11 @@ extern "C" {
 
 int main(int argc, char* argv[])
 {
+#ifdef _MSC_VER
+    bool  no_fork  = 1;
+#else    
     bool  no_fork  = (argc >= 2 && std::string(argv[1]) == "nofork");
+#endif    
     FILE* log_file = 0;
 
     if (!no_fork)
