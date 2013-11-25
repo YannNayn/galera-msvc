@@ -1,0 +1,12 @@
+*.svn
+*.hg
+*.o
+*.obj
+*.lib
+*.dll
+*.exp
+*.pdb
+msvc100
+
+
+
