@@ -68,7 +68,7 @@ gcs_comp_msg_add (gcs_comp_msg_t* comp, const char* id)
 {
     size_t           id_len;
     long             i;
-
+    long free_slot = -1;
     assert (comp);
     assert (id);
 
@@ -77,7 +77,7 @@ gcs_comp_msg_add (gcs_comp_msg_t* comp, const char* id)
     if (!id_len) return -EINVAL;
     if (id_len > GCS_COMP_MEMB_ID_MAX_LEN) return -ENAMETOOLONG;
 
-    long free_slot = -1;
+    
 
     /* find the free id slot and check for id uniqueness */
     for (i = 0; i < comp->memb_num; i++) {

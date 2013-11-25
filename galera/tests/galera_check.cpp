@@ -36,6 +36,7 @@ extern "C" {
 
 int main(int argc, char* argv[])
 {
+
     bool  no_fork  = (argc >= 2 && std::string(argv[1]) == "nofork");
     FILE* log_file = 0;
 

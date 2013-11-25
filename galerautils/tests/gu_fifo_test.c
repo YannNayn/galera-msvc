@@ -7,9 +7,12 @@
 #include "../src/galerautils.h"
 
 #define FIFO_LENGTH 10000L
-
+#ifndef EBADFD
+#define EBADFD WSAENOTSOCK
+#endif
 START_TEST (gu_fifo_test)
 {
+    int err;
     gu_fifo_t* fifo;
     long i;
     size_t* item;
@@ -60,7 +63,7 @@ START_TEST (gu_fifo_test)
 
     gu_fifo_close (fifo);
 
-    int err;
+    
     item = gu_fifo_get_head (fifo, &err);
     fail_if (item != NULL);
     fail_if (err  != -ENODATA);
@@ -80,6 +83,9 @@ sync_cond = PTHREAD_COND_INITIALIZER;
 static void*
 cancel_thread (void* arg)
 {
+    size_t* item;
+    int     err;
+
     gu_fifo_t* q = arg;
 
     /* sync with parent */
@@ -87,9 +93,7 @@ cancel_thread (void* arg)
     pthread_cond_signal (&sync_cond);
     pthread_mutex_unlock (&sync_mtx);
 
-    size_t* item;
-    int     err;
-
+    
     /* try to get from non-empty queue */
     item = gu_fifo_get_head (q, &err);
     fail_if (NULL != item, "Got item %p: %zu", item, item ? *item : 0);
@@ -140,6 +144,8 @@ cancel_thread (void* arg)
 
 START_TEST(gu_fifo_cancel_test)
 {
+    pthread_t thread;
+    int err;
     gu_fifo_t* q = gu_fifo_create (FIFO_LENGTH, sizeof(size_t));
 
     size_t* item = gu_fifo_get_tail (q);
@@ -149,14 +155,14 @@ START_TEST(gu_fifo_cancel_test)
 
     pthread_mutex_lock (&sync_mtx);
 
-    pthread_t thread;
+    
     pthread_create (&thread, NULL, cancel_thread, q);
 
     /* sync with child thread */
     gu_fifo_lock (q);
     pthread_cond_wait (&sync_cond, &sync_mtx);
 
-    int err;
+    
     err = gu_fifo_cancel_gets (q);
     fail_if (0 != err);
     err = gu_fifo_cancel_gets (q);

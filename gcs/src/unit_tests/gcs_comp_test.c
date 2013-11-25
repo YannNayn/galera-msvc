@@ -8,7 +8,11 @@
 #include <errno.h>
 #include <string.h>
 #include <stdio.h>
+#ifdef _MSC_VER
+#include <windows.h>
+#else
 #include <unistd.h>
+#endif
 #include <galerautils.h>
 
 #define  GCS_COMP_MSG_ACCESS
@@ -59,7 +63,7 @@ START_TEST (gcs_comp_test)
     gcs_comp_msg_t* m = gcs_comp_msg_new (prim, false, my_idx, memb_num);
     gcs_comp_msg_t* n = NULL;
     size_t buf_len    = gcs_comp_msg_size (m);
-    char   buf[buf_len];
+    char   *buf = alloca(sizeof(char) *buf_len);
     long i, j;
     long ret;
 

@@ -15,8 +15,22 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <unistd.h>
+#ifdef _MSC_VER
+#include <windows.h>
+#include <io.h>
+#include <msvc_sup.h>
+#define open _open
+# define S_IRUSR S_IREAD
+# define S_IWUSR S_IWRITE
 
+#define fsync _commit
+#if !S_IWUSR
+# define S_IWUSR 00200
+#endif
+
+#else
+#include <unistd.h>
+#endif
 #ifndef O_CLOEXEC // CentOS < 6.0 does not have it
 #define O_CLOEXEC 0
 #endif

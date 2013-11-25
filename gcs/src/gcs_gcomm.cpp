@@ -44,7 +44,9 @@ using namespace gu::prodcons;
 using namespace gu::datetime;
 using namespace gcomm;
 using namespace prof;
-
+#ifdef _MSC_VER
+#define UUID gcomm::UUID
+#endif
 class RecvBufData
 {
 public:

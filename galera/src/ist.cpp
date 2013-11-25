@@ -51,11 +51,13 @@ namespace
     template <class S>
     void set_fd_options(S& socket)
     {
+#ifdef FD_CLOEXEC        
         long flags(FD_CLOEXEC);
         if (fcntl(socket.native(), F_SETFD, flags) == -1)
         {
             gu_throw_error(errno) << "failed to set FD_CLOEXEC";
         }
+#endif        
     }
 
 

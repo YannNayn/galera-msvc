@@ -7,7 +7,9 @@
 
 #include <stdbool.h>
 #include <string.h>
-
+#ifdef _MSC_VER
+#include <msvc_sup.h>
+#endif
 START_TEST(gcs_fc_test_limits)
 {
     gcs_fc_t fc;
@@ -91,10 +93,18 @@ double_equals (double a, double b)
 
 START_TEST(gcs_fc_test_precise)
 {
+    double correction;
+    double expected_sleep;
+    double sleep;
+    
     gcs_fc_t fc;
     long long       ret;
+#ifndef _MSC_VER    
     struct timespec p10ms = { .tv_sec = 0, .tv_nsec = 10000000 }; // 10 ms
-
+#else
+    struct timespec p10ms;
+    p10ms.tv_sec = 0, p10ms.tv_nsec = 10000000; // 10 ms
+#endif
     ret = gcs_fc_init (&fc, 2000, 0.5, 0.5);
     fail_if (ret != 0);
 
@@ -112,9 +122,9 @@ START_TEST(gcs_fc_test_precise)
     // (500/5ms == 100000 b/s)
     // additional sleep must be 1.6667 ms (500/(5 + 1.6667) ~ 75000 b/s)
 
-    double const correction = 100000.0/fc.max_rate; // due to imprecise sleep
-    double const expected_sleep = 0.001666667*correction;
-    double sleep = ((double)ret)*1.0e-9;
+    correction = 100000.0/fc.max_rate; // due to imprecise sleep
+    expected_sleep = 0.001666667*correction;
+    sleep = ((double)ret)*1.0e-9;
     fail_if(!double_equals(sleep, expected_sleep),
             "Sleep: %f, expected %f", sleep, expected_sleep);
 }

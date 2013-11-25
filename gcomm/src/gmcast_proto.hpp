@@ -8,7 +8,12 @@
 #include "socket.hpp"
 #include "gmcast_message.hpp"
 #include "gmcast_link.hpp"
-
+#ifdef S_OK
+#undef S_OK
+#endif
+#ifdef S_FAILED
+#undef S_FAILED
+#endif
 namespace gcomm
 {
 

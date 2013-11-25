@@ -45,7 +45,9 @@
 #include "../gcs_dummy.h"
 #include "../gcs_seqno.h"
 #include "gcs_core_test.h"
-
+#ifdef _MSC_VER
+#define usleep(x) Sleep(x/1000)
+#endif
 extern ssize_t gcs_tests_get_allocated();
 
 static const long UNKNOWN_SIZE = 1234567890; // some unrealistic number
@@ -160,7 +162,11 @@ static bool CORE_RECV_END(action_t*      act,
 {
     {
         int ret = gu_thread_join (act->thread, NULL);
+#ifndef _MSC_VER
         act->thread = (pthread_t)-1;
+#else
+        act->thread.p = 0;
+#endif        
         FAIL_IF(0 != ret, "Failed to join recv thread: %ld (%s)",
                 ret, strerror (ret));
     }
@@ -212,7 +218,12 @@ static bool CORE_SEND_END(action_t* act, long ret)
 {
     {
         long _ret = gu_thread_join (act->thread, NULL);
+#ifndef _MSC_VER
         act->thread = (pthread_t)-1;
+#else
+        act->thread.p = 0;
+#endif        
+
         FAIL_IF (0 != _ret, "Failed to join recv thread: %ld (%s)",
                  _ret, strerror (_ret));
     }
@@ -279,10 +290,10 @@ core_test_init ()
 {
     long     ret;
     action_t act;
-
+    gu_config_t* config;
     mark_point();
 
-    gu_config_t* config = gu_config_create ("");
+    config = gu_config_create ("");
     fail_if (config == NULL);
 
     Core = gcs_core_create (config, NULL, "core_test",
@@ -382,9 +393,17 @@ START_TEST (gcs_core_test_api)
     long     ret;
     long     tout = 100; // 100 ms timeout
     size_t   act_size = sizeof(ACT);
-    action_t act_s    = { ACT, NULL, act_size, GCS_ACT_TORDERED, -1, (pthread_t)-1 };
     action_t act_r;
     long i = 5;
+#ifndef _MSC_VER
+        action_t act_s    = { ACT, NULL, act_size, GCS_ACT_TORDERED, -1, (pthread_t)-1 };
+#else
+        action_t act_s    = { ACT, NULL, act_size, GCS_ACT_TORDERED, -1 };
+        act_s.thread.p=0;
+#endif        
+    
+    
+    
 
     core_test_init ();
     fail_if (NULL == Core);
@@ -478,12 +497,21 @@ START_TEST (gcs_core_test_own)
 #define ACT act2
     long     tout = 1000; // 100 ms timeout
     size_t   act_size = sizeof(ACT);
+    gcs_comp_msg_t* prim;
+    gcs_comp_msg_t* non_prim;
+#ifndef _MSC_VER
     action_t act_s    = { ACT, NULL, act_size, GCS_ACT_TORDERED, -1, (pthread_t)-1 };
     action_t act_r    = { NULL, NULL, -1, -1, -1, (pthread_t)-1 };
+#else
+    action_t act_s    = { ACT, NULL, act_size, GCS_ACT_TORDERED, -1};
+    action_t act_r    = { NULL, NULL, -1, -1, -1};
+    act_s.thread.p=0;
+    act_r.thread.p=0;
+#endif        
 
     // Create primary and non-primary component messages
-    gcs_comp_msg_t* prim     = gcs_comp_msg_new (true, false,  0, 1);
-    gcs_comp_msg_t* non_prim = gcs_comp_msg_new (false, false, 0, 1);
+    prim     = gcs_comp_msg_new (true, false,  0, 1);
+    non_prim = gcs_comp_msg_new (false, false, 0, 1);
     fail_if (NULL == prim);
     fail_if (NULL == non_prim);
     gcs_comp_msg_add (prim,     "node1");

@@ -3,11 +3,12 @@ Import('check_env')
 
 env = check_env.Clone()
 
-env.Prepend(LIBS=File('#/galerautils/src/libgalerautils.a'))
-env.Prepend(LIBS=File('#/galerautils/src/libgalerautils++.a'))
-env.Prepend(LIBS=File('#/gcache/src/libgcache.a'))
+env.Prepend(LIBS=File('#/galerautils/src/galerautils.lib'))
+env.Prepend(LIBS=File('#/galerautils/src/galerautils++.lib'))
+env.Prepend(LIBS=File('#/gcache/src/gcache.lib'))
 
-gcache_tests = env.Program(target = 'gcache_tests', source = Glob('*.cpp'))
+source = Glob('*.cpp')
+gcache_tests = env.Program(target = 'gcache_tests', source = source)
 
 #                           source = Split('''
 #                                 gcache_tests.cpp

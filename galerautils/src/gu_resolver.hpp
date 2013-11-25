@@ -12,11 +12,198 @@
 #define __GU_RESOLVER_HPP__
 
 #include "gu_throw.hpp"
+#ifdef _MSC_VER
+#include <windows.h>
+#include <ws2ipdef.h>
+#include <ws2tcpip.h>
+typedef unsigned short sa_family_t;
 
+/* This file is part of the KDE project
+   Copyright (C) 2003-2004 Jaroslaw Staniek <staniek@kde.org>
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Library General Public
+   License as published by the Free Software Foundation; either
+   version 2 of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Library General Public License for more details.
+
+   You should have received a copy of the GNU Library General Public License
+   along with this program; see the file COPYING.  If not, write to
+   the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+   Boston, MA 02110-1301, USA.
+*/
+
+#ifndef KDEWIN_ASM_SOCKET_H
+#define KDEWIN_ASM_SOCKET_H
+
+// include everywhere
+#include <sys/types.h>
+
+#define IOCPARM_MASK    0x7f            /* parameters must be < 128 bytes */
+#define IOC_VOID        0x20000000      /* no parameters */
+#define IOC_OUT         0x40000000      /* copy out parameters */
+#define IOC_IN          0x80000000      /* copy in parameters */
+
+//#define _IO(x,y)        (IOC_VOID|(x<<8)|y)
+//#define _IOR(x,y,t)     (IOC_OUT|(((long)sizeof(t)&IOCPARM_MASK)<<16)|(x<<8)|y)
+//#define _IOW(x,y,t)     (IOC_IN|(((long)sizeof(t)&IOCPARM_MASK)<<16)|(x<<8)|y)
+
+#define SIOCATMARK  _IOR('s',  7, u_long)  /* at oob mark? */
+#define FIONREAD    _IOR('f', 127, u_long) /* get # bytes to read */
+//#define FIONBIO 0x8004667e /* To be compatible with termiost version */
+#define REAL_FIONBIO     _IOW('f', 126, u_long) /* set/clear non-blocking i/o */
+#define FIOASYNC    _IOW('f', 125, u_long) /* set/clear async i/o */
+#define SIOCSHIWAT  _IOW('s',  0, u_long)  /* set high watermark */
+#define SIOCGHIWAT  _IOR('s',  1, u_long)  /* get high watermark */
+#define SIOCSLOWAT  _IOW('s',  2, u_long)  /* set low watermark */
+#define SIOCGLOWAT  _IOR('s',  3, u_long)  /* get low watermark */
+
+/* Needed for if queries */
+#define SIOCGIFCONF     _IOW('s', 100, struct ifconf) /* get if list */
+#define SIOCGIFFLAGS    _IOW('s', 101, struct ifreq) /* Get if flags */
+#define SIOCGIFADDR     _IOW('s', 102, struct ifreq) /* Get if addr */
+#define SIOCGIFBRDADDR  _IOW('s', 103, struct ifreq) /* Get if broadcastaddr */
+#define SIOCGIFNETMASK  _IOW('s', 104, struct ifreq) /* Get if netmask */
+#define SIOCGIFHWADDR   _IOW('s', 105, struct ifreq) /* Get hw addr */
+#define SIOCGIFMETRIC   _IOW('s', 106, struct ifreq) /* get metric */
+#define SIOCGIFMTU      _IOW('s', 107, struct ifreq) /* get MTU size */
+
+#define SOL_SOCKET      0xffff          /* options for socket level */
+
+#define SO_DEBUG        0x0001          /* turn on debugging info recording */
+#define SO_ACCEPTCONN   0x0002          /* socket has had listen() */
+#define SO_REUSEADDR    0x0004          /* allow local address reuse */
+#define SO_KEEPALIVE    0x0008          /* keep connections alive */
+#define SO_DONTROUTE    0x0010          /* just use interface addresses */
+#define SO_BROADCAST    0x0020          /* permit sending of broadcast msgs */
+#define SO_USELOOPBACK  0x0040          /* bypass hardware when possible */
+#define SO_LINGER       0x0080          /* linger on close if data present */
+#define SO_OOBINLINE    0x0100          /* leave received OOB data in line */
+//#define SO_DONTLINGER   (u_int)(~SO_LINGER)
+
+#define SIOCGIFINDEX 0x8933
+
+/*
+ * Additional options.
+ */
+#define SO_SNDBUF       0x1001          /* send buffer size */
+#define SO_RCVBUF       0x1002          /* receive buffer size */
+#define SO_SNDLOWAT     0x1003          /* send low-water mark */
+#define SO_RCVLOWAT     0x1004          /* receive low-water mark */
+#define SO_SNDTIMEO     0x1005          /* send timeout */
+#define SO_RCVTIMEO     0x1006          /* receive timeout */
+#define SO_ERROR        0x1007          /* get error status and clear */
+#define SO_TYPE         0x1008          /* get socket type */
+
+
+
+#ifndef IF_NAMESIZE
+#define IF_NAMESIZE 16
+#endif
+
+struct if_nameindex
+{
+    unsigned int if_index;
+    char *if_name;
+};
+
+//---------------------------------------------------------------------------------------
+
+struct ifaddr {
+    struct sockaddr ifa_addr;
+    union {
+        struct sockaddr ifu_broadaddr;
+        struct sockaddr ifu_dstaddr;
+    } ifa_ifu;
+    struct iface *ifa_ifp;
+    struct ifaddr *ifa_next;
+};
+
+
+//---------------------------------------------------------------------------------------
+
+struct ifmap {
+    unsigned long int mem_start;
+    unsigned long int mem_end;
+    unsigned short int base_addr;
+    unsigned char irq;
+    unsigned char dma;
+    unsigned char port;
+};
+
+
+struct ifconf {
+    int ifc_len;
+    union {
+        void *ifcu_buf;
+        struct ifreq *ifcu_req;
+    } ifc_ifcu;
+};
+ 
+#define ifc_buf ifc_ifcu.ifcu_buf
+#define ifc_req ifc_ifcu.ifcu_req
+#define _IOT_ifconf _IOT(_IOTS(struct ifconf),1,0,0,0,0)
+
+
+ 
+#ifndef IFHWADDRLEN
+#define IFHWADDRLEN 6
+#endif
+#ifndef IFNAMSIZ
+#define IFNAMSIZ IF_NAMESIZE
+#endif
+
+struct ifreq {
+    union {
+        char ifrn_name[IFNAMSIZ];
+    } ifr_ifrn;
+    union {
+        struct sockaddr ifru_addr;
+        struct sockaddr ifru_dstaddr;
+        struct sockaddr ifru_broadaddr;
+        struct sockaddr ifru_netmask;
+        struct sockaddr ifru_hwaddr;
+        short int ifru_flags;
+        int ifru_ivalue;
+        int ifru_mtu;
+        struct ifmap ifru_map;
+        char ifru_slave[IFNAMSIZ];
+        char ifru_newname[IFNAMSIZ];
+        void *ifru_data;
+    } ifr_ifru;
+};
+
+#define ifr_name ifr_ifrn.ifrn_name
+#define ifr_hwaddr ifr_ifru.ifru_hwaddr
+#define ifr_addr ifr_ifru.ifru_addr
+#define ifr_dstaddr ifr_ifru.ifru_dstaddr
+#define ifr_broadaddr ifr_ifru.ifru_broadaddr
+#define ifr_netmask ifr_ifru.ifru_netmask
+#define ifr_flags ifr_ifru.ifru_flags
+#define ifr_metric ifr_ifru.ifru_ivalue
+#define ifr_mtu ifr_ifru.ifru_mtu
+#define ifr_map ifr_ifru.ifru_map
+#define ifr_slave ifr_ifru.ifru_slave
+#define ifr_data ifr_ifru.ifru_data
+#define ifr_ifindex ifr_ifru.ifru_ivalue
+#define ifr_bandwidth ifr_ifru.ifru_ivalue
+#define ifr_qlen ifr_ifru.ifru_ivalue
+#define ifr_newname ifr_ifru.ifru_newname
+#define _IOT_ifreq _IOT(_IOTS(char),IFNAMSIZ,_IOTS(char),16,0,0)
+#define _IOT_ifreq_short _IOT(_IOTS(char),IFNAMSIZ,_IOTS(short),1,0,0)
+#define _IOT_ifreq_int _IOT(_IOTS(char),IFNAMSIZ,_IOTS(int),1,0,0)
+
+#endif // KDEWIN_ASM_SOCKET_H
+
+#else
 #include <netdb.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-
+#endif
 #include <string>
 
 

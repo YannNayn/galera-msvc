@@ -11,7 +11,13 @@
 #define _gcs_fc_h_
 
 #include <time.h>
+#ifdef _MSC_VER
+#include <windows.h>
+typedef unsigned int ssize_t;
+#else
 #include <unistd.h>
+#endif
+
 #include <errno.h>
 
 typedef struct gcs_fc

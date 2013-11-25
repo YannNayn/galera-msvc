@@ -27,6 +27,9 @@
 #include "gu_fifo.h"
 
 #include "galerautils.h"
+#ifdef _MSC_VER
+#define EBADFD WSAENOTSOCK
+#endif
 
 struct gu_fifo
 {
@@ -70,7 +73,8 @@ gu_fifo_t *gu_fifo_create (size_t length, size_t item_size)
     ull array_len  = 1 << array_pwr;
     ull array_size = array_len * sizeof(void*);
     gu_fifo_t *ret = NULL;
-
+    ull alloc_size;
+    ull max_size;
     if (length > 0 && item_size > 0) {
         /* find the best ratio of width and height:
          * the size of a row array must be equal to that of the row */
@@ -87,7 +91,7 @@ gu_fifo_t *gu_fifo_create (size_t length, size_t item_size)
             }
         }
 
-        ull alloc_size = array_size + sizeof (gu_fifo_t);
+        alloc_size = array_size + sizeof (gu_fifo_t);
 
         if (alloc_size > (size_t)-1) {
             gu_error ("Initial FIFO size %llu exceeds size_t range %zu",
@@ -95,7 +99,7 @@ gu_fifo_t *gu_fifo_create (size_t length, size_t item_size)
             return NULL;
         }
 
-        ull max_size = array_len * row_size + alloc_size;
+        max_size = array_len * row_size + alloc_size;
 
         if (max_size > (size_t)-1) {
             gu_error ("Maximum FIFO size %llu exceeds size_t range %zu",
@@ -385,13 +389,15 @@ long gu_fifo_length (gu_fifo_t* q)
 /*! returns how many items were in the queue per push_tail() */
 void gu_fifo_stats (gu_fifo_t* q, long* q_len, double* q_len_avg)
 {
+    long len;
+    long samples;
     fifo_lock (q);
 
+    
     *q_len = q->used;
-
-    long len     = q->q_len;
-    long samples = q->q_len_samples;
-
+    len     = q->q_len;
+        samples = q->q_len_samples;
+    
     q->q_len = 0;
     q->q_len_samples = 0;
 
@@ -460,7 +466,7 @@ void gu_fifo_destroy   (gu_fifo_t *queue)
 char *gu_fifo_print (gu_fifo_t *queue)
 {
     size_t tmp_len = 4096;
-    char tmp[tmp_len];
+    char *tmp = alloca(sizeof(char) * tmp_len);
     char *ret;
 
     snprintf (tmp, tmp_len,

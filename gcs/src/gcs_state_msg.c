@@ -38,14 +38,16 @@ gcs_state_msg_create (const gu_uuid_t* state_uuid,
         gu_error ("#LEVEL value %d is out of range [0, %d]", LEVEL,UINT8_MAX); \
         return NULL;                                                    \
     }
-
+    size_t name_len;
+    size_t addr_len;
+    gcs_state_msg_t* ret;
     CHECK_PROTO_RANGE(gcs_proto_ver);
     CHECK_PROTO_RANGE(repl_proto_ver);
     CHECK_PROTO_RANGE(appl_proto_ver);
 
-    size_t name_len = strlen(name) + 1;
-    size_t addr_len = strlen(inc_addr) + 1;
-    gcs_state_msg_t* ret =
+    name_len = strlen(name) + 1;
+    addr_len = strlen(inc_addr) + 1;
+    ret =
         gu_calloc (1, sizeof (gcs_state_msg_t) + name_len + addr_len);
 
     if (ret) {
@@ -124,9 +126,11 @@ gcs_state_msg_len (gcs_state_msg_t* state)
 ssize_t
 gcs_state_msg_write (void* buf, const gcs_state_msg_t* state)
 {
+    char*     inc_addr;
+    uint8_t*  appl_proto_ver;
     STATE_MSG_FIELDS_V0(,buf);
-    char*     inc_addr  = name + strlen (state->name) + 1;
-    uint8_t*  appl_proto_ver = (void*)(inc_addr + strlen(state->inc_addr) + 1);
+    inc_addr  = name + strlen (state->name) + 1;
+    appl_proto_ver = (void*)(inc_addr + strlen(state->inc_addr) + 1);
 
     *version        = GCS_STATE_MSG_VER;
     *flags          = state->flags;
@@ -151,16 +155,20 @@ gcs_state_msg_write (void* buf, const gcs_state_msg_t* state)
 gcs_state_msg_t*
 gcs_state_msg_read (const void* buf, size_t buf_len)
 {
+    const char* inc_addr;
+
+    int appl_proto_ver;
+    gcs_state_msg_t* ret;
     /* beginning of the message is always version 0 */
     STATE_MSG_FIELDS_V0(const,buf);
-    const char* inc_addr = name + strlen (name) + 1;
+    inc_addr = name + strlen (name) + 1;
 
-    int appl_proto_ver = 0;
+    appl_proto_ver = 0;
     if (*version >= 1) {
         appl_proto_ver = *(uint8_t*)(inc_addr + strlen(inc_addr) + 1);
     }
 
-    gcs_state_msg_t* ret = gcs_state_msg_create (
+    ret = gcs_state_msg_create (
         state_uuid,
         group_uuid,
         prim_uuid,
@@ -445,12 +453,13 @@ static const struct candidate*
 state_rep_candidate (const struct candidate const c[],
                      int                    const c_num)
 {
-    assert (c_num > 0);
-
     const struct candidate* rep = &c[0];
     gu_uuid_t const state_uuid  = rep->state_uuid;
     gcs_seqno_t     state_seqno = rep->state_seqno;
     int i;
+    assert (c_num > 0);
+
+    
 
     for (i = 1; i < c_num; i++) {
         if (!gu_uuid_compare(&c[i].state_uuid, &GU_UUID_NIL))
@@ -484,15 +493,16 @@ state_quorum_remerge (const gcs_state_msg_t* const states[],
                       gcs_state_quorum_t*    const quorum)
 {
     struct candidate* candidates = GU_CALLOC(states_num, struct candidate);
-
+    int i, j;
+    int candidates_found = 0;
+    const gcs_state_msg_t* rep = NULL;
     if (!candidates) {
         gu_error ("Quorum: could not allocate %zd bytes for re-merge check.",
                   states_num * sizeof(struct candidate));
         return NULL;
     }
 
-    int i, j;
-    int candidates_found = 0;
+    
 
     /* 1. Sort and count all nodes who have ever been JOINED by primary
      *    component UUID */
@@ -555,12 +565,13 @@ state_quorum_remerge (const gcs_state_msg_t* const states[],
         }
     }
 
-    const gcs_state_msg_t* rep = NULL;
+    
 
     if (candidates_found) {
+        const struct candidate* rc;
         assert (candidates_found > 0);
 
-        const struct candidate* const rc =
+        rc =
             state_rep_candidate (candidates, candidates_found);
 
         if (!rc) {
@@ -698,13 +709,19 @@ gcs_state_msg_get_quorum (const gcs_state_msg_t* states[],
                           long                   states_num,
                           gcs_state_quorum_t*    quorum)
 {
+    long i;
+    const gcs_state_msg_t*   rep = NULL;
     assert (states_num > 0);
     assert (NULL != states);
 
-    long i;
-    const gcs_state_msg_t*   rep = NULL;
+    
 
+#ifndef _MSC_VER
     *quorum = GCS_QUORUM_NON_PRIMARY; // pessimistic assumption
+#else
+    GCS_QUORUM_NON_PRIMARY(*quorum)
+#endif
+    
 
     /* find lowest commonly supported state exchange version */
     quorum->version = states[0]->version;

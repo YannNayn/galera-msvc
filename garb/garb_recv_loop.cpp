@@ -3,7 +3,50 @@
 #include "garb_recv_loop.hpp"
 
 #include <signal.h>
+#ifdef _MSC_VER
+#include <windows.h>
+/* POSIX emulation layer for Windows.
+*
+* Copyright (C) 2008-2013 Anope Team <team@anope.org>
+*
+* Please read COPYING and README for further details.
+*
+* Based on the original code of Epona by Lara.
+* Based on the original code of Services by Andy Church.
+*/
+#define sigemptyset(x) memset((x), 0, sizeof(*(x)))
 
+#ifndef SIGHUP
+# define SIGHUP -1
+#endif
+#ifndef SIGPIPE
+# define SIGPIPE -1
+#endif
+
+struct sigaction
+{
+    void (*sa_handler)(int);
+    int sa_flags;
+    int sa_mask;
+};
+
+int sigaction(int sig, struct sigaction *action, struct sigaction *old)
+{
+    if (sig == -1)
+        return 0;
+    if (old == NULL)
+    {
+        if (signal(sig, SIG_DFL) == SIG_ERR)
+            return -1;
+    }
+    else
+    {
+        if (signal(sig, action->sa_handler) == SIG_ERR)
+            return -1;
+    }
+    return 0;
+}
+#endif
 namespace garb
 {
 
@@ -24,10 +67,11 @@ RecvLoop::RecvLoop (const Config& config)
     gconf_ (config_.options()),
     gcs_   (gconf_, config_.address(), config_.group())
 {
+    struct sigaction sa;
     /* set up signal handlers */
     global_gcs = &gcs_;
 
-    struct sigaction sa;
+    
 
     memset (&sa, 0, sizeof(sa));
     sa.sa_handler = signal_handler;

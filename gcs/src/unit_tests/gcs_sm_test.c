@@ -6,7 +6,11 @@
 #include <string.h>
 #include "gcs_sm_test.h"
 #include "../gcs_sm.h"
-
+#ifdef _MSC_VER
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
 #define TEST_USLEEP 10000
 
 /* we can't use pthread functions for waiting for certain conditions */
@@ -18,12 +22,13 @@ START_TEST (gcs_sm_test_basic)
     int ret;
 
     gcs_sm_t* sm = gcs_sm_create(2, 1);
+    gu_cond_t cond;
+    int i;
     fail_if(!sm);
 
-    gu_cond_t cond;
     gu_cond_init (&cond, NULL);
 
-    int i;
+    
     for (i = 1; i < 5; i++) {
         ret = gcs_sm_enter(sm, &cond, false);
         fail_if(ret, "gcs_sm_enter() failed: %d (%s)", ret, strerror(-ret));
@@ -64,11 +69,13 @@ static void* simple_thread(void* arg)
 START_TEST (gcs_sm_test_simple)
 {
     int ret;
-
+    gu_cond_t cond;
+    gu_thread_t t1, t2, t3, t4;
     gcs_sm_t* sm = gcs_sm_create(4, 1);
+    
     fail_if(!sm);
 
-    gu_cond_t cond;
+    
     gu_cond_init (&cond, NULL);
 
     ret = gcs_sm_enter(sm, &cond, false);
@@ -77,7 +84,7 @@ START_TEST (gcs_sm_test_simple)
     fail_if(sm->entered != true, "entered = %d, expected %d",
             sm->users, true);
 
-    gu_thread_t t1, t2, t3, t4;
+    
 
     gu_thread_create (&t1, NULL, simple_thread, sm);
     gu_thread_create (&t2, NULL, simple_thread, sm);
@@ -122,12 +129,13 @@ static volatile int order = 0; // global variable to trac the order of events
 
 static void* closing_thread (void* data)
 {
+    int ret;
     gcs_sm_t* sm = (gcs_sm_t*)data;
 
     fail_if(order != 0, "order is %d, expected 0", order);
 
     order = 1;
-    int ret = gcs_sm_close(sm);
+    ret = gcs_sm_close(sm);
 
     fail_if(ret);
     fail_if(order != 2, "order is %d, expected 2", order);
@@ -138,15 +146,17 @@ static void* closing_thread (void* data)
 
 START_TEST (gcs_sm_test_close)
 {
-    order = 0;
+    int ret;
+    gu_cond_t cond;
+    gu_thread_t thr;
 
     gcs_sm_t* sm = gcs_sm_create(2, 1);
     fail_if(!sm);
-
-    gu_cond_t cond;
     gu_cond_init (&cond, NULL);
+    order = 0;
 
-    int ret = gcs_sm_enter(sm, &cond, false);
+
+    ret = gcs_sm_enter(sm, &cond, false);
     fail_if(ret, "gcs_sm_enter() failed: %d (%s)", ret, strerror(-ret));
     fail_if(sm->users != 1, "users = %ld, expected 1", sm->users);
     fail_if(order != 0);
@@ -156,7 +166,7 @@ START_TEST (gcs_sm_test_close)
     fail_if(1 != sm->wait_q_tail, "wait_q_tail = %lu, expected 1",
             sm->wait_q_tail);
 
-    gu_thread_t thr;
+    
     gu_thread_create (&thr, NULL, closing_thread, sm);
     WAIT_FOR(1 == order);
     fail_if(order != 1, "order is %d, expected 1", order);
@@ -185,10 +195,11 @@ static volatile int pause_order = 0;
 
 static void* pausing_thread (void* data)
 {
-    gu_info ("pausing_thread start, pause_order = %d", pause_order);
     gcs_sm_t* sm = (gcs_sm_t*)data;
 
     gu_cond_t cond;
+    gu_info ("pausing_thread start, pause_order = %d", pause_order);
+    
     gu_cond_init (&cond, NULL);
 
     gcs_sm_schedule (sm);
@@ -211,20 +222,22 @@ static void* pausing_thread (void* data)
 
 START_TEST (gcs_sm_test_pause)
 {
+    int ret;
     long   q_len;
     double q_len_avg;
     double paused_for;
-
+    gu_cond_t cond;
+    gu_thread_t thr;
     gcs_sm_t* sm = gcs_sm_create(4, 1);
 
     fail_if(!sm);
     fail_if(1 != sm->wait_q_head, "wait_q_head = %lu, expected 1",
             sm->wait_q_head);
 
-    gu_cond_t cond;
+    
     gu_cond_init (&cond, NULL);
 
-    gu_thread_t thr;
+    
 
     gcs_sm_stats (sm, &q_len, &q_len_avg, &paused_for);
     fail_if (paused_for != 0.0);
@@ -270,7 +283,7 @@ START_TEST (gcs_sm_test_pause)
     fail_if (pause_order != 3, "pause_order = %d, expected 3");
     pause_order = 0;
 
-    int ret = gcs_sm_enter(sm, &cond, true);
+    ret = gcs_sm_enter(sm, &cond, true);
     fail_if (ret, "gcs_sm_enter() failed: %d (%s)", ret, strerror(-ret));
     // released monitor lock, thr should continue and schedule,
     // set pause_order to 1
@@ -391,22 +404,24 @@ static void* interrupt_thread(void* arg)
 
 START_TEST (gcs_sm_test_interrupt)
 {
-    gcs_sm_t* sm = gcs_sm_create(4, 1);
-    fail_if(!sm);
-
+    long handle;
+    long ret;
     gu_cond_t cond;
-    gu_cond_init (&cond, NULL);
-
     gu_thread_t thr1;
     gu_thread_t thr2;
     gu_thread_t thr3;
+    gcs_sm_t* sm = gcs_sm_create(4, 1);
+    fail_if(!sm);
 
-    long handle = gcs_sm_schedule (sm);
+    gu_cond_init (&cond, NULL);
+
+
+    handle = gcs_sm_schedule (sm);
     fail_if (handle != 0, "handle = %ld, expected 0");
     fail_if (sm->wait_q_tail != 1, "wait_q_tail = %lu, expected 1",
              sm->wait_q_tail);
 
-    long ret = gcs_sm_enter (sm, &cond, true);
+    ret = gcs_sm_enter (sm, &cond, true);
     fail_if (ret != 0);
 
     /* 1. Test interrupting blocked by previous thread */

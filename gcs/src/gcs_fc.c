@@ -133,13 +133,14 @@ gcs_fc_process (gcs_fc_t* fc, ssize_t act_size)
     else {
         long long end   = gu_time_monotonic();
         double interval = ((end - fc->start) * 1.0e-9);
-
+        double desired_rate;
+        double sleep;
         if (gu_unlikely (0 == fc->last_sleep)) {
             /* just tripped the soft limit, preparing constants for throttle */
-
+            double s;
             fc->max_rate = (double)(fc->size - fc->init_size) / interval;
 
-            double s = (1.0 - fc->max_throttle)/(fc->soft_limit-fc->hard_limit);
+            s = (1.0 - fc->max_throttle)/(fc->soft_limit-fc->hard_limit);
             assert (s < 0.0);
 
             fc->scale  = s * fc->max_rate;
@@ -161,11 +162,11 @@ gcs_fc_process (gcs_fc_t* fc, ssize_t act_size)
         }
 
         /* throttling operation */
-        double desired_rate = fc->size * fc->scale + fc->offset; // linear decay
+        desired_rate = fc->size * fc->scale + fc->offset; // linear decay
         //double desired_rate = fc->max_rate * fc->max_throttle; // square wave
         assert (desired_rate <= fc->max_rate);
 
-        double sleep = (double)(fc->size - fc->last_sleep) / desired_rate
+        sleep = (double)(fc->size - fc->last_sleep) / desired_rate
             - interval;
 
         if (gu_unlikely(fc->debug > 0 && !(fc->act_count % fc->debug))) {

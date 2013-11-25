@@ -15,6 +15,10 @@ using namespace gu;
 using namespace gu::datetime;
 
 #include <check.h>
+#ifdef _MSC_VER
+#define UUID gcomm::UUID
+#define DeleteObject gu::DeleteObject
+#endif
 
 // Note: Not all tests are run by default as they require default port to be
 // used or listen port to be known beforehand.

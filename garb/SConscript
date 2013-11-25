@@ -4,10 +4,10 @@ Import('env', 'libboost_program_options')
 
 garb_env = env.Clone()
 
-garb_env.Prepend(LIBS=File('#/galerautils/src/libgalerautils.a'))
-garb_env.Prepend(LIBS=File('#/galerautils/src/libgalerautils++.a'))
-garb_env.Prepend(LIBS=File('#/gcomm/src/libgcomm.a'))
-garb_env.Prepend(LIBS=File('#/gcs/src/libgcs4garb.a'))
+garb_env.Prepend(LIBS=File('#/galerautils/src/galerautils.lib'))
+garb_env.Prepend(LIBS=File('#/galerautils/src/galerautils++.lib'))
+garb_env.Prepend(LIBS=File('#/gcomm/src/gcomm.lib'))
+garb_env.Prepend(LIBS=File('#/gcs/src/gcs4garb.lib'))
 
 if libboost_program_options:
     garb_env.Append(LIBS=libboost_program_options)

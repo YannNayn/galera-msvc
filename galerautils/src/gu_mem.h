@@ -10,7 +10,12 @@
 #define _gu_mem_h_
 
 #include <stdlib.h>
+#ifdef _MSC_VER
+#include <windows.h>
+typedef unsigned int ssize_t;
+#else
 #include <unistd.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {

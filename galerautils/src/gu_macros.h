@@ -14,14 +14,25 @@
  */
 
 #if defined(_MSC_VER)
-#  define GU_NORETURN      __declspec(noreturn)
-#  define GU_INLINE        __forceinline
-#  define GU_FORCE_INLINE  __forceinline
+#define ELAST 1076
+#define EBADFD WSAENOTSOCK
+# define EREMCHG          (ELAST+2)
+# define ENOTUNIQ         (ELAST+3)
+# define ERESTART         (ELAST+4)
+
+#define inline __inline
+#define snprintf _snprintf
+#ifndef GU_NORETURN
+#  define GU_NORETURN      
+#endif
+#  define GU_INLINE        __inline
+#  define GU_FORCE_INLINE  __inline
 #  define GU_UNUSED
 #  define GU_LONG(x)       (x)
 #  define GU_ULONG(x)      (x)
 #  define GU_LONG_LONG(x)  (x)
 #  define GU_ULONG_LONG(x) (x)
+#define usleep(ms) Sleep(ms/1000)
 #else   /* !defined(_MSC_VER) */
 #  define GU_NORETURN      __attribute__((noreturn))
 #  define GU_INLINE        inline

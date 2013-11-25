@@ -162,8 +162,9 @@ _mmh3_128_blocks (const uint64_t* const blocks, size_t const nblocks,
 // Block read - if your platform needs to do endian-swapping or can only
 // handle aligned reads, do the conversion here
         uint64_t k1 = gu_le64(blocks[i]);
+        uint64_t k2;
         i++;
-        uint64_t k2 = gu_le64(blocks[i]);
+        k2 = gu_le64(blocks[i]);
 
         _mmh3_128_block (k1, k2, h1, h2);
     }
@@ -241,8 +242,9 @@ static uint64_t const GU_MMH128_SEED2 = GU_ULONG_LONG(0x62B821756295C58D);
 static GU_FORCE_INLINE void
 gu_mmh128 (const void* const msg, size_t const len, void* const out)
 {
+    uint64_t* res;
     _mmh3_128_seed (msg, len, GU_MMH128_SEED1, GU_MMH128_SEED2, (uint64_t*)out);
-    uint64_t* const res = (uint64_t*)out;
+    res = (uint64_t*)out;
     res[0] = gu_le64(res[0]);
     res[1] = gu_le64(res[1]);
 }
@@ -300,6 +302,8 @@ gu_mmh128_append (gu_mmh128_ctx_t* const mmh,
                   const void*      part,
                   size_t           len)
 {
+    size_t nblocks;
+    const uint64_t* blocks;
     size_t tail_len = mmh->length & 15;
 
     mmh->length += len;
@@ -324,8 +328,8 @@ gu_mmh128_append (gu_mmh128_ctx_t* const mmh,
         }
     }
 
-    size_t const nblocks = (len >> 4) << 1; /* using 64-bit half-blocks */
-    const uint64_t* const blocks = (const uint64_t*)(part);
+    nblocks = (len >> 4) << 1; /* using 64-bit half-blocks */
+    blocks = (const uint64_t*)(part);
 
     _mmh3_128_blocks (blocks, nblocks, &mmh->hash[0], &mmh->hash[1]);
 

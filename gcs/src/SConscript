@@ -1,5 +1,5 @@
 #
-
+import sys
 Import('env')
 
 # Clone environment as we need to tune compilation flags
@@ -35,13 +35,18 @@ libgcs_env.StaticLibrary('gcs', libgcs_sources)
 # TODO: How to tell scons portably that C++ linker should be used
 # and program should be linked statically
 gcs_test_env = libgcs_env.Clone()
-
-gcs_test_env.Prepend(LIBS = File('#/galerautils/src/libgalerautils.a'))
-gcs_test_env.Prepend(LIBS = File('#/galerautils/src/libgalerautils++.a'))
-gcs_test_env.Prepend(LIBS = File('#/gcomm/src/libgcomm.a'))
-gcs_test_env.Prepend(LIBS = File('#/gcache/src/libgcache.a'))
-gcs_test_env.Prepend(LIBS = File('#/gcs/src/libgcs.a'))
-
+if sys.platform.find("win") != 0:
+    gcs_test_env.Prepend(LIBS = File('#/galerautils/src/libgalerautils.a'))
+    gcs_test_env.Prepend(LIBS = File('#/galerautils/src/libgalerautils++.a'))
+    gcs_test_env.Prepend(LIBS = File('#/gcomm/src/libgcomm.a'))
+    gcs_test_env.Prepend(LIBS = File('#/gcache/src/libgcache.a'))
+    gcs_test_env.Prepend(LIBS = File('#/gcs/src/libgcs.a'))
+else:
+    gcs_test_env.Prepend(LIBS = File('#/galerautils/src/galerautils.lib'))
+    gcs_test_env.Prepend(LIBS = File('#/galerautils/src/galerautils++.lib'))
+    gcs_test_env.Prepend(LIBS = File('#/gcomm/src/gcomm.lib'))
+    gcs_test_env.Prepend(LIBS = File('#/gcache/src/gcache.lib'))
+    gcs_test_env.Prepend(LIBS = File('#/gcs/src/gcs.lib'))
 gcs_test_env.Program(target = 'gcs_test',
                      source = 'gcs_test.c',
                      LINK = libgcs_env['CXX'])

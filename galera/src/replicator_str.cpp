@@ -6,6 +6,9 @@
 #include "uuid.hpp"
 #include <galerautils.hpp>
 
+#ifdef _MSC_VER
+extern "C" char *strndup (const char *s, size_t size);
+#endif
 namespace galera {
 
 bool

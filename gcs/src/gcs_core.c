@@ -100,9 +100,10 @@ gcs_core_create (gu_config_t* const conf,
                  int          const repl_proto_ver,
                  int          const appl_proto_ver)
 {
+    gcs_core_t* core;
     assert (conf);
 
-    gcs_core_t* core = GU_CALLOC (1, gcs_core_t);
+    core = GU_CALLOC (1, gcs_core_t);
 
     if (NULL != core) {
 
@@ -322,7 +323,13 @@ gcs_core_send (gcs_core_t*      const conn,
 	goto out;
 
     if ((local_act = gcs_fifo_lite_get_tail (conn->fifo))) {
+#ifdef _MSC_VER
+        local_act->sent_act_id=conn->send_act_no;
+        local_act->action=act;
+        local_act->action_size=act_size;
+#else
         *local_act = (core_act_t){ conn->send_act_no, act, act_size };
+#endif
         gcs_fifo_lite_push_tail (conn->fifo);
     }
     else {
@@ -649,6 +656,8 @@ core_handle_comp_msg (gcs_core_t*          core,
 
     switch (ret) {
     case GCS_GROUP_PRIMARY:
+    {
+        int gcs_proto_ver;
         /* New primary configuration. This happens if:
          * - this is first node in group OR
          * - some nodes disappeared no new nodes appeared
@@ -660,7 +669,7 @@ core_handle_comp_msg (gcs_core_t*          core,
         }
         gu_mutex_unlock (&core->send_lock);
 
-        int gcs_proto_ver;
+        
         ret = gcs_group_act_conf (group, act, &gcs_proto_ver);
         if (ret < 0) {
             gu_fatal ("Failed create PRIM CONF action: %d (%s)",
@@ -673,6 +682,7 @@ core_handle_comp_msg (gcs_core_t*          core,
         }
         assert (ret == act->buf_len);
         break;
+    }
     case GCS_GROUP_WAIT_STATE_UUID:
         /* New members, need state exchange. If representative, send UUID */
         if (gu_mutex_lock (&core->send_lock)) abort();
@@ -773,7 +783,7 @@ core_handle_uuid_msg (gcs_core_t*     core,
 
                 if (state) {
                     size_t           state_len = gcs_state_msg_len (state);
-                    uint8_t          state_buf[state_len];
+                    uint8_t          *state_buf = alloca(state_len *sizeof(uint8_t));
                     const gu_uuid_t* state_uuid = gcs_state_msg_uuid (state);
 
                     gcs_state_msg_write (state_buf, state);
@@ -942,6 +952,7 @@ static long core_msg_causal(gcs_core_t* conn,
                             struct gcs_recv_msg* msg)
 {
     causal_act_t* act;
+    gcs_seqno_t causal_seqno;
     if (gu_unlikely(msg->size != sizeof(*act)))
     {
         gu_error("invalid causal act len %ld, expected %ld",
@@ -949,7 +960,7 @@ static long core_msg_causal(gcs_core_t* conn,
         return -EPROTO;
     }
 
-    gcs_seqno_t const causal_seqno =
+    causal_seqno =
         GCS_GROUP_PRIMARY == conn->group.state ?
         conn->group.act_id : GCS_SEQNO_ILL;
 
@@ -969,14 +980,27 @@ ssize_t gcs_core_recv (gcs_core_t*          conn,
 //    struct gcs_act_rcvd  recv_act;
     struct gcs_recv_msg* recv_msg = &conn->recv_msg;
     ssize_t              ret      = 0;
-
+#ifdef _MSC_VER
+    static struct gcs_act_rcvd zero_act = {0};
+    static int zero_act_initialized=0;
+    if(!zero_act_initialized) // thread_safety ?
+    {
+        zero_act_initialized=1;
+        zero_act.act.buf=NULL;
+        zero_act.act.buf_len = 0;
+        zero_act.act.type    = GCS_ACT_ERROR;
+        zero_act.repl_buf   = NULL;
+        zero_act.id         = -1;   // GCS_SEQNO_ILL
+        zero_act.sender_idx = -1;
+    }
+#else    
     static struct gcs_act_rcvd zero_act = { .act = { .buf     = NULL,
                                                      .buf_len = 0,
                                                      .type    = GCS_ACT_ERROR },
                                             .repl_buf   = NULL,
                                             .id         = -1,   // GCS_SEQNO_ILL
                                             .sender_idx = -1 };
-
+#endif
     *recv_act = zero_act;
 
     /* receive messages from group and demultiplex them

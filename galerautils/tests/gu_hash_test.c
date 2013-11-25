@@ -25,7 +25,7 @@ check (const void* const exp, const void* const got, ssize_t size)
     if (memcmp (exp, got, size))
     {
         ssize_t str_size = size * 2.2 + 1;
-        char c[str_size], r[str_size];
+        char *c=alloca(str_size*sizeof(char)), r=alloca(str_size*sizeof(char));
 
         gu_print_buf (exp, size, c, sizeof(c), false);
         gu_print_buf (got, size, r, sizeof(r), false);
@@ -56,22 +56,24 @@ static const uint8_t gu_hash32_check[4]  = { 0xFA,0x2C,0x78,0x67 };
 START_TEST (gu_hash_test)
 {
     gu_hash_t h;
-
+    uint8_t *res128;
+    uint64_t res64;
+    uint32_t res32;
     gu_hash_init(&h);
     gu_hash_append(&h, test_msg, GU_HASH_TEST_LENGTH);
 
-    uint8_t res128[16];
+    res128=alloca(16*sizeof(uint8_t));
     gu_hash_get128 (&h, res128);
     fail_if (check (gu_hash128_check, res128, sizeof(res128)),
              "gu_hash_get128() failed.");
 
-    uint64_t res64 = gu_hash_get64(&h);
+    res64 = gu_hash_get64(&h);
     fail_if (gu_hash64(test_msg, GU_HASH_TEST_LENGTH) != res64);
     res64 = gu_le64(res64);
     fail_if (check (gu_hash64_check, &res64, sizeof(res64)),
              "gu_hash_get64() failed.");
 
-    uint32_t res32 = gu_hash_get32(&h);
+    res32 = gu_hash_get32(&h);
     fail_if (gu_hash32(test_msg, GU_HASH_TEST_LENGTH) != res32);
     res32 = gu_le32(res32);
     fail_if (check (gu_hash32_check, &res32, sizeof(res32)),
@@ -121,7 +123,9 @@ static const uint8_t fast_hash32_check2011[4] = { 0xB7, 0xCE, 0x75, 0xC7 };
 /* Tests fast hash functions */
 START_TEST (gu_fast_hash_test)
 {
-    uint8_t res128[16];
+    uint32_t res32;
+    uint64_t res64;
+    uint8_t *res128=alloca(16*sizeof(uint8_t));
 
     gu_fast_hash128 (test_msg, 0, res128);
     fail_if (check (fast_hash128_check0, res128, sizeof(res128)));
@@ -135,7 +139,7 @@ START_TEST (gu_fast_hash_test)
     gu_fast_hash128 (test_msg, 2011, res128);
     fail_if (check (fast_hash128_check2011, res128, sizeof(res128)));
 
-    uint64_t res64;
+    
 
     res64 = gu_fast_hash64 (test_msg, 0); res64 = gu_le64(res64);
     fail_if (check (fast_hash64_check0, &res64, sizeof(res64)));
@@ -155,7 +159,7 @@ START_TEST (gu_fast_hash_test)
     res64 = gu_fast_hash64 (test_msg, 2011); res64 = gu_le64(res64);
     fail_if (check (fast_hash64_check2011, &res64, sizeof(res64)));
 
-    uint32_t res32;
+    
 
     res32 = gu_fast_hash32 (test_msg, 0); res32 = gu_le32(res32);
     fail_if (check (fast_hash32_check0, &res32, sizeof(res32)));

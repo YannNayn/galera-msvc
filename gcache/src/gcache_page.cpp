@@ -40,7 +40,7 @@ gcache::Page::drop_fs_cache() const
 {
     mmap_.dont_need();
 
-#if !defined(__APPLE__)
+#if !defined(__APPLE__) && !defined(WIN32)
     int const err (posix_fadvise (fd_.get(), 0, fd_.get_size(),
                                   POSIX_FADV_DONTNEED));
     if (err != 0)

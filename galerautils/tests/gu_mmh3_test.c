@@ -76,9 +76,9 @@ static void
 smhasher_verification (hash_f_t hash, size_t const hashbytes, uint32_t* const res)
 {
     ssize_t const n_tests = 256;
-    uint8_t key[n_tests];
-    uint8_t hashes[hashbytes * n_tests];
-    uint8_t final[hashbytes];
+    uint8_t *key = alloca(sizeof(uint8_t) * n_tests);
+    uint8_t *hashes=alloca(sizeof(uint8_t) * (hashbytes * n_tests));
+    uint8_t *final=alloca(sizeof(uint8_t) * hashbytes);
 
     /* Hash keys of the form {0}, {0,1}, {0,1,2}... up to N=255,using 256-N as
      * the seed */
@@ -110,7 +110,7 @@ check (const void* const exp, const void* const got, ssize_t size)
     if (memcmp (exp, got, size))
     {
         ssize_t str_size = size * 2.2 + 1;
-        char c[str_size], r[str_size];
+        char *c=alloca(sizeof(char) * str_size), *r=alloca(sizeof(char) * str_size);
 
         gu_print_buf (exp, size, c, sizeof(c), false);
         gu_print_buf (got, size, r, sizeof(r), false);

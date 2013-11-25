@@ -3,7 +3,11 @@
  */
 
 #include <cerrno>
+#if !defined(_MSC_VER)
 #include <unistd.h>
+#else
+#include <windows.h>
+#endif
 #include <galerautils.hpp>
 
 #include "gcache_bh.hpp"

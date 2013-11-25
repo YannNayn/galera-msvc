@@ -15,7 +15,9 @@
 #include <stdbool.h>
 #include "gu_log.h"
 #include "gu_macros.h"
-
+#ifdef _MSC_VER
+#include "msvc_sup.h"
+#endif
 /* Global configurable variables */
 static FILE*      gu_log_file        = NULL;
 bool              gu_log_self_tstamp = false;
@@ -137,7 +139,7 @@ gu_log (gu_log_severity_t severity,
 {
     va_list ap;
     int   max_string = 2048;
-    char  string[max_string]; /** @note: this can cause stack overflow
+    char  *string = malloc(sizeof(char) *max_string); /** @note: this can cause stack overflow
                                * in kernel mode (both Linux and Windows). */
     char* str = string;
     int   len;

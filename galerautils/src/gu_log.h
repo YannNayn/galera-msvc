@@ -67,10 +67,15 @@ extern gu_log_severity_t gu_log_max_level;
 
 #if !defined(__cplusplus) || defined(GALERA_LOG_H_ENABLE_CXX)
 // NOTE: don't add "\n" here even if you really want to do it
+#ifndef _MSC_VER    
 #define GU_LOG_C(level, ...)\
         gu_log(level, __FILE__, __PRETTY_FUNCTION__, __LINE__,\
                ## __VA_ARGS__, NULL)
-
+#else
+#define GU_LOG_C(level, ...)\
+        gu_log(level, __FILE__, "???func???", __LINE__,\
+               ## __VA_ARGS__, NULL)
+#endif
 /**
  * @name Logging macros.
  * Must be implemented as macros to report the location of the code where

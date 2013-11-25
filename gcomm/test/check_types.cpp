@@ -23,9 +23,13 @@ using std::string;
 
 #include <check.h>
 
+
 using namespace gu;
 using namespace gcomm;
 
+#ifdef _MSC_VER
+#define UUID gcomm::UUID
+#endif
 
 START_TEST(test_uuid)
 {

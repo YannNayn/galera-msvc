@@ -28,7 +28,9 @@
 
 #include <list>
 #include <utility>
-
+#ifdef _MSC_VER
+#define not !
+#endif
 
 // Declarations
 namespace gcomm
@@ -340,6 +342,9 @@ private:
     int handle_down(Datagram& dg, const ProtoDownMeta& dm)
     {
         gu_throw_fatal << "Toplay handle_down() called";
+#ifdef _MSC_VER
+        return 0;
+#endif        
     }
 };
 

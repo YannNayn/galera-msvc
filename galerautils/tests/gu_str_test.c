@@ -76,7 +76,7 @@ START_TEST(test_str_table)
     char* str = NULL;
     size_t off = 0;
     size_t i;
-    
+    FILE* tmp;
     str = gu_str_table_set_name(str, &off, name);
     fail_unless(strcmp(gu_str_table_get_name(str), name) == 0);
 
@@ -95,7 +95,7 @@ START_TEST(test_str_table)
 
     mark_point();
 
-    FILE* tmp = fopen("/dev/null", "w");
+    tmp = fopen("/dev/null", "w");
     fail_if (NULL == tmp);
 
     gu_str_table_print(tmp, str);

@@ -1,5 +1,5 @@
 #
-
+import sys
 Import('env')
 
 libgcomm_sources = [
@@ -23,7 +23,8 @@ libgcomm_sources = [
     'socket.cpp']
 
 libgcomm_env = env.Clone()
-libgcomm_env.Append(CXXFLAGS = ' -fno-strict-aliasing')
+if sys.platform.find("win") != 0:
+    libgcomm_env.Append(CXXFLAGS = ' -fno-strict-aliasing')
 
 if '-DHAVE_ASIO_HPP' in libgcomm_env['CPPFLAGS']:
     # ASIO sources need to be built with relaxed C++ flags

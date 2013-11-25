@@ -6,7 +6,11 @@
 #define __GU_COND__
 
 #include <pthread.h>
+#ifdef _MSC_VER
+#include <windows.h>
+#else
 #include <unistd.h>
+#endif
 #include <cerrno>
 
 #include "gu_macros.h"

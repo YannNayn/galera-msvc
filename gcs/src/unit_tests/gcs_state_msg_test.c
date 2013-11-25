@@ -45,7 +45,7 @@ START_TEST (gcs_state_msg_test_basic)
     fail_if (send_len < 0, "gcs_state_msg_len() returned %zd (%s)",
              send_len, strerror (-send_len));
     {
-        uint8_t send_buf[send_len];
+        uint8_t *send_buf = alloca(sizeof(uint8_t) *send_len);
 
         ret = gcs_state_msg_write (send_buf, send_state);
         fail_if (ret != send_len, "Return value does not match send_len: "
@@ -76,8 +76,8 @@ START_TEST (gcs_state_msg_test_basic)
 
     {
         size_t str_len = 1024;
-        char   send_str[str_len];
-        char   recv_str[str_len];
+        char   send_str=alloca(sizeof(char) *str_len);
+        char   recv_str=alloca(sizeof(char) *str_len);
 
         fail_if (gcs_state_msg_snprintf (send_str, str_len, send_state) <= 0);
         fail_if (gcs_state_msg_snprintf (recv_str, str_len, recv_state) <= 0);
@@ -91,18 +91,14 @@ END_TEST
 
 START_TEST (gcs_state_msg_test_quorum_inherit)
 {
+    int ret;
     gcs_state_msg_t* st[3] = { NULL, };
 
     gu_uuid_t state_uuid;
     gu_uuid_t group1_uuid, group2_uuid;
     gu_uuid_t prim1_uuid, prim2_uuid;
 
-    gu_uuid_generate (&state_uuid,  NULL, 0);
-    gu_uuid_generate (&group1_uuid, NULL, 0);
-    gu_uuid_generate (&group2_uuid, NULL, 0);
-    gu_uuid_generate (&prim1_uuid,  NULL, 0);
-    gu_uuid_generate (&prim2_uuid,  NULL, 0);
-
+    
     gcs_seqno_t prim1_seqno = 123;
     gcs_seqno_t prim2_seqno = 834;
 
@@ -110,6 +106,12 @@ START_TEST (gcs_state_msg_test_quorum_inherit)
     gcs_seqno_t act2_seqno = 239472508908LL;
 
     gcs_state_quorum_t quorum;
+
+    gu_uuid_generate (&state_uuid,  NULL, 0);
+    gu_uuid_generate (&group1_uuid, NULL, 0);
+    gu_uuid_generate (&group2_uuid, NULL, 0);
+    gu_uuid_generate (&prim1_uuid,  NULL, 0);
+    gu_uuid_generate (&prim2_uuid,  NULL, 0);
 
     mark_point();
 
@@ -136,7 +138,7 @@ START_TEST (gcs_state_msg_test_quorum_inherit)
     fail_if(NULL == st[2]);
 
     gu_info ("                  Inherited 1");
-    int ret = gcs_state_msg_get_quorum ((const gcs_state_msg_t**)st,
+    ret = gcs_state_msg_get_quorum ((const gcs_state_msg_t**)st,
                                         sizeof(st)/sizeof(gcs_state_msg_t*),
                                         &quorum);
     fail_if (0 != ret);
@@ -249,19 +251,14 @@ END_TEST
 
 START_TEST (gcs_state_msg_test_quorum_remerge)
 {
+    int ret;
     gcs_state_msg_t* st[3] = { NULL, };
 
     gu_uuid_t state_uuid;
     gu_uuid_t group1_uuid, group2_uuid;
     gu_uuid_t prim0_uuid, prim1_uuid, prim2_uuid;
 
-    gu_uuid_generate (&state_uuid,  NULL, 0);
-    gu_uuid_generate (&group1_uuid, NULL, 0);
-    gu_uuid_generate (&group2_uuid, NULL, 0);
-    gu_uuid_generate (&prim0_uuid,  NULL, 0);
-    gu_uuid_generate (&prim1_uuid,  NULL, 0);
-    gu_uuid_generate (&prim2_uuid,  NULL, 0);
-
+    
     gcs_seqno_t prim1_seqno = 123;
     gcs_seqno_t prim2_seqno = 834;
 
@@ -269,6 +266,13 @@ START_TEST (gcs_state_msg_test_quorum_remerge)
     gcs_seqno_t act2_seqno = 239472508908LL;
 
     gcs_state_quorum_t quorum;
+    
+    gu_uuid_generate (&state_uuid,  NULL, 0);
+    gu_uuid_generate (&group1_uuid, NULL, 0);
+    gu_uuid_generate (&group2_uuid, NULL, 0);
+    gu_uuid_generate (&prim0_uuid,  NULL, 0);
+    gu_uuid_generate (&prim1_uuid,  NULL, 0);
+    gu_uuid_generate (&prim2_uuid,  NULL, 0);
 
     mark_point();
 
@@ -295,7 +299,7 @@ START_TEST (gcs_state_msg_test_quorum_remerge)
     fail_if(NULL == st[2]);
 
     gu_info ("                  Remerged 1");
-    int ret = gcs_state_msg_get_quorum ((const gcs_state_msg_t**)st,
+    ret = gcs_state_msg_get_quorum ((const gcs_state_msg_t**)st,
                                         sizeof(st)/sizeof(gcs_state_msg_t*),
                                         &quorum);
     fail_if (0 != ret);

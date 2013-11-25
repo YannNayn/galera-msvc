@@ -4,7 +4,10 @@
 #include "gu_string.hpp"
 
 #include <sys/types.h>
+#ifdef _MSC_VER
+typedef unsigned int ssize_t;
 
+#endif
 using std::string;
 using std::vector;
 

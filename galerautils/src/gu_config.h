@@ -11,7 +11,13 @@
 #define _gu_config_h_
 
 #include <stdint.h>
-#include <unistd.h> // for ssize_t
+#ifdef _MSC_VER
+#include <windows.h>
+typedef unsigned int ssize_t;
+#else
+#include <unistd.h>
+#endif
+
 
 #ifdef __cplusplus
 extern "C" {

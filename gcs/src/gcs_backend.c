@@ -24,6 +24,10 @@
 #include "gcs_gcomm.h"
 #endif /* GCS_USE_GCOMM */
 
+#ifndef ESOCKTNOSUPPORT
+#   define ESOCKTNOSUPPORT 121  /* Socket type not supported */ // tclWinPort.h
+#endif
+
 /* Static array describing backend ID - open() pairs */
 static
 struct {

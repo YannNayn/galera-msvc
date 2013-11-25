@@ -17,7 +17,12 @@ extern "C" {
 
 #include <stdint.h>
 #include <stdbool.h>
+#ifdef _MSC_VER
+#include <windows.h>
+#define EBADFD WSAENOTSOCK
+#else
 #include <unistd.h>
+#endif
 #include <stdio.h>
 
 #include "gu_config.h"

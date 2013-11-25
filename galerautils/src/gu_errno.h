@@ -16,6 +16,14 @@
 #  define ENOTRECOVERABLE (ELAST+5)
 #  define ENODATA         (ELAST+6)
 # endif
-#endif
+#elif defined (_MSC_VER)
+#define ELAST 1076
+#define EBADFD WSAENOTSOCK
+# define EREMCHG          (ELAST+2)
+# define ENOTUNIQ         (ELAST+3)
+# define ERESTART         (ELAST+4)
+# endif
+
+
 
 #endif /* GU_STR_H */

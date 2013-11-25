@@ -11,7 +11,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#ifdef _MSC_VER
+#include <windows.h>
+#include <msvc_sup.h>
+#else
 #include <unistd.h>
+#endif
 #include <assert.h>
 #include <string.h>
 #include <sys/time.h>
@@ -685,7 +690,7 @@ int main (int argc, char *argv[])
     gcs_test_thread_pool_t repl_pool, send_pool, recv_pool;
     char *channel = "my_channel";
     struct timeval t_begin, t_end;
-
+    gu_config_t* gconf;
     gcs_conf_debug_on(); // turn on debug messages
 
     if ((err = gcs_test_conf     (&conf, argc, argv)))   goto out;
@@ -701,7 +706,7 @@ int main (int argc, char *argv[])
     printf ("Opening connection: channel = %s, backend = %s\n",
              channel, conf.backend);
 
-    gu_config_t* gconf = gu_config_create ("gcache.size=0; "
+    gconf = gu_config_create ("gcache.size=0; "
                                            "gcache.page_size=1M");
     if (!gconf) goto out;
     if (!(gcache = gcache_create (gconf, ""))) goto out;

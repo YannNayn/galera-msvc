@@ -23,7 +23,9 @@
 
 #define GU_ROTL32(x,y)     _rotl(x,y)
 #define GU_ROTL64(x,y)     _rotl64(x,y)
-
+inline uint64_t bswap64(uint64_t x) { return _byteswap_uint64(x); }
+inline uint32_t bswap32(uint32_t x) { return _byteswap_ulong(x); }
+inline uint16_t bswap16(uint16_t x) { return _byteswap_ushort(x); }
 #else   /* !defined(_MSC_VER) */
 
 static GU_FORCE_INLINE uint32_t GU_ROTL32 (uint32_t x, int8_t r)
@@ -62,6 +64,10 @@ static GU_FORCE_INLINE uint64_t GU_ROTL64 (uint64_t x, int8_t r)
 #  define gu_bswap16 BSWAP_16
 #  define gu_bswap32 BSWAP_32
 #  define gu_bswap64 BSWAP_64
+#elif defined(_MSC_VER)
+#  define gu_bswap16 bswap16
+#  define gu_bswap32 bswap32
+#  define gu_bswap64 bswap64
 #elif defined(bswap16)
 #  define gu_bswap16 bswap16
 #  define gu_bswap32 bswap32

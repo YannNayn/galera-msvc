@@ -11,6 +11,7 @@
 #include "galerautils.h"
 
 /* Is it usable? */
+/*
 static const struct gu_mutex
 gu_mutex_init = { .target_mutex      = PTHREAD_MUTEX_INITIALIZER,
                   .control_mutex     = PTHREAD_MUTEX_INITIALIZER,
@@ -21,7 +22,7 @@ gu_mutex_init = { .target_mutex      = PTHREAD_MUTEX_INITIALIZER,
                   .file              = __FILE__,
                   .line              = __LINE__
 };
-
+*/
 int gu_mutex_init_dbg (struct gu_mutex *m,
                        const pthread_mutexattr_t* attr,
                        const char *file, unsigned int line)
@@ -130,7 +131,11 @@ int gu_mutex_unlock_dbg (struct gu_mutex *m,
         if (gu_likely(!err)) {
             m->file   = file;
             m->line   = line;
+#ifdef _MSC_VER
+            m->thread.p = 0;
+#else            
             m->thread = 0;
+#endif            
             /* At this point it is difficult to say if we're unlocking
              * normally or from cancellation handler, if holder_count not 0 -
              * assume it is normal unlock, otherwise we decrement
@@ -167,13 +172,26 @@ int gu_mutex_destroy_dbg (struct gu_mutex *m,
     pthread_mutex_lock(&m->control_mutex);
     {
         if (!m->file) {
+#ifndef _MSC_VER
             gu_fatal("%lu attempts to destroy uninitialized mutex at %s:%d",
-                     pthread_self(), file, line);
+            pthread_self(), 
+            file, line);
+#else            
+            gu_fatal("%lu attempts to destroy uninitialized mutex at %s:%d",
+            pthread_self().p, 
+            file, line);
+#endif
+            
+            
             assert(0);
         }
 
         if (m->holder_count != 0) {
+#ifdef _MSC_VER
+            if (pthread_self().p == m->thread.p) {
+#else
             if (pthread_self() == m->thread) {
+#endif            
                 gu_fatal ("%lu attempts to destroy mutex locked by "
                           "itself at %s:%d",
                            pthread_self(), m->file, m->line);
@@ -205,7 +223,12 @@ int gu_mutex_destroy_dbg (struct gu_mutex *m,
 
         m->file   = 0;
         m->line   = 0;
+#ifdef _MSC_VER
+         m->thread.p = 0;
+#else
         m->thread = 0;
+#endif        
+        
 
     }
     pthread_mutex_unlock(&m->control_mutex);
@@ -239,7 +262,11 @@ int gu_cond_wait_dbg (pthread_cond_t *cond, struct gu_mutex *m,
         /** pthread_cond_wait frees the mutex */
         m->holder_count--;
         m->cond_waiter_count++;
+#ifdef _MSC_VER
+         m->thread.p = 0;
+#else
         m->thread = 0;
+#endif        
         assert (m->holder_count >= 0);
     }
     pthread_mutex_unlock(&m->control_mutex);

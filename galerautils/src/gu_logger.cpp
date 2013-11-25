@@ -10,6 +10,9 @@
 #include <cstdlib>
 #include <ctime>
 #include <sys/time.h>
+#ifdef _MSC_VER
+#include "msvc_sup.h"
+#endif
 
 #include "gu_logger.hpp"
 #include "gu_string.hpp"
@@ -137,7 +140,7 @@ namespace gu
             struct timeval time;
 
             gettimeofday (&time, NULL);
-            localtime_r  (&time.tv_sec, &date);
+            localtime_rl  (&time.tv_sec, &date);
 
             os << date.tm_year + 1900 << '-'
                << setw(2) << setfill('0') << (date.tm_mon + 1) << '-'

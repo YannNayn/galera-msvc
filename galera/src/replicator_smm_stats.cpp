@@ -162,27 +162,27 @@ galera::ReplicatorSMM::stats_get() const
 
     std::vector<struct wsrep_stats_var>& sv(wsrep_stats_);
 
-    sv[STATS_PROTOCOL_VERSION   ].value._int64  = protocol_version_;
-    sv[STATS_LAST_APPLIED       ].value._int64  = apply_monitor_.last_left();
-    sv[STATS_REPLICATED         ].value._int64  = replicated_();
-    sv[STATS_REPLICATED_BYTES   ].value._int64  = replicated_bytes_();
-    sv[STATS_RECEIVED           ].value._int64  = gcs_as_.received();
-    sv[STATS_RECEIVED_BYTES     ].value._int64  = gcs_as_.received_bytes();
-    sv[STATS_LOCAL_COMMITS      ].value._int64  = local_commits_();
-    sv[STATS_LOCAL_CERT_FAILURES].value._int64  = local_cert_failures_();
-    sv[STATS_LOCAL_BF_ABORTS    ].value._int64  = local_bf_aborts_();
-    sv[STATS_LOCAL_REPLAYS      ].value._int64  = local_replays_();
+    sv[STATS_PROTOCOL_VERSION   ].value.___int64  = protocol_version_;
+    sv[STATS_LAST_APPLIED       ].value.___int64  = apply_monitor_.last_left();
+    sv[STATS_REPLICATED         ].value.___int64  = replicated_();
+    sv[STATS_REPLICATED_BYTES   ].value.___int64  = replicated_bytes_();
+    sv[STATS_RECEIVED           ].value.___int64  = gcs_as_.received();
+    sv[STATS_RECEIVED_BYTES     ].value.___int64  = gcs_as_.received_bytes();
+    sv[STATS_LOCAL_COMMITS      ].value.___int64  = local_commits_();
+    sv[STATS_LOCAL_CERT_FAILURES].value.___int64  = local_cert_failures_();
+    sv[STATS_LOCAL_BF_ABORTS    ].value.___int64  = local_bf_aborts_();
+    sv[STATS_LOCAL_REPLAYS      ].value.___int64  = local_replays_();
 
     struct gcs_stats stats;
     gcs_.get_stats (&stats);
 
-    sv[STATS_LOCAL_SEND_QUEUE    ].value._int64  = stats.send_q_len;
+    sv[STATS_LOCAL_SEND_QUEUE    ].value.___int64  = stats.send_q_len;
     sv[STATS_LOCAL_SEND_QUEUE_AVG].value._double = stats.send_q_len_avg;
-    sv[STATS_LOCAL_RECV_QUEUE    ].value._int64  = stats.recv_q_len;
+    sv[STATS_LOCAL_RECV_QUEUE    ].value.___int64  = stats.recv_q_len;
     sv[STATS_LOCAL_RECV_QUEUE_AVG].value._double = stats.recv_q_len_avg;
     sv[STATS_FC_PAUSED           ].value._double = stats.fc_paused;
-    sv[STATS_FC_SENT             ].value._int64  = stats.fc_sent;
-    sv[STATS_FC_RECEIVED         ].value._int64  = stats.fc_received;
+    sv[STATS_FC_SENT             ].value.___int64  = stats.fc_sent;
+    sv[STATS_FC_RECEIVED         ].value.___int64  = stats.fc_received;
 
     sv[STATS_CERT_DEPS_DISTANCE  ].value._double = cert_.get_avg_deps_dist();
 
@@ -204,11 +204,11 @@ galera::ReplicatorSMM::stats_get() const
     sv[STATS_COMMIT_WINDOW       ].value._double = win;
 
 
-    sv[STATS_LOCAL_STATE         ].value._int64  = state2stats(state_());
+    sv[STATS_LOCAL_STATE         ].value.___int64  = state2stats(state_());
     sv[STATS_LOCAL_STATE_COMMENT ].value._string = state2stats_str(state_(),
                                                                    sst_state_);
-    sv[STATS_CERT_INDEX_SIZE].value._int64 = cert_.index_size();
-    sv[STATS_CAUSAL_READS].value._int64    = causal_reads_();
+    sv[STATS_CERT_INDEX_SIZE].value.___int64 = cert_.index_size();
+    sv[STATS_CAUSAL_READS].value.___int64    = causal_reads_();
 
     /* Create a buffer to be passed to the caller. */
     gu::Lock lock_inc(incoming_mutex_);

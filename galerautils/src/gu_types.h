@@ -11,6 +11,13 @@
 
 #include <stdint.h>  /* intXX_t and friends */
 #include <stdbool.h> /* bool */
+#ifndef _MSC_VER
 #include <unistd.h>  /* ssize_t */
-
+#else
+#include <windows.h>  /* ssize_t */
+#define __attribute__(x)
+#define GU_NORETURN
+typedef unsigned int ssize_t;
+#define inline __inline
+#endif
 #endif /* _gu_types_h_ */

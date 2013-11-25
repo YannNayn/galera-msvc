@@ -8,6 +8,9 @@
 
 #include <inttypes.h>
 #include <errno.h>
+#if !defined(SSIZE_MAX) 
+#define SSIZE_MAX 0x7fffffffL 
+#endif
 
 const char* const GCS_PARAMS_FC_FACTOR         = "gcs.fc_factor";
 const char* const GCS_PARAMS_FC_LIMIT          = "gcs.fc_limit";
@@ -161,7 +164,7 @@ long
 gcs_params_init (struct gcs_params* params, gu_config_t* config)
 {
     long ret;
-
+    int64_t tmp;
     if ((ret = params_init_long (config, GCS_PARAMS_FC_LIMIT,
                                  GCS_PARAMS_DEFAULT_FC_LIMIT, 0, LONG_MAX,
                                  &params->fc_base_limit))) return ret;
@@ -188,7 +191,7 @@ gcs_params_init (struct gcs_params* params, gu_config_t* config)
                                    0.0, 1.0 - 1.e-9,
                                    &params->max_throttle))) return ret;
 
-    int64_t tmp;
+    
     if ((ret = params_init_int64 (config, GCS_PARAMS_RECV_Q_HARD_LIMIT,
                                   GCS_PARAMS_DEFAULT_RECV_Q_HARD_LIMIT, 0, 0,
                                   &tmp))) return ret;

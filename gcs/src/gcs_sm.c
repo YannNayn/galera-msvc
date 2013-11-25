@@ -25,6 +25,8 @@ sm_init_stats (gcs_sm_stats_t* stats)
 gcs_sm_t*
 gcs_sm_create (long len, long n)
 {
+    size_t sm_size;
+    gcs_sm_t* sm;
     if ((len < 2 /* 2 is minimum */) || (len & (len - 1))) {
         gu_error ("Monitor length parameter is not a power of 2: %ld", len);
         return NULL;
@@ -35,10 +37,10 @@ gcs_sm_create (long len, long n)
         return NULL;
     }
 
-    size_t sm_size = sizeof(gcs_sm_t) +
+    sm_size = sizeof(gcs_sm_t) +
         len * sizeof(((gcs_sm_t*)(0))->wait_q[0]);
 
-    gcs_sm_t* sm = gu_malloc(sm_size);
+    sm = gu_malloc(sm_size);
 
     if (sm) {
         sm_init_stats (&sm->stats);
@@ -67,6 +69,7 @@ gcs_sm_create (long len, long n)
 long
 gcs_sm_close (gcs_sm_t* sm)
 {
+    gu_cond_t cond;
     gu_info ("Closing send monitor...");
 
     if (gu_unlikely(gu_mutex_lock (&sm->lock))) abort();
@@ -75,7 +78,7 @@ gcs_sm_close (gcs_sm_t* sm)
 
     if (sm->pause) _gcs_sm_continue_common (sm);
 
-    gu_cond_t cond;
+    
     gu_cond_init (&cond, NULL);
 
     // in case the queue is full

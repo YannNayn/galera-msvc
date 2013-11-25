@@ -14,8 +14,10 @@
 #include "gu_lock.hpp"
 #include "gu_monitor.hpp"
 
+#ifndef _MSC_VER
 #pragma GCC diagnostic ignored "-Weffc++"
 #pragma GCC diagnostic ignored "-Wold-style-cast"
+#endif
 #include "asio.hpp"
 #include "asio/ssl.hpp"
 #include <stack>

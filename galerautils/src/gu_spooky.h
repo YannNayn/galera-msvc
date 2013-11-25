@@ -181,6 +181,16 @@ static GU_INLINE void gu_spooky_short_host(
     size_t      const length,
     uint64_t*   const hash)
 {
+    size_t   remainder; /* length%32 */
+
+    /* author version : */
+    // uint64_t a = gu_le64(*hash[0]);
+    // uint64_t b = gu_le64(*hash[1]);
+    /* consistent seed version: */
+    uint64_t a;
+    uint64_t b;
+    uint64_t c;
+    uint64_t d;
     union
     {
         const uint8_t* p8;
@@ -202,16 +212,16 @@ static GU_INLINE void gu_spooky_short_host(
     }
 #endif /* !GU_ALLOW_UNALIGNED_READS */
 
-    size_t   remainder = length & 0x1F; /* length%32 */
+    remainder = length & 0x1F; /* length%32 */
 
     /* author version : */
     // uint64_t a = gu_le64(*hash[0]);
     // uint64_t b = gu_le64(*hash[1]);
     /* consistent seed version: */
-    uint64_t a = 0;
-    uint64_t b = 0;
-    uint64_t c = _spooky_const;
-    uint64_t d = _spooky_const;
+    a = 0;
+    b = 0;
+    c = _spooky_const;
+    d = _spooky_const;
 
     if (length > 15)
     {
@@ -306,18 +316,9 @@ static GU_INLINE void gu_spooky_inline (
     size_t      const length,
     uint64_t*   const hash)
 {
-#ifdef GU_USE_SPOOKY_SHORT
-    if (length < _spooky_bufSize)
-    {
-        gu_spooky_short_base (message, length, hash);
-        return;
-    }
-#endif /* GU_USE_SPOOKY_SHORT */
-
     uint64_t  h0,h1,h2,h3,h4,h5,h6,h7,h8,h9,h10,h11;
-    uint64_t  buf[_spooky_numVars];
+    uint64_t  *buf;
     uint64_t* end;
-
     union
     {
         const uint8_t* p8;
@@ -328,7 +329,18 @@ static GU_INLINE void gu_spooky_inline (
     } u;
 
     size_t remainder;
+#ifdef GU_USE_SPOOKY_SHORT
+    if (length < _spooky_bufSize)
+    {
+        gu_spooky_short_base (message, length, hash);
+        return;
+    }
+#endif /* GU_USE_SPOOKY_SHORT */
+    
+    
 
+    
+    buf = (uint64_t*)alloca(sizeof(uint64_t)  *_spooky_numVars);
     /* this is how the author wants it: a possibility for different seeds
      h0=h3=h6=h9  = gu_le64(hash[0]);
      h1=h4=h7=h10 = gu_le64(hash[1]);

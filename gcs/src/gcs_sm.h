@@ -154,14 +154,14 @@ static inline bool
 _gcs_sm_enqueue_common (gcs_sm_t* sm, gu_cond_t* cond)
 {
     unsigned long tail = sm->wait_q_tail;
-
+    register bool ret;
     sm->wait_q[tail].cond = cond;
     sm->wait_q[tail].wait = true;
     gu_cond_wait (cond, &sm->lock);
     assert(tail == sm->wait_q_head || false == sm->wait_q[tail].wait);
     assert(sm->wait_q[tail].cond == cond || false == sm->wait_q[tail].wait);
     sm->wait_q[tail].cond = NULL;
-    register bool ret = sm->wait_q[tail].wait;
+    ret = sm->wait_q[tail].wait;
     sm->wait_q[tail].wait = false;
     return ret;
 }
@@ -184,9 +184,10 @@ _gcs_sm_enqueue_common (gcs_sm_t* sm, gu_cond_t* cond)
 static inline long
 gcs_sm_schedule (gcs_sm_t* sm)
 {
+    long ret;
     if (gu_unlikely(gu_mutex_lock (&sm->lock))) abort();
 
-    long ret = sm->ret;
+    ret = sm->ret;
 
     if (gu_likely((sm->users < (long)sm->wait_q_len) && (0 == ret))) {
 
@@ -330,8 +331,9 @@ gcs_sm_continue (gcs_sm_t* sm)
 static inline long
 gcs_sm_interrupt (gcs_sm_t* sm, long handle)
 {
-    assert (handle > 0);
     long ret;
+    assert (handle > 0);
+    
 
     if (gu_unlikely(gu_mutex_lock (&sm->lock))) abort();
 

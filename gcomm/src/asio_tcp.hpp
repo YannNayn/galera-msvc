@@ -98,6 +98,9 @@ public:
     State state() const
     {
         gu_throw_fatal << "TODO:";
+#ifdef _MSC_VER        
+        return State();
+#endif        
     }
 
     SocketId id() const { return &acceptor_; }

@@ -82,6 +82,8 @@ void* gu_realloc_dbg (void* ptr, size_t size,
 {
     if (ptr) {
         if (size > 0) {
+            size_t total_size;
+            mem_head_t* ret;
             mem_head_t* const old = HEAD(ptr);
 
             if (MEM_SIGNATURE != old->signature) {
@@ -90,8 +92,8 @@ void* gu_realloc_dbg (void* ptr, size_t size,
                 assert (0);
             }
 
-            size_t const total_size = size + sizeof(mem_head_t);
-            mem_head_t* const ret = (mem_head_t*) realloc (old, total_size);
+            total_size = size + sizeof(mem_head_t);
+            ret = (mem_head_t*) realloc (old, total_size);
             if (ret) {
 		gu_mem_reallocs++;
 		gu_mem_total  -= ret->allocated; // old size

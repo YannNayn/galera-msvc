@@ -54,11 +54,13 @@ namespace gcomm
 template <class S>
 void set_fd_options(S& socket)
 {
+#ifndef _MSC_VER    
     long flags(FD_CLOEXEC);
     if (fcntl(socket.native(), F_SETFD, flags) == -1)
     {
         gu_throw_error(errno) << "failed to set FD_CLOEXEC";
     }
+#endif    
 }
 
 

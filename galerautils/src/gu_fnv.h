@@ -30,7 +30,14 @@
 #include <inttypes.h>
 #include <stdlib.h> // ssize_t
 #include <assert.h>
-
+#ifdef _MSC_VER
+#define inline __inline
+#ifdef GU_FORCE_INLINE
+#undef GU_FORCE_INLINE
+#endif
+#define GU_FORCE_INLINE __inline
+typedef unsigned int ssize_t;
+#endif
 #define GU_FNV32_PRIME 16777619UL
 #define GU_FNV32_SEED  2166136261UL
 
@@ -102,12 +109,18 @@ gu_fnv64a_internal (const void* buf, ssize_t const len, uint64_t* seed)
 
     assert(be == bp);
 }
-
+/*
 static gu_uint128_t const
 GU_SET128(GU_FNV128_PRIME, 0x0000000001000000ULL, 0x000000000000013BULL);
 
 static gu_uint128_t const
 GU_SET128(GU_FNV128_SEED,  0x6C62272E07BB0142ULL, 0x62B821756295C58DULL);
+*/
+
+const gu_uint128_t *GET_GU_FNV128_PRIME();
+const gu_uint128_t *GET_GU_FNV128_SEED();
+#define GU_FNV128_PRIME (*GET_GU_FNV128_PRIME())
+#define GU_FNV128_SEED (*GET_GU_FNV128_SEED())
 
 #if defined(__SIZEOF_INT128__)
 

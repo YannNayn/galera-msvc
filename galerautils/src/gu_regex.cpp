@@ -8,7 +8,9 @@
 
 #include "gu_utils.hpp"
 #include "gu_regex.hpp"
-
+#ifdef _MSC_VER
+#pragma comment(lib,"hsregex.lib")
+#endif
 namespace gu
 {
     using std::string;

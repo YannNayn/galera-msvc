@@ -9,6 +9,9 @@
 #include "gu_utils.hpp"
 
 #include <algorithm>
+#ifdef _MSC_VER
+#include <ctype.h>
+#endif
 
 namespace gu {
 
@@ -34,8 +37,11 @@ _to_bool (const std::string& s)
             if (tmp.length() >=2 && tmp.length() <= 3)
             {
                 std::transform (tmp.begin(), tmp.end(), tmp.begin(),
+#ifdef _MSC_VER
+                static_cast<int(*)(int)>(tolower));
+#else
                                 static_cast<int(*)(int)>(std::tolower));
-
+#endif
                 if (tmp == "yes" || tmp == "on") return true;
                 if (tmp == "off" || tmp == "no") return false;
             }

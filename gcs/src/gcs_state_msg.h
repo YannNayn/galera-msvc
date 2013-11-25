@@ -14,8 +14,11 @@
 #include "gcs.h"
 #include "gcs_seqno.h"
 #include "gcs_act_proto.h"
-
+#ifdef _MSC_VER
+#include <windows.h>
+#else
 #include <unistd.h>
+#endif
 #include <stdbool.h>
 
 /* State flags */
@@ -60,7 +63,7 @@ typedef struct gcs_state_quorum
     int         appl_proto_ver;
 }
 gcs_state_quorum_t;
-
+#ifndef _MSC_VER
 #define GCS_QUORUM_NON_PRIMARY (gcs_state_quorum_t){    \
         GU_UUID_NIL,                                    \
         GCS_SEQNO_ILL,                                  \
@@ -68,7 +71,19 @@ gcs_state_quorum_t;
         false,                                          \
         -1, -1, -1, -1                                  \
     }
-
+#else
+#define GCS_QUORUM_NON_PRIMARY(gsq)    \
+        { \
+            (gsq).group_uuid=GU_UUID_NIL;                                    \
+            (gsq).act_id=GCS_SEQNO_ILL;                                  \
+            (gsq).conf_id=GCS_SEQNO_ILL;                                  \
+            (gsq).primary=false;                                          \
+            (gsq).version=-1;                                            \
+            (gsq).gcs_proto_ver=-1;                                        \
+            (gsq).repl_proto_ver=-1;                                    \
+            (gsq).appl_proto_ver=-1;                                  \
+        }
+#endif
 extern gcs_state_msg_t*
 gcs_state_msg_create (const gu_uuid_t* state_uuid,
                       const gu_uuid_t* group_uuid,

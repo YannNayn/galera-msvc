@@ -10,7 +10,9 @@
 #include <cstdio>
 #include <cstring>
 #include <pthread.h>
-
+#if defined(_MSC_VER)
+#define __restrict__
+#endif
 static const std::string base_name ("gcache.page.");
 
 static std::string
@@ -68,6 +70,7 @@ remove_file (void* __restrict__ arg)
     }
 
     pthread_exit(NULL);
+    return NULL;
 }
 
 bool
@@ -89,15 +92,24 @@ gcache::PageStore::delete_page ()
 
 #ifdef GCACHE_DETACH_THREAD
     pthread_t delete_thr_;
+
+#else
+#if defined(_MSC_VER)    
+    if (delete_thr_.p != (void *)0) pthread_join (delete_thr_, NULL);
 #else
     if (delete_thr_ != pthread_t(-1)) pthread_join (delete_thr_, NULL);
+#endif    
 #endif /* GCACHE_DETACH_THERAD */
 
     int err = pthread_create (&delete_thr_, &delete_page_attr_, remove_file,
                               file_name);
     if (0 != err)
     {
+#if defined(_MSC_VER)    
+        delete_thr_.p = (void *)0;
+#else
         delete_thr_ = pthread_t(-1);
+#endif        
         gu_throw_error(err) << "Failed to create page file deletion thread";
     }
 
@@ -148,9 +160,14 @@ gcache::PageStore::PageStore (const std::string& dir_name,
     total_size_(0),
     delete_page_attr_()
 #ifndef GCACHE_DETACH_THREAD
+#if !defined(_MSC_VER)    
     , delete_thr_(pthread_t(-1))
+#endif
 #endif /* GCACHE_DETACH_THREAD */
 {
+#if defined(_MSC_VER)    
+    delete_thr_.p=(void *)0;
+#endif
     int err = pthread_attr_init (&delete_page_attr_);
 
     if (0 != err)
@@ -177,7 +194,11 @@ gcache::PageStore::~PageStore ()
     {
         while (pages_.size() && delete_page()) {};
 #ifndef GCACHE_DETACH_THREAD
-        if (delete_thr_ != pthread_t(-1)) pthread_join (delete_thr_, NULL);
+#if defined(_MSC_VER)    
+    if (delete_thr_.p != (void *)0) pthread_join (delete_thr_, NULL);
+#else
+    if (delete_thr_ != pthread_t(-1)) pthread_join (delete_thr_, NULL);
+#endif    
 #endif /* GCACHE_DETACH_THREAD */
     }
     catch (gu::Exception& e)

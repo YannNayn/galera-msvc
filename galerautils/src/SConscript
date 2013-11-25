@@ -1,3 +1,4 @@
+import sys
 Import('env')
 
 libgalerautils_env = env.Clone()
@@ -45,9 +46,11 @@ libgalerautilsxx_sources = [
 #                                'gu_resolver.cpp']
 
 # disable old style cast warnings
-libgalerautils_env.Append(CXXFLAGS = ' -Wno-old-style-cast')
-
-libgalerautils_env.StaticLibrary('galerautils++', libgalerautilsxx_sources)
+if sys.platform.find("win")==0:
+    libgalerautils_env.StaticLibrary('galerautils++', libgalerautilsxx_sources)
+else:
+    libgalerautils_env.Append(CXXFLAGS = ' -Wno-old-style-cast')
+    libgalerautils_env.StaticLibrary('galerautils++', libgalerautilsxx_sources)
 
 #
 env.Append(LIBGALERA_OBJS = libgalerautils_env.SharedObject(

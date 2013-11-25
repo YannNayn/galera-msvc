@@ -14,7 +14,9 @@
 #include "gcomm/util.hpp"
 
 #include "gu_datetime.hpp"
-
+#ifdef _MSC_VER
+#define sleep(x) Sleep(x*1000)
+#endif
 
 void gcomm::PC::handle_up(const void* cid, const Datagram& rb,
                    const ProtoUpMeta& um)

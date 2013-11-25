@@ -16,7 +16,12 @@
 #define _GCS_FIFO_LITE_H_
 
 #include <stdlib.h>
+#ifdef _MSC_VER
+#include <windows.h>
+#else
 #include <unistd.h>
+#endif
+
 #include <string.h>
 #include <errno.h>
 #include <stdbool.h>

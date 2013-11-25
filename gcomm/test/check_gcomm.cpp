@@ -14,8 +14,13 @@
 #include <cstdlib>
 #include <check.h>
 #include <string.h>
+#ifdef _MSC_VER
+#include <windows.h>
+#include <io.h>
+#define dup2 _dup2
+#else
 #include <unistd.h>
-
+#endif
 // <using namespace gcomm;
 
 using std::string;

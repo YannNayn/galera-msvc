@@ -8,12 +8,18 @@
 #include <errno.h>
 #include <string.h>
 #include <stdio.h>
+#ifdef _MSC_VER
+#include <windows.h>
+#else
 #include <unistd.h>
+#endif
 #include <galerautils.h>
 
 #include "../gcs_backend.h"
 #include "gcs_backend_test.h"
-
+#ifndef ESOCKTNOSUPPORT
+#   define ESOCKTNOSUPPORT 121  /* Socket type not supported */ // tclWinPort.h
+#endif
 // Fake backend definitons. Must be global for gcs_backend.c to see
 
 GCS_BACKEND_NAME_FN(gcs_test_name)

@@ -11,6 +11,9 @@
 #include "gcs_priv.h"
 
 #include <errno.h>
+#ifndef EHOSTDOWN
+#define EHOSTDOWN WSAEHOSTDOWN 
+#endif
 
 const char* gcs_group_state_str[GCS_GROUP_STATE_MAX] =
 {
@@ -57,9 +60,11 @@ gcs_group_init (gcs_group_t* group, gcache_t* const cache,
     *(gcs_proto_t*)&group->gcs_proto_ver = gcs_proto_ver;
     *(int*)&group->repl_proto_ver = repl_proto_ver;
     *(int*)&group->appl_proto_ver = appl_proto_ver;
-
+#ifndef _MSC_VER
     group->quorum = GCS_QUORUM_NON_PRIMARY;
-
+#else
+    GCS_QUORUM_NON_PRIMARY(group->quorum)
+#endif
     group->last_applied_proto_ver = -1;
 
     return 0;
@@ -263,7 +268,7 @@ group_check_donor (gcs_group_t* group)
 static void
 group_post_state_exchange (gcs_group_t* group)
 {
-    const gcs_state_msg_t* states[group->num];
+    const gcs_state_msg_t** states = alloca(sizeof(const gcs_state_msg_t*)*group->num);
     gcs_state_quorum_t* quorum = &group->quorum;
     bool new_exchange = gu_uuid_compare (&group->state_uuid, &GU_UUID_NIL);
     long i;
@@ -546,7 +551,7 @@ gcs_group_handle_uuid_msg  (gcs_group_t* group, const gcs_recv_msg_t* msg)
 static void group_print_state_debug(gcs_state_msg_t* state)
 {
     size_t str_len = 1024;
-    char state_str[str_len];
+    char *state_str =alloca(sizeof(char)*str_len);
     gcs_state_msg_snprintf (state_str, str_len, state);
     gu_info ("%s", state_str);
 }
@@ -846,16 +851,18 @@ group_for_each_donor_in_string (gcs_group_t* const group, int const joiner_idx,
                                 const char* const str, int const str_len,
                                 gcs_node_state_t const status)
 {
-    assert (str != NULL);
 
     const char* begin = str;
     const char* end;
     int err = -EHOSTDOWN; /* worst error */
+    int idx;
+    assert (str != NULL);
 
     do {
+        int len;
         end = strchr(begin, ',');
 
-        int len;
+        
 
         if (NULL == end) {
             len = str_len - (begin - str);
@@ -866,7 +873,7 @@ group_for_each_donor_in_string (gcs_group_t* const group, int const joiner_idx,
 
         assert (len >= 0);
 
-        int const idx = len > 0 ? /* consider empty name as "any" */
+        idx = len > 0 ? /* consider empty name as "any" */
             group_find_node_by_name (group, joiner_idx, begin, len, status) :
             /* err == -EAGAIN here means that at least one of the nodes in the
              * list will be available later, so don't try others. */
@@ -906,8 +913,9 @@ group_select_donor (gcs_group_t* group, long const joiner_idx,
     bool const required_donor = (donor_len > 0);
 
     if (desync) { /* sender wants to become "donor" itself */
+        gcs_node_state_t st;
         assert(donor_len > 0);
-        gcs_node_state_t const st = group->nodes[joiner_idx].status;
+        st = group->nodes[joiner_idx].status;
         if (st >= min_donor_state)
             donor_idx = joiner_idx;
         else
@@ -1062,6 +1070,8 @@ gcs_group_act_conf (gcs_group_t*    group,
                     struct gcs_act* act,
                     int*            gcs_proto_ver)
 {
+    ssize_t conf_size;
+    gcs_act_conf_t* conf;
     if (*gcs_proto_ver < group->quorum.gcs_proto_ver)
         *gcs_proto_ver = group->quorum.gcs_proto_ver; // only go up, see #482
     else if (group->quorum.gcs_proto_ver >= 0 &&
@@ -1070,8 +1080,8 @@ gcs_group_act_conf (gcs_group_t*    group,
                  *gcs_proto_ver, group->quorum.gcs_proto_ver);
     }
 
-    ssize_t conf_size = sizeof(gcs_act_conf_t) + group_memb_record_size(group);
-    gcs_act_conf_t* conf = malloc (conf_size);
+    conf_size = sizeof(gcs_act_conf_t) + group_memb_record_size(group);
+    conf = malloc (conf_size);
 
     if (conf) {
         long idx;
@@ -1086,11 +1096,12 @@ gcs_group_act_conf (gcs_group_t*    group,
         memcpy (conf->uuid, &group->group_uuid, sizeof (gu_uuid_t));
 
         if (group->num) {
+            char* ptr;
             assert (conf->my_idx >= 0);
 
             conf->my_state = group->nodes[group->my_idx].status;
 
-            char* ptr = &conf->data[0];
+            ptr = &conf->data[0];
             for (idx = 0; idx < group->num; idx++)
             {
                 strcpy (ptr, group->nodes[idx].id);

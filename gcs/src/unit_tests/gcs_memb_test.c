@@ -39,7 +39,7 @@ deliver_component_msg (struct group* group, bool prim)
 
         if (msg) {
             int j;
-
+            gcs_group_state_t ret;
             for (j = 0; j < group->nodes_num; j++) {
                 const struct node* const node = group->nodes[j];
                 long ret = gcs_comp_msg_add (msg, node->id);
@@ -58,7 +58,7 @@ deliver_component_msg (struct group* group, bool prim)
                          j, src_id, dst_id);
             }
 
-            gcs_group_state_t ret =
+            ret =
                 gcs_group_handle_comp_msg (&(group->nodes[i]->group), msg);
 
             fail_if (ret != GCS_GROUP_WAIT_STATE_UUID);
@@ -96,8 +96,9 @@ perform_state_exchange (struct group* group)
 {
     /* first deliver state uuid message */
     gu_uuid_t state_uuid;
-    gu_uuid_generate (&state_uuid, NULL, 0);
-
+    gcs_group_state_t state;
+    int i;
+#ifndef _MSC_VER
     gcs_recv_msg_t uuid_msg =
     {
         .buf        = &state_uuid,
@@ -106,9 +107,18 @@ perform_state_exchange (struct group* group)
         .sender_idx = 0,
         .type       = GCS_MSG_STATE_UUID
     };
+#else
+    gcs_recv_msg_t uuid_msg={0};
+    uuid_msg.buf        = &state_uuid;
+    uuid_msg.buf_len    = sizeof (state_uuid);
+    uuid_msg.size       = sizeof (state_uuid);
+    uuid_msg.sender_idx = 0;
+    uuid_msg.type       = GCS_MSG_STATE_UUID;
+#endif    
+    
+    gu_uuid_generate (&state_uuid, NULL, 0);
 
-    gcs_group_state_t state;
-    int i;
+    
     for (i = 0; i < group->nodes_num; i++) {
         state = gcs_group_handle_uuid_msg (&(group->nodes[i]->group),&uuid_msg);
         fail_if (state != GCS_GROUP_WAIT_STATE_MSG,
@@ -119,26 +129,29 @@ perform_state_exchange (struct group* group)
     /* complete state message exchange */
     for (i = 0; i < group->nodes_num; i++)
     {
+        ssize_t state_len;
+        uint8_t *state_buf;
+        int j;
+        gcs_recv_msg_t state_msg;
         /* create state message from node i */
+        
         gcs_state_msg_t* state =
             gcs_group_get_state (&(group->nodes[i]->group));
         fail_if (NULL == state);
 
-        ssize_t state_len = gcs_state_msg_len (state);
-        uint8_t state_buf[state_len];
+        state_len = gcs_state_msg_len (state);
+        state_buf = alloca(sizeof(uint8_t)*state_len);
+        
+        
         gcs_state_msg_write (state_buf, state);
-
-        gcs_recv_msg_t state_msg =
-        {
-            .buf        = state_buf,
-            .buf_len    = sizeof (state_buf),
-            .size       = sizeof (state_buf),
-            .sender_idx = i,
-            .type       = GCS_MSG_STATE_MSG
-        };
-
+        
+        state_msg.buf        = state_buf;
+        state_msg.buf_len    = sizeof (state_buf);
+        state_msg.size       = sizeof (state_buf);
+        state_msg.sender_idx = i;
+        state_msg.type       = GCS_MSG_STATE_MSG;
         /* deliver to each of the nodes */
-        int j;
+        
         for (j = 0; j < group->nodes_num; j++) {
             gcs_group_state_t ret =
                 gcs_group_handle_state_msg (&(group->nodes[j]->group),
@@ -165,6 +178,8 @@ perform_state_exchange (struct group* group)
 static long
 group_add_node (struct group* group, struct node* node, bool new_id)
 {
+    int i;
+    long ret;
     if (new_id) {
         gu_uuid_t node_uuid;
         gu_uuid_generate (&node_uuid, NULL, 0);
@@ -176,7 +191,7 @@ group_add_node (struct group* group, struct node* node, bool new_id)
     group->nodes_num++;
 
     /* check that all node ids are different */
-    int i;
+    
     for (i = 0; i < group->nodes_num; i++) {
         int j;
         for (j = i+1; j < group->nodes_num; j++) {
@@ -188,7 +203,7 @@ group_add_node (struct group* group, struct node* node, bool new_id)
     }
 
     /* deliver new component message to all nodes */
-    long ret = deliver_component_msg (group, true);
+    ret = deliver_component_msg (group, true);
     fail_if (ret != 0, "Component message delivery failed: %d (%s)",
              ret, strerror(-ret));
 
@@ -232,17 +247,16 @@ deliver_join_sync_msg (struct group* const group, int const src,
                        gcs_msg_type_t type)
 {
     gcs_seqno_t    seqno = group->nodes[src]->group.act_id;
-    gcs_recv_msg_t msg =
-    {
-        .buf        = &seqno,
-        .buf_len    = sizeof (seqno),
-        .size       = sizeof (seqno),
-        .sender_idx = src,
-        .type       = type
-    };
-
     long ret = -1;
     int i;
+    gcs_recv_msg_t msg;
+    msg.buf        = &seqno;
+    msg.buf_len    = sizeof (seqno);
+    msg.size       = sizeof (seqno);
+    msg.sender_idx = src;
+    msg.type       = type;
+
+    
     for (i = 0; i < group->nodes_num; i++) {
         gcs_group_t* const gr = &group->nodes[i]->group;
         switch (type) {
@@ -313,17 +327,17 @@ group_sst_start (struct group* group, int const src_idx, const char* donor)
     {
         // sst request is expected to be dynamically allocated
         char* req_buf = malloc (req_len);
+        struct gcs_act_rcvd req={0};
+        long ret;
         fail_if (NULL == req_buf);
         sprintf (req_buf, "%s", donor);
 
-        struct gcs_act_rcvd req = {
-            .act = {.buf = req_buf, .buf_len = req_len,
-                    .type = GCS_ACT_STATE_REQ },
-            .sender_idx = src_idx,
-            .id = GCS_SEQNO_ILL
-        };
-
-        long ret;
+        
+        req.act.buf = req_buf;
+        req.act.buf_len = req_len;
+        req.act.type = GCS_ACT_STATE_REQ;
+        req.sender_idx = src_idx;
+        req.id = GCS_SEQNO_ILL;
 
         ret = gcs_group_handle_state_request (&group->nodes[i]->group, &req);
 
@@ -383,24 +397,29 @@ group_sst_start (struct group* group, int const src_idx, const char* donor)
 START_TEST(gcs_memb_test_465)
 {
     struct group group;
-    group.nodes_num = 0;
 
     struct node nodes[MAX_NODES];
     int i;
     ssize_t ret = 0;
-
+    struct node* dropped;
+    struct gcs_act act;
+    int            proto_ver = -1;
+    const gcs_act_conf_t* conf;
+    gcs_node_state_t node_state;
+    group.nodes_num = 0;
+    
     // initialize individual node structures
     for (i = 0; i < MAX_NODES; i++) {
         int const str_len = 32;
-        char name_str[str_len];
-        char addr_str[str_len];
+        char *name_str=alloca(sizeof(char)*str_len);
+        char *addr_str=alloca(sizeof(char)*str_len);
 
         sprintf(name_str, "node%d", i);
         sprintf(addr_str, "addr%d", i);
         gcs_group_init (&nodes[i].group, NULL, name_str, addr_str, 0, 0, 0);
     }
 
-    gcs_node_state_t node_state;
+    
 
     // bootstrap the cluster
     group_add_node (&group, &nodes[0], true);
@@ -440,20 +459,19 @@ START_TEST(gcs_memb_test_465)
     deliver_join_sync_msg (&group, 0, GCS_MSG_JOIN); // end of donor SST
     deliver_join_sync_msg (&group, 1, GCS_MSG_JOIN); // end of joiner SST
 
-    struct node* dropped = group_drop_node (&group, 1);
+    dropped = group_drop_node (&group, 1);
     fail_if (NULL == dropped);
 
     /* After that, according to #465, node 1 shifted from SYNCED to PRIMARY */
 
     fail_if (verify_node_state_across_group (&group, 1, GCS_NODE_STATE_SYNCED));
-    struct gcs_act act;
-    int            proto_ver = -1;
+    
     ret = gcs_group_act_conf (&group.nodes[1]->group, &act, &proto_ver);
     fail_if (ret <= 0, "gcs_group_act_cnf() retruned %zd (%s)",
              ret, strerror (-ret));
     fail_if (ret != act.buf_len);
     fail_if (proto_ver != 0 /* current version */, "proto_ver = %d", proto_ver);
-    const gcs_act_conf_t* conf = act.buf;
+    conf = act.buf;
     fail_if (NULL == conf);
     fail_if (conf->my_idx != 1);
     /* according to #465 this was GCS_NODE_STATE_PRIM */

@@ -158,7 +158,7 @@ namespace galera
             timestamp_         (gu_time_calendar()),
             mac_               (),
             annotation_        (),
-            write_set_buffer_  (0, 0),
+            write_set_buffer_  ((const gu::byte_t *)0, 0),
             cert_keys_         ()
         { }
 

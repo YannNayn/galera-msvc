@@ -9,12 +9,33 @@
 
 #include <cerrno>
 #include <cstdlib>
+#ifdef _MSC_VER
+#include <windows.h>
+#include "msvc_sup.h"
+#include <ws2ipdef.h>
+#include <ws2tcpip.h>
+#include <io.h>
+ #define close _close
+ #if _WIN32_WINNT < 0x0600
+ #include <boost/asio/detail/socket_ops.hpp>
+ __inline const char *inet_ntop (int  Family,void * pAddr,char *pStringBuf,size_t StringBufSize)
+ {
+    boost::system::error_code ec;
+    unsigned long scope_id = 0;
+    const char *ret=boost::asio::detail::socket_ops::inet_ntop(Family,pAddr,pStringBuf,StringBufSize,scope_id,ec);
+    return ret;
+}
+#define if_nametoindex pgm_if_nametoindex
+ #endif
+#else
 #include <unistd.h> // for close()
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <net/if.h>
 #define BSD_COMP /* For SIOCGIFCONF et al on Solaris */
 #include <sys/ioctl.h>
+#endif
+
 #include <map>
 #include <stdexcept>
 
@@ -197,7 +218,33 @@ static unsigned int get_ifindex_by_addr(const gu::net::Sockaddr& addr)
 
     unsigned int idx(-1);
     int err(0);
-#if defined(__APPLE__) || defined(__FreeBSD__)
+#if defined(WIN32)
+    struct pgm_ifaddrs_t *if_addrs = NULL;
+    struct pgm_ifaddrs_t *if_addr = NULL;
+
+    if (getifaddrs (&if_addrs) != 0)
+    {
+        err = errno;
+        goto out;
+    }
+    for (if_addr = if_addrs; if_addr != NULL; if_addr = if_addr->ifa_next)
+    {
+        try
+        {
+            gu::net::Sockaddr sa (if_addr->ifa_addr, sizeof (struct sockaddr));
+            if (sa.get_family () == addr.get_family () &&
+                memcmp (sa.get_addr (), addr.get_addr (), addr.get_addr_len ()) == 0)
+            {
+                idx = if_nametoindex (if_addr->ifa_name);
+                goto out;
+            }
+        }
+        catch (gu::Exception& e)
+        {
+        }
+    }
+out:
+#elif defined(__APPLE__) || defined(__FreeBSD__)
     struct ifaddrs *if_addrs = NULL;
     struct ifaddrs *if_addr = NULL;
 
@@ -331,9 +378,16 @@ gu::net::MReq::MReq(const Sockaddr& mcast_addr, const Sockaddr& if_addr)
     case AF_INET:
     {
         struct ip_mreq* mr(reinterpret_cast<struct ip_mreq*>(mreq_));
+#ifndef WIN32        
         mr->imr_multiaddr.s_addr = *reinterpret_cast<const in_addr_t*>(mcast_addr.get_addr());
         
         mr->imr_interface.s_addr = *reinterpret_cast<const in_addr_t*>(if_addr.get_addr());
+#else 
+        mr->imr_multiaddr.s_addr = *(unsigned long *)mcast_addr.get_addr();
+        
+        mr->imr_interface.s_addr = *(unsigned long *)if_addr.get_addr();
+        
+#endif        
         ipproto_             = IPPROTO_IP;
         add_membership_opt_  = IP_ADD_MEMBERSHIP;
         drop_membership_opt_ = IP_DROP_MEMBERSHIP;
@@ -452,7 +506,7 @@ std::string gu::net::Addrinfo::to_string() const
 
     char dst[INET6_ADDRSTRLEN + 1];
 
-    if (inet_ntop(get_family(), addr.get_addr(), dst, sizeof(dst)) == 0)
+    if (inet_ntop(get_family(), (void *)addr.get_addr(), dst, sizeof(dst)) == 0)
     {
         gu_throw_error(errno) << "inet ntop failed";
     }

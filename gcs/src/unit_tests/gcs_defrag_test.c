@@ -5,7 +5,11 @@
  */
 
 #include <check.h>
+#ifdef _MSC_VER
+#include <windows.h>
+#else
 #include <unistd.h>
+#endif
 #include <string.h>
 #include <errno.h>
 

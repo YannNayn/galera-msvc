@@ -1,4 +1,4 @@
-
+import sys
 Import('env')
 
 gcache_env = env.Clone()
@@ -20,9 +20,15 @@ gcache_env.StaticLibrary('gcache', gcache_sources)
 
 test_env = gcache_env.Clone()
 
-test_env.Prepend(LIBS=File('#/galerautils/src/libgalerautils.a'))
-test_env.Prepend(LIBS=File('#/galerautils/src/libgalerautils++.a'))
-test_env.Prepend(LIBS=File('libgcache.a'))
+
+if sys.platform.find("win")==0:
+    test_env.Prepend(LIBS=File('#/galerautils/src/galerautils.lib'))
+    test_env.Prepend(LIBS=File('#/galerautils/src/galerautils++.lib'))
+    test_env.Prepend(LIBS=File('gcache.lib'))
+else:
+    test_env.Prepend(LIBS=File('#/galerautils/src/libgalerautils.a'))
+    test_env.Prepend(LIBS=File('#/galerautils/src/libgalerautils++.a'))
+    test_env.Prepend(LIBS=File('libgcache.a'))
 
 test_env.Program(source='test.cpp')
 

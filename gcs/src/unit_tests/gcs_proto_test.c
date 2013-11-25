@@ -4,7 +4,11 @@
  * $Id: gcs_proto_test.c 2025 2011-01-28 00:48:01Z alex $
  */
 
+#ifdef _MSC_VER
+#include <windows.h>
+#else
 #include <unistd.h>
+#endif
 #include <string.h>
 #include <check.h>
 
@@ -33,7 +37,7 @@ START_TEST (gcs_proto_test)
     char         act_recv[]   = "owoeijrvfokpvfcsdnfvkmk;l";
     char*        act_recv_ptr = act_recv;
     const size_t buf_len      = 32;
-    char         buf[buf_len];
+    char         *buf=alloca(sizeof(char)*buf_len);
     gcs_act_frag_t frg_send, frg_recv;
     long         ret;
 

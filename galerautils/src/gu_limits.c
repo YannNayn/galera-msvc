@@ -7,11 +7,17 @@
  */
 
 #include <stdio.h>
+#ifndef _MSC_VER
 #include <unistd.h>
-#include <sys/types.h>
 #include <sys/sysctl.h>
+#else
+#include <windows.h>
+#endif
+#include <sys/types.h>
+
 #include "gu_limits.h"
 #include "gu_log.h"
+#include "gu_fnv.h"
 
 #if defined(__APPLE__)
 
@@ -78,3 +84,42 @@ long gu_freebsd_avphys_pages (void)
 }
 
 #endif /* __FreeBSD__ */
+
+static gu_uint128_t _GU_FNV128_PRIME;
+//GU_SET128(GU_FNV128_PRIME, 0x0000000001000000ULL, 0x000000000000013BULL);
+
+static gu_uint128_t _GU_FNV128_SEED;
+//GU_SET128(GU_FNV128_SEED,  0x6C62272E07BB0142ULL, 0x62B821756295C58DULL);
+
+const gu_uint128_t *GET_GU_FNV128_PRIME()
+{
+        static init_done=0;
+        if(!init_done)
+        {
+#if defined(GU_LITTLE_ENDIAN)
+            _GU_FNV128_PRIME.u64[0]=0x0000000001000000ULL;
+            _GU_FNV128_PRIME.u64[1]=0x000000000000013BULL;
+#else
+            _GU_FNV128_PRIME.u64[1]=0x0000000001000000ULL;
+            _GU_FNV128_PRIME.u64[0]=0x000000000000013BULL;
+#endif            
+            init_done=1;
+        }
+        return &_GU_FNV128_PRIME;
+}
+const gu_uint128_t *GET_GU_FNV128_SEED()
+{
+    static init_done=0;
+        if(!init_done)
+        {
+#if defined(GU_LITTLE_ENDIAN)
+            _GU_FNV128_SEED.u64[0]=0x6C62272E07BB0142ULL;
+            _GU_FNV128_SEED.u64[1]=0x62B821756295C58DULL;
+#else
+            _GU_FNV128_SEED.u64[1]=0x6C62272E07BB0142ULL;
+            _GU_FNV128_SEED.u64[0]=0x62B821756295C58DULL;
+#endif            
+            init_done=1;
+        }
+        return &_GU_FNV128_SEED;
+}

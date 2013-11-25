@@ -10,7 +10,9 @@
 #include <ctime>
 #include <sys/time.h>
 #include "Logger.hpp"
-
+#ifdef _MSC_VER
+#include "msvc_sup.h"
+#endif
 namespace gcache
 {
     void

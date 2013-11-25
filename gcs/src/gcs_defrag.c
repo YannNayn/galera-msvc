@@ -5,7 +5,11 @@
  */
 
 #include <errno.h>
+#ifdef _MSC_VER
+#include <windows.h>
+#else
 #include <unistd.h>
+#endif
 #include <string.h>
 
 #include "gcs_act_proto.h"

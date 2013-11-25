@@ -19,7 +19,9 @@
 #include "gu_logger.hpp"
 
 #include "gu_macros.h"
-
+#ifdef _MSC_VER
+typedef unsigned int ssize_t;
+#endif
 #define GU_VLQ_CHECKS
 //#define GU_VLQ_ALEX
 

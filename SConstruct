@@ -17,9 +17,18 @@
 import os
 import platform
 import string
-
-sysname = os.uname()[0].lower()
-machine = platform.machine()
+import sys
+if sys.platform.find("win") == 0:
+    sysname="windows"
+    machine = "X86"
+    os.putenv('CC', 'cl')
+    os.putenv('CXX', 'cl')
+    pthreadLib='pthreadVC2.lib'
+    os.putenv('LIBPATH',os.environ['LIB'])
+else:
+    sysname = os.uname()[0].lower()
+    machine = platform.machine()
+    pthreadLib='pthread'
 print 'Host: ' + sysname + ' ' + machine
 
 #
@@ -121,9 +130,11 @@ LIBBOOST_SYSTEM_A = string.replace(LIBBOOST_PROGRAM_OPTIONS_A, 'boost_program_op
 #
 # Set up and export default build environment
 #
-
-env = Environment(ENV = {'PATH' : os.environ['PATH'], 'HOME' : os.environ['HOME']})
-
+if sysname != 'windows':
+    env = Environment(ENV = {'PATH' : os.environ['PATH'], 'HOME' : os.environ['HOME']})
+else:
+    env = Environment(ENV = {'PATH' : os.environ['PATH'], 'HOME' : os.environ['HOMEPATH']})
+env['ENV']['MSVC_USE_SCRIPT']="False"
 # Set up environment for ccache and distcc
 # env['ENV']['HOME']          = os.environ['HOME']
 #env['ENV']['DISTCC_HOSTS']  = os.environ['DISTCC_HOSTS']
@@ -141,6 +152,7 @@ cxx = os.getenv('CXX', 'default')
 if cxx != 'default':
     env.Replace(CXX = cxx)
 link = os.getenv('LINK', 'default')
+print(link)
 if link != 'default':
     env.Replace(LINK = link)
 
@@ -150,7 +162,8 @@ env.Replace(LIBPATH = [os.getenv('LIBPATH', '')])
 
 # Set -pthread flag explicitly to make sure that pthreads are
 # enabled on all platforms.
-env.Append(CPPFLAGS = ' -pthread')
+if not "PBA" in os.environ:
+    env.Append(CPPFLAGS = ' -pthread')
 
 # Freebsd ports are installed under /usr/local
 if sysname == 'freebsd' or sysname == 'sunos':
@@ -169,7 +182,14 @@ if sysname == 'darwin' and extra_sysroot == '':
         extra_sysroot = '/usr/local'
     elif os.system('which -s fink') == 0 and os.path.isfile('/sw/bin/fink'):
         extra_sysroot = '/sw'
-if extra_sysroot != '':
+if "PBA" in os.environ and extra_sysroot=='':
+    extra_sysroot=os.path.join(os.environ["PBA"],"SE","Win32")
+    env.Append(LIBPATH = [extra_sysroot + '/libs'])
+    env.Append(CPPFLAGS = ' -I' + extra_sysroot + '/include' + ' -I' + extra_sysroot + '/include/boost-1_55'+ ' -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501')
+    env['ENV']['LIB'] = os.environ['LIB']
+    env['ENV']['INCLUDE'] = os.environ['INCLUDE']
+    env['ENV']['TMP'] = os.environ['TMP'] 
+elif extra_sysroot != '':
     env.Append(LIBPATH = [extra_sysroot + '/lib'])
     env.Append(CPPFLAGS = ' -I' + extra_sysroot + '/include')
 
@@ -199,7 +219,7 @@ env.Append(CPPPATH = Split('''#/common
 #                           '''))
 
 # Preprocessor flags
-if sysname != 'sunos' and sysname != 'darwin' and sysname != 'freebsd':
+if sysname != 'sunos' and sysname != 'darwin' and sysname != 'freebsd' and sysname != 'windows':
     env.Append(CPPFLAGS = ' -D_XOPEN_SOURCE=600')
 if sysname == 'sunos':
     env.Append(CPPFLAGS = ' -D__EXTENSIONS__')
@@ -207,24 +227,26 @@ env.Append(CPPFLAGS = ' -DHAVE_COMMON_H')
 
 # Common C/CXX flags
 # These should be kept minimal as they are appended after C/CXX specific flags
-env.Replace(CCFLAGS = opt_flags + compile_arch +
+if sysname != 'windows':
+    env.Replace(CCFLAGS = opt_flags + compile_arch +
                       ' -Wall -Wextra -Wno-unused-parameter')
 
 # C-specific flags
-env.Replace(CFLAGS = ' -std=c99 -fno-strict-aliasing -pipe')
+    env.Replace(CFLAGS = ' -std=c99 -fno-strict-aliasing -pipe')
 
 # CXX-specific flags
 # Note: not all 3rd-party libs like '-Wold-style-cast -Weffc++'
 #       adding those after checks
-env.Replace(CXXFLAGS = ' -Wno-long-long -Wno-deprecated -ansi')
-if sysname != 'sunos':
-    env.Append(CXXFLAGS = ' -pipe')
+    env.Replace(CXXFLAGS = ' -Wno-long-long -Wno-deprecated -ansi')
+    if sysname != 'sunos':
+        env.Append(CXXFLAGS = ' -pipe')
 
 
 # Linker flags
 # TODO: enable '-Wl,--warn-common -Wl,--fatal-warnings' after warnings from
 # static linking have beed addressed
 #
+print("link_arch",link_arch)
 env.Append(LINKFLAGS = link_arch)
 
 #
@@ -235,11 +257,11 @@ conf = Configure(env)
 
 # System headers and libraries
 
-if not conf.CheckLib('pthread'):
+if not conf.CheckLib(pthreadLib):
     print 'Error: pthread library not found'
-    Exit(1)
+    #Exit(1)
 
-if sysname != 'darwin':
+if sysname != 'darwin' and sysname != 'windows':
     if not conf.CheckLib('rt'):
         print 'Error: rt library not found'
         Exit(1)
@@ -272,6 +294,8 @@ elif conf.CheckHeader('sys/endian.h'):
     conf.env.Append(CPPFLAGS = ' -DHAVE_SYS_ENDIAN_H')
 elif conf.CheckHeader('sys/byteorder.h'):
     conf.env.Append(CPPFLAGS = ' -DHAVE_SYS_BYTEORDER_H')
+elif sysname == 'windows':
+    pass
 elif sysname != 'darwin':
     print 'can\'t find byte order information'
     Exit(1)
@@ -299,24 +323,37 @@ if boost == 1:
     # Default suffix for boost multi-threaded libraries
     if sysname == 'darwin':
         boost_library_suffix = '-mt'
+    elif sysname == 'windows':
+        boost_library_suffix = '-vc100-mt-1_55'
     else:
         boost_library_suffix = ''
     if sysname == 'darwin' and extra_sysroot != '':
         boost_library_path = extra_sysroot + '/lib'
+    elif sysname == 'windows' and extra_sysroot != '':
+        boost_library_path = extra_sysroot + '/libs'
     else:
         boost_library_path = ''
     # Use nanosecond time precision
     conf.env.Append(CPPFLAGS = ' -DBOOST_DATE_TIME_POSIX_TIME_STD_CONFIG=1')
     # Common procedure to find boost static library
-    boost_libpaths = [ boost_library_path, '/usr/local/lib', '/usr/local/lib64', '/usr/lib', '/usr/lib64' ]
+    if sysname == 'windows':
+        boost_libpaths = [ boost_library_path ]
+    else:
+        boost_libpaths = [ boost_library_path, '/usr/local/lib', '/usr/local/lib64', '/usr/lib', '/usr/lib64' ]
     def check_boost_library(libBaseName, header, configuredLibPath, autoadd = 1):
         libName = libBaseName + boost_library_suffix
+        print(libName)
+        print(configuredLibPath)
         if configuredLibPath != '' and not os.path.isfile(configuredLibPath):
             print "Error: file '%s' does not exist" % configuredLibPath
             Exit(1)
         if configuredLibPath == '':
            for libpath in boost_libpaths:
-               libname = libpath + '/lib%s.a' % libName
+               if sysname == 'windows':
+                   libname = libpath + '/%s.lib' % libName
+               else:
+                   libname = libpath + '/lib%s.a' % libName
+               print(libname)
                if os.path.isfile(libname):
                    configuredLibPath = libname
                    break
@@ -347,6 +384,7 @@ if boost == 1:
             if sysname == 'darwin':
                 if conf.CheckLib('boost_system' + boost_library_suffix):
                     conf.env.Append(LIBS=['boost_system' + boost_library_suffix])
+            
             check_boost_library('boost_system',
                                 'boost/system/error_code.hpp',
                                 LIBBOOST_SYSTEM_A)
@@ -368,6 +406,13 @@ else:
     print 'asio headers not found or not usable'
     Exit(1)
 
+if sysname == 'windows':
+    if not conf.CheckHeader('msvc_sup.h'):
+        print 'Error: msvc_sup header file not found or not usable'
+        Exit(1)
+    if not conf.CheckLib('msvc_sup.lib'):
+        print 'Error: msvc_sup.lib file not found or not usable'
+        Exit(1)
 # asio/ssl
 if ssl == 1:
     if conf.CheckCXXHeader('asio/ssl.hpp'):
@@ -376,7 +421,14 @@ if ssl == 1:
         print 'ssl support required but asio/ssl.hpp not found or not usable'
         print 'compile with ssl=0 or check that openssl devel headers are usable'
         Exit(1)
-    if conf.CheckLib('ssl'):
+    if sysname == 'windows':
+        if conf.CheckLib('ssleay32.lib'):
+            conf.CheckLib('libeay32.lib')
+        else:
+            print 'ssl support required but openssl library not found'
+            print 'compile with ssl=0 or check that openssl library is usable'
+            Exit(1)
+    elif conf.CheckLib('ssl'):
         conf.CheckLib('crypto')
     else:
         print 'ssl support required but openssl library not found'
@@ -385,9 +437,11 @@ if ssl == 1:
 
 # these will be used only with our softaware
 if strict_build_flags == 1:
-   conf.env.Append(CPPFLAGS = ' -Werror ')
-   conf.env.Append(CCFLAGS  = ' -pedantic')
-   conf.env.Append(CXXFLAGS = ' -Weffc++ -Wold-style-cast')
+   
+   if not sysname == 'windows':
+        conf.env.Append(CPPFLAGS = ' -Werror ')
+        conf.env.Append(CCFLAGS  = ' -pedantic')
+        conf.env.Append(CXXFLAGS = ' -Weffc++ -Wold-style-cast')
 
 env = conf.Finish()
 Export('env', 'sysname', 'libboost_program_options')
@@ -414,10 +468,23 @@ conf = Configure(check_env)
 if not conf.CheckHeader('check.h'):
     print 'Error: check header file not found or not usable'
     Exit(1)
-
-if not conf.CheckLib('check'):
-    print 'Error: check library not found or not usable'
-    Exit(1)
+if sysname == 'windows':
+    if not conf.CheckLib('libcheck.lib'):
+        print 'Error: check library not found or not usable'
+        Exit(1)
+    if not conf.CheckLib('ws2_32.lib'):
+        print 'Error: ws2_32 library not found or not usable'
+        Exit(1)
+    if not conf.CheckLib('regex.lib'):
+        print 'Error: regex library not found or not usable'
+        Exit(1)
+    if not conf.CheckLib('iphlpapi.lib'):
+        print 'Error: iphlpapi library not found or not usable'
+        Exit(1)
+else:
+    if not conf.CheckLib('check'):
+        print 'Error: check library not found or not usable'
+        Exit(1)
 
 conf.Finish()
 

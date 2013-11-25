@@ -5,7 +5,11 @@
  */
 
 #include <check.h>
+#ifdef _MSC_VER
+#include <windows.h>
+#else
 #include <unistd.h>
+#endif
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -84,8 +88,8 @@ START_TEST (gcs_group_configuration)
 
     // message buffers
     const long buf_len      = 64;
-    char         buf1[buf_len], buf2[buf_len], buf3[buf_len],
-                 buf4[buf_len], buf5[buf_len];
+    char         *buf1=alloca(sizeof(char) *buf_len), buf2=alloca(sizeof(char) *buf_len), buf3=alloca(sizeof(char) *buf_len),
+                 buf4=alloca(sizeof(char) *buf_len), buf5=alloca(sizeof(char) *buf_len);
 
     // recv message structures
     gcs_recv_msg_t msg1, msg2, msg3, msg4, msg5;

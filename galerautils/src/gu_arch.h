@@ -17,6 +17,8 @@
 # include <sys/byteorder.h>
 #elif defined(__APPLE__)
 # include <machine/endian.h>
+#elif defined(WIN32) || defined(_MSC_VER)
+#define __BYTE_ORDER __LITTLE_ENDIAN
 #else
 # error "No byte order header file detected"
 #endif
@@ -46,6 +48,8 @@
 #elif defined(__APPLE__) || defined(__FreeBSD__)
 # include <stdint.h>
 # define GU_WORDSIZE __WORDSIZE
+#elif defined(WIN32)|| defined(_MSC_VER)
+#define GU_WORDSIZE 32
 #else
 # include <bits/wordsize.h>
 # define GU_WORDSIZE __WORDSIZE

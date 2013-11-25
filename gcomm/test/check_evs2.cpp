@@ -36,7 +36,10 @@ using namespace gu;
 using namespace gu::datetime;
 using namespace gcomm;
 using namespace gcomm::evs;
-
+#ifdef _MSC_VER
+#define UUID gcomm::UUID
+#define DeleteObject gu::DeleteObject
+#endif
 
 void init_rand()
 {

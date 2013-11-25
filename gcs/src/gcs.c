@@ -220,6 +220,7 @@ gcs_create (gu_config_t* const conf, gcache_t* const gcache,
             const char* const node_name, const char* const inc_addr,
             int const repl_proto_ver, int const appl_proto_ver)
 {
+    size_t recv_q_len;
     gcs_conn_t* conn = GU_CALLOC (1, gcs_conn_t);
 
     if (!conn) {
@@ -255,7 +256,7 @@ gcs_create (gu_config_t* const conf, gcache_t* const gcache,
         goto repl_q_failed;
     }
 
-    size_t recv_q_len = gu_avphys_bytes() / sizeof(struct gcs_recv_act) / 4;
+    recv_q_len = gu_avphys_bytes() / sizeof(struct gcs_recv_act) / 4;
 
     gu_debug ("Requesting recv queue len: %zu", recv_q_len);
     conn->recv_q = gu_fifo_create (recv_q_len, sizeof(struct gcs_recv_act));
@@ -562,9 +563,10 @@ gcs_become_open (gcs_conn_t* conn)
 static long
 gcs_set_pkt_size (gcs_conn_t *conn, long pkt_size)
 {
+    long ret;
     if (conn->state != GCS_CONN_CLOSED) return -EPERM; // #600 workaround
 
-    long ret = gcs_core_set_pkt_size (conn->core, pkt_size);
+    ret = gcs_core_set_pkt_size (conn->core, pkt_size);
 
     if (ret >= 0) {
         conn->params.max_packet_size = ret;
@@ -600,13 +602,14 @@ _release_flow_control (gcs_conn_t* conn)
 static void
 gcs_become_primary (gcs_conn_t* conn)
 {
+    long ret;
     if (!gcs_shift_state (conn, GCS_CONN_PRIMARY)) {
         gu_fatal ("Protocol violation, can't continue");
         gcs_close (conn);
         abort();
     }
 
-    long ret;
+    
 
     if ((ret = _release_flow_control (conn))) {
         gu_fatal ("Failed to release flow control: %ld (%s)",
@@ -770,9 +773,10 @@ gcs_handle_flow_control (gcs_conn_t*                conn,
 static void
 _reset_pkt_size(gcs_conn_t* conn)
 {
+    long ret;
     if (conn->state != GCS_CONN_CLOSED) return; // #600 workaround
 
-    long ret;
+    
 
     if (0 > (ret = gcs_core_set_pkt_size (conn->core,
                                           conn->params.max_packet_size))) {
@@ -809,7 +813,7 @@ gcs_handle_act_conf (gcs_conn_t* conn, const void* action)
 {
     const gcs_act_conf_t* conf = action;
     long ret;
-
+    gcs_conn_state_t old_state;
     conn->my_idx = conf->my_idx;
 
     gu_fifo_lock(conn->recv_q);
@@ -880,7 +884,7 @@ gcs_handle_act_conf (gcs_conn_t* conn, const void* action)
      * so can set packet size */
 // Ticket #600: commented out as unsafe under load    _reset_pkt_size(conn);
 
-    const gcs_conn_state_t old_state = conn->state;
+    old_state = conn->state;
     switch (conf->my_state) {
     case GCS_NODE_STATE_PRIM:   gcs_become_primary(conn);      return;
         /* Below are not real state transitions, rather state recovery,
@@ -956,10 +960,11 @@ static long
 gcs_handle_state_change (gcs_conn_t*           conn,
                          const struct gcs_act* act)
 {
+    void* buf;
     gu_debug ("Got '%s' dated %lld", gcs_act_type_to_str (act->type),
               gcs_seqno_gtoh(*(gcs_seqno_t*)act->buf));
 
-    void* buf = malloc (act->buf_len);
+    buf = malloc (act->buf_len);
 
     if (buf) {
         memcpy (buf, act->buf, act->buf_len);
@@ -1051,10 +1056,11 @@ _handle_timeout (gcs_conn_t* conn)
 static long
 _check_recv_queue_growth (gcs_conn_t* conn, ssize_t size)
 {
+    long      ret   = 0;
+    long long pause;
     assert (GCS_CONN_JOINER == conn->state);
 
-    long      ret   = 0;
-    long long pause = gcs_fc_process (&conn->stfc, size);
+    pause = gcs_fc_process (&conn->stfc, size);
 
     if (pause > 0) {
         /* replication needs throttling */
@@ -1114,10 +1120,10 @@ static void *gcs_recv_thread (void *arg)
         ret = gcs_core_recv (conn->core, &rcvd, conn->timeout);
 
         if (gu_unlikely(ret <= 0)) {
-
+            struct gcs_recv_act* err_act;
             if (-ETIMEDOUT == ret && _handle_timeout(conn)) continue;
 
-            struct gcs_recv_act* err_act = gu_fifo_get_tail(conn->recv_q);
+            err_act = gu_fifo_get_tail(conn->recv_q);
 
             assert (NULL          == rcvd.act.buf);
             assert (0             == rcvd.act.buf_len);
@@ -1186,14 +1192,14 @@ static void *gcs_recv_thread (void *arg)
         {
             /* remote/non-repl'ed action */
             struct gcs_recv_act* recv_act = gu_fifo_get_tail (conn->recv_q);
-
+    
             if (gu_likely (NULL != recv_act)) {
-
+                bool send_stop;
                 recv_act->rcvd     = rcvd;
                 recv_act->local_id = this_act_id;
 
                 conn->queue_len = gu_fifo_length (conn->recv_q) + 1;
-                bool send_stop  = gcs_fc_stop_begin (conn);
+                send_stop  = gcs_fc_stop_begin (conn);
 
                 // release queue
                 GCS_FIFO_PUSH_TAIL (conn, rcvd.act.buf_len);
@@ -1252,10 +1258,10 @@ static void *gcs_recv_thread (void *arg)
 long gcs_open (gcs_conn_t* conn, const char* channel, const char* url)
 {
     long ret = 0;
-
+    gu_cond_t tmp_cond; /* TODO: rework when concurrency in SM is allowed */
     if ((ret = gcs_sm_open(conn->sm))) return ret; // open in case it is closed
 
-    gu_cond_t tmp_cond; /* TODO: rework when concurrency in SM is allowed */
+    
     gu_cond_init (&tmp_cond, NULL);
 
     if ((ret = gcs_sm_enter (conn->sm, &tmp_cond, false)))
@@ -1314,7 +1320,7 @@ long gcs_close (gcs_conn_t *conn)
 
     if (!(ret = gcs_sm_close   (conn->sm)) &&
         !(ret = gcs_core_close (conn->core))) {
-
+        struct gcs_repl_act** act_ptr;
         /* here we synchronize with SELF_LEAVE event caused by gcs_core_close */
         if ((ret = gu_thread_join (conn->recv_thread, NULL))) {
             gu_error ("Failed to join recv_thread(): %d (%s)",
@@ -1328,7 +1334,7 @@ long gcs_close (gcs_conn_t *conn)
         assert (GCS_CONN_CLOSED == conn->state);
 
         gu_info ("Closing replication queue.");
-        struct gcs_repl_act** act_ptr;
+        
         /* At this point (state == CLOSED) no new threads should be able to
          * queue for repl (check gcs_repl()), and recv thread is joined, so no
          * new actions will be received. Abort threads that are still waiting
@@ -1422,14 +1428,16 @@ long gcs_send (gcs_conn_t*    const conn,
                gcs_act_type_t const act_type,
                bool           const scheduled)
 {
+    long ret = -ENOTCONN;
+    gu_cond_t tmp_cond;
     if (gu_unlikely(act_size > GCS_MAX_ACT_SIZE)) return -EMSGSIZE;
 
-    long ret = -ENOTCONN;
+    
 
     /*! locking connection here to avoid race with gcs_close()
      *  @note: gcs_repl() and gcs_recv() cannot lock connection
      *         because they block indefinitely waiting for actions */
-    gu_cond_t tmp_cond;
+    
     gu_cond_init (&tmp_cond, NULL);
 
     if (!(ret = gcs_sm_enter (conn->sm, &tmp_cond, scheduled)))
@@ -1464,9 +1472,11 @@ long gcs_repl (gcs_conn_t*        conn,      //!<in
                struct gcs_action* act,       //!<inout
                bool               scheduled) //!<in
 {
+    long ret;
+    struct gcs_repl_act repl_act ={0};
     if (gu_unlikely((size_t)act->size > GCS_MAX_ACT_SIZE)) return -EMSGSIZE;
 
-    long ret;
+    
 
     assert (act);
     assert (act->buf);
@@ -1476,7 +1486,7 @@ long gcs_repl (gcs_conn_t*        conn,      //!<in
     act->seqno_g = GCS_SEQNO_ILL;
 
     /* This is good - we don't have to do a copy because we wait */
-    struct gcs_repl_act repl_act = { .action = act };
+    repl_act.action = act ;
 
     gu_mutex_init (&repl_act.wait_mutex, NULL);
     gu_cond_init  (&repl_act.wait_cond,  NULL);
@@ -1598,14 +1608,14 @@ long gcs_request_state_transfer (gcs_conn_t  *conn,
          * anything more complex will require a special (de)serializer.
          * NOTE: this is sender part. Check gcs_group_handle_state_request()
          *       for the receiver part. */
+        struct gcs_action action = {0};
         memcpy (rst, donor, donor_len);
         memcpy (rst + donor_len, req, size);
 
-        struct gcs_action action = {
-            .buf  = rst,
-            .size = rst_size,
-            .type = GCS_ACT_STATE_REQ
-        };
+        action.buf  = rst;
+        action.size = rst_size;
+        action.type = GCS_ACT_STATE_REQ;
+        
 
         ret = gcs_repl(conn, &action, false);
 
@@ -1669,9 +1679,11 @@ long gcs_recv (gcs_conn_t*        conn,
 
     if ((recv_act = gu_fifo_get_head (conn->recv_q, &err)))
     {
+        bool send_cont;
+        bool send_sync;
         conn->queue_len = gu_fifo_length (conn->recv_q) - 1;
-        bool send_cont  = gcs_fc_cont_begin   (conn);
-        bool send_sync  = gcs_send_sync_begin (conn);
+        send_cont  = gcs_fc_cont_begin   (conn);
+        send_sync  = gcs_send_sync_begin (conn);
 
         action->buf     = (void*)recv_act->rcvd.act.buf;
         action->size    = recv_act->rcvd.act.buf_len;
@@ -1786,10 +1798,11 @@ gcs_conf_set_pkt_size (gcs_conn_t *conn, long pkt_size)
 long
 gcs_set_last_applied (gcs_conn_t* conn, gcs_seqno_t seqno)
 {
+    long ret;
     gu_cond_t cond;
     gu_cond_init (&cond, NULL);
 
-    long ret = gcs_sm_enter (conn->sm, &cond, false);
+    ret = gcs_sm_enter (conn->sm, &cond, false);
 
     if (!ret) {
         ret = gcs_core_set_last_applied (conn->core, seqno);
@@ -1940,11 +1953,12 @@ _set_pkt_size (gcs_conn_t* conn, const char* value)
 
     if (pkt_size > 0 && *endptr == '\0') {
 
+        long ret;
         if (pkt_size > LONG_MAX) pkt_size = LONG_MAX;
 
         if (conn->params.max_packet_size == pkt_size) return 0;
 
-        long ret = gcs_set_pkt_size (conn, pkt_size);
+        ret = gcs_set_pkt_size (conn, pkt_size);
 
         if (ret >= 0)
         {
@@ -1967,10 +1981,10 @@ _set_recv_q_hard_limit (gcs_conn_t* conn, const char* value)
     const char* const endptr = gu_str2ll (value, &limit);
 
     if (limit > 0 && *endptr == '\0') {
-
+        long long limit_fixed;
         if (limit > LONG_MAX) limit = LONG_MAX;
 
-        long long limit_fixed = limit * gcs_fc_hard_limit_fix;
+        limit_fixed = limit * gcs_fc_hard_limit_fix;
 
         if (conn->params.recv_q_hard_limit == limit_fixed) return 0;
 

@@ -5,7 +5,12 @@
  */
 
 #include <check.h>
+#ifdef _MSC_VER
+#include <windows.h> // usleep()
+#define usleep Sleep
+#else
 #include <unistd.h> // usleep()
+#endif
 #include <string.h> // strerror()
 
 #include "../src/gu_log.h"

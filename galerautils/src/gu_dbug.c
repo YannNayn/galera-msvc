@@ -83,7 +83,19 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#ifndef _MSC_VER
 #include <unistd.h>
+#else
+
+#include <windows.h>
+#define __WIN__
+#undef FALSE
+#undef TRUE
+#undef min
+#undef max
+#define  __attribute__(x)
+#define inline __inline
+#endif
 #include <assert.h>
 
 #ifndef GU_DBUG_ON
@@ -407,7 +419,11 @@ static struct state_map *_gu_db_state_map[_GU_DB_STATE_MAP_BUCKETS];
  */
 static inline unsigned long pt_hash(const pthread_t th)
 {
+#ifdef _MSC_VER
+    unsigned long k = (unsigned long)th.p;
+#else
     unsigned long k = (unsigned long)th;
+#endif    
     uint64_t ret = 2654435761U * k;
     // since we're returning a masked hash key, all considerations
     // for "reversibility" can be dropped. Instead we can help
@@ -419,7 +435,11 @@ static CODE_STATE *state_map_find(const pthread_t th)
 {
     unsigned int key = pt_hash(th);
     struct state_map *sm = _gu_db_state_map[key];
+#ifdef _MSC_VER
+    while (sm && sm->th.p != th.p)
+#else
     while (sm && sm->th != th)
+#endif        
 	sm = sm->next;
     return sm ? sm->state : NULL;
 }
@@ -457,7 +477,11 @@ void state_map_erase(const pthread_t th)
 
     key = pt_hash(th);
     sm = _gu_db_state_map[key];
+#ifdef _MSC_VER
+    while (sm && sm->th.p != th.p)
+#else
     while (sm && sm->th != th)
+#endif        
 	sm = sm->next;
     assert(sm);
     pthread_mutex_lock(&_gu_db_mutex);
@@ -497,7 +521,7 @@ static void code_state_cleanup(CODE_STATE *state)
     }
 }
 
-static void _gu_db_init()
+static void _gu_db_init(void)
 {
     if (!_gu_db_fp_)
 	_gu_db_fp_ = stderr;	 /* Output stream, default stderr */    
@@ -1482,7 +1506,11 @@ DoPrefix(uint _line_)
     state->lineno++;
     if (_gu_db_stack->flags & PID_ON) {
 #ifdef THREAD
+#ifndef _MSC_VER
         (void) fprintf(_gu_db_fp_, "%5d:(thread %lu):", (int)getpid(), (unsigned long)pthread_self());
+#else        
+        (void) fprintf(_gu_db_fp_, "%5d:(thread %lu):", (int)getpid(), (unsigned long)pthread_self().p);
+#endif
 #else
 	(void) fprintf(_gu_db_fp_, "%5d: ", (int) getpid());
 #endif /* THREAD */

@@ -9,7 +9,11 @@
  */
 
 #include <stdlib.h>
+#ifdef _MSC_VER
+#include <windows.h>
+#else
 #include <unistd.h>
+#endif
 #include <string.h>
 #include <errno.h>
 #include <stdio.h>
@@ -266,7 +270,7 @@ GCS_BACKEND_PARAM_GET_FN(dummy_param_get)
 {
     return NULL;
 }
-
+#ifndef _MSC_VER
 static
 const gcs_backend_t dummy_backend =
 {
@@ -281,7 +285,7 @@ const gcs_backend_t dummy_backend =
     .param_set = dummy_param_set,
     .param_get = dummy_param_get
 };
-
+#endif
 GCS_BACKEND_CREATE_FN(gcs_dummy_create)
 {
     long     ret   = -ENOMEM;
@@ -297,8 +301,20 @@ GCS_BACKEND_CREATE_FN(gcs_dummy_create)
 
     if (!(dummy->gc_q = gu_fifo_create (1 << 16, sizeof(void*))))
 	goto out1;
-
+#ifndef _MSC_VER
     *backend      = dummy_backend; // set methods
+#else
+    //backend->conn      = NULL;
+    backend->open      = dummy_open;
+    backend->close     = dummy_close;
+    backend->destroy   = dummy_destroy;
+    backend->send      = dummy_send;
+    backend->recv      = dummy_recv;
+    backend->name      = dummy_name;
+    backend->msg_size  = dummy_msg_size;
+    backend->param_set = dummy_param_set;
+    backend->param_get = dummy_param_get;
+#endif    
     backend->conn = dummy;         // set data
 
     return 0;

@@ -8,8 +8,11 @@
 
 #ifndef _gu_regex_hpp_
 #define _gu_regex_hpp_
-
+#ifdef _MSC_VER
+#include "hsregex.h"
+#else
 #include <regex.h>
+#endif
 #include <string>
 #include <vector>
 

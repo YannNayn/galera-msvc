@@ -8,8 +8,12 @@
 #include <galerautils.hpp>
 
 #include <cerrno>
+#ifdef _MSC_VER
+#include <windows.h>
+#include <msvc_sup.h>
+#else
 #include <sys/mman.h>
-
+#endif
 // to avoid -Wold-style-cast
 extern "C" { static const void* const GCACHE_MAP_FAILED = MAP_FAILED; }
 
@@ -27,7 +31,7 @@ namespace gcache
             gu_throw_error(errno) << "mmap() on '" << fd.get_name()
                                   << "' failed";
         }
-#if !defined(__sun__) && !defined(__APPLE__) && !defined(__FreeBSD__) /* Solaris, Darwin, and FreeBSD do not have MADV_DONTFORK */
+#if !defined(__sun__) && !defined(__APPLE__) && !defined(__FreeBSD__) &&  !defined(WIN32) /* Solaris, Darwin, and FreeBSD do not have MADV_DONTFORK */
         if (posix_madvise (ptr, size, MADV_DONTFORK))
         {
             int const err(errno);
@@ -75,11 +79,13 @@ namespace gcache
     void
     MMap::dont_need() const
     {
+#if !defined(WIN32)
         if (posix_madvise(reinterpret_cast<char*>(ptr), size, MADV_DONTNEED))
         {
             log_warn << "Failed to set MADV_DONTNEED on " << ptr << ": "
                      << errno << " (" << strerror(errno) << ')';
         }
+#endif        
     }
 
     MMap::~MMap ()

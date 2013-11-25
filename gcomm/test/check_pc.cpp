@@ -27,6 +27,10 @@ using namespace gu::datetime;
 using namespace gcomm;
 using namespace gcomm::pc;
 
+#ifdef _MSC_VER
+#define UUID gcomm::UUID
+#define DeleteObject gu::DeleteObject
+#endif
 
 START_TEST(test_pc_messages)
 {

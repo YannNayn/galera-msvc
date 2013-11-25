@@ -17,7 +17,9 @@
 #include "gu_arch.h"
 
 #include <sys/types.h> // for pid_t
-
+#ifdef _MSC_VER
+typedef int pid_t;
+#endif
 extern long int
 gu_rand_seed_long (long long time, const void* heap_ptr, pid_t pid);
 

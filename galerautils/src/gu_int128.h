@@ -64,7 +64,14 @@ typedef union gu_uint128 {
 #ifdef __cplusplus
 #define GU_SET128(_a, hi64, lo64) _a = gu_uint128(hi64, lo64)
 #else
-#define GU_SET128(_a, hi64, lo64) _a = { .u64 = { lo64, hi64 } }
+__inline gu_uint128_t  cgu_uint128(uint64_t hi, uint64_t lo)
+{
+    gu_uint128_t ret;
+    ret.u64[0] = lo;
+    ret.u64[1] = hi;
+    return ret;
+}
+#define GU_SET128(_a, hi64, lo64) _a = cgu_uint128(hi64, lo64)
 #endif
 
 #define GU_MUL128_INPLACE(_a,_b) {                       \

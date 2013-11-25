@@ -42,7 +42,14 @@ class gu::Monitor
 public:
 
 #ifndef NDEBUG
+#ifdef _MSC_VER
+    Monitor() : refcnt(0), mutex(), cond() 
+    {
+        memset(&holder,0,sizeof(pthread_t));
+    }
+#else
     Monitor() : refcnt(0), mutex(), cond(), holder(0) {}
+#endif        
 #else
     Monitor() : refcnt(0), mutex(), cond() {}
 #endif

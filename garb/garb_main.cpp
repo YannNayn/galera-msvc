@@ -8,12 +8,17 @@
 #include <iostream>
 
 #include <stdlib.h> // exit()
+#ifdef _MSC_VER
+#include <windows.h>
+#else
 #include <unistd.h> // setsid(), chdir()
+#endif
+
 #include <fcntl.h>  // open()
 
 namespace garb
 {
-
+#ifndef _MSC_VER
 void
 become_daemon ()
 {
@@ -33,12 +38,10 @@ become_daemon ()
     }
 
     // child
-
     if (setsid()<0) // become a new process leader, detach from terminal
     {
         gu_throw_error(errno) << "setsid() failed";
     }
-
     if (chdir("/")) // detach from potentially removable block devices
     {
         gu_throw_error(errno) << "chdir(\"/\") failed";
@@ -75,16 +78,22 @@ become_daemon ()
         }
     }
 }
-
+#endif
 int
 main (int argc, char* argv[])
 {
     Config config(argc, argv);
 
     log_info << "Read config: " <<  config << std::endl;
-
+#ifndef _MSC_VER
     if (config.daemon()) become_daemon();
-
+#else
+    if (config.daemon())
+    {
+        log_fatal << "Wont fork on windows right now" << std::endl;
+        return 1;
+    }
+#endif    
     RecvLoop loop (config);
 
     return 0;

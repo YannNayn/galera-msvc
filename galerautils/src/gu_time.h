@@ -12,6 +12,11 @@
 #include <sys/time.h>
 #include <time.h>
 
+#ifdef _MSC_VER
+#include <windows.h>
+#define inline __inline
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
@@ -44,8 +49,12 @@ gu_clock_diff (clock_t left, clock_t right)
 }
 
 #include "gu_limits.h" // for GU_LONG_LONG_MAX
+#ifdef _MSC_VER
+#include <windows.h>
+extern int gettimeofday(struct timeval *tv, struct timezone *tz);
+#else
 #include <unistd.h>
-
+#endif
 /**
  * New time interface
  *

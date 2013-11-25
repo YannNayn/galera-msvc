@@ -21,7 +21,11 @@
 #include <string.h>   // for memcmp()
 #include <stdio.h>    // for fopen() et al
 #include <sys/time.h> // for gettimeofday()
+#ifdef _MSC_VER
+#include <windows.h>   // for getpid()
+#else
 #include <unistd.h>   // for getpid()
+#endif
 #include <errno.h>    // for errno
 #include <stddef.h>
 
@@ -108,13 +112,17 @@ uuid_fill_node (uint8_t* node, size_t node_len)
 void
 gu_uuid_generate (gu_uuid_t* uuid, const void* node, size_t node_len)
 {
+    uint32_t*  uuid32;
+    uint16_t*  uuid16;
+    uint64_t   uuid_time;
+    uint16_t   clock_seq;
     assert (NULL != uuid);
     assert (NULL == node || 0 != node_len);
 
-    uint32_t*  uuid32 = (uint32_t*) uuid->data;
-    uint16_t*  uuid16 = (uint16_t*) uuid->data;
-    uint64_t   uuid_time = uuid_get_time ();
-    uint16_t   clock_seq = gu_rand_seed_int (uuid_time, &GU_UUID_NIL, getpid());
+    uuid32 = (uint32_t*) uuid->data;
+    uuid16 = (uint16_t*) uuid->data;
+    uuid_time = uuid_get_time ();
+    clock_seq = gu_rand_seed_int (uuid_time, &GU_UUID_NIL, getpid());
 
     /* time_low */
     uuid32[0] = gu_be32 (uuid_time & 0xFFFFFFFF);

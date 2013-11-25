@@ -59,6 +59,10 @@ public:
     virtual std::string listen_addr() const
     {
         gu_throw_fatal << "not supported";
+#ifdef _MSC_VER
+        return std::string();
+#endif    
+        
     }
     virtual Transport*  accept();
     virtual void handle_accept(Transport*)

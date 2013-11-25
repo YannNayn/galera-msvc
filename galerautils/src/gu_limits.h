@@ -8,9 +8,12 @@
 
 #ifndef _gu_limits_h_
 #define _gu_limits_h_
-
+#ifdef _MSC_VER
+#include <windows.h>
+#define inline __inline
+#else
 #include <unistd.h>
-
+#endif
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -32,6 +35,16 @@ static inline size_t gu_avphys_pages() { return gu_darwin_avphys_pages();  }
 static inline size_t gu_page_size()    { return sysconf(_SC_PAGESIZE);     }
 static inline size_t gu_phys_pages()   { return sysconf(_SC_PHYS_PAGES);   }
 static inline size_t gu_avphys_pages() { return gu_freebsd_avphys_pages(); }
+#elif defined(_MSC_VER)
+#define _SC_PAGESIZE 1
+#define _SC_PHYS_PAGES 2
+#define _SC_OPEN_MAX 3
+#define _SC_AVPHYS_PAGES 4
+#define _SC_PAGE_SIZE _SC_PAGESIZE
+extern size_t sysconf(int);
+static inline size_t gu_page_size()    { return sysconf(_SC_PAGESIZE);     }
+static inline size_t gu_phys_pages()   { return sysconf(_SC_PHYS_PAGES);   }
+static inline size_t gu_avphys_pages() { return sysconf(_SC_AVPHYS_PAGES); }
 #else /* !__APPLE__ && !__FreeBSD__ */
 static inline size_t gu_page_size()    { return sysconf(_SC_PAGESIZE);     }
 static inline size_t gu_phys_pages()   { return sysconf(_SC_PHYS_PAGES);   }
@@ -41,9 +54,10 @@ static inline size_t gu_avphys_pages() { return sysconf(_SC_AVPHYS_PAGES); }
 static inline size_t gu_avphys_bytes()
 {
     // to detect overflow on systems with >4G of RAM, see #776
+    size_t _max = -1;
     unsigned long long avphys = gu_avphys_pages(); avphys *= gu_page_size();
-    size_t max = -1;
-    return (avphys < max ? avphys : max);
+    
+    return (avphys < _max ? avphys : _max);
 }
 
 #include <limits.h>

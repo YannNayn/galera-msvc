@@ -11,7 +11,9 @@
 
 #include "gu_system.h"
 #include "gu_log.h"
+#ifndef _MSC_VER
 #include <sys/resource.h> /* for setrlimit() */
+#endif
 #include <signal.h>       /* for signal()    */
 #include <stdlib.h>       /* for abort()     */
 
@@ -19,9 +21,10 @@ void
 gu_abort (void)
 {
     /* avoid coredump */
+#ifndef _MSC_VER    
     struct rlimit core_limits = { 0, 0 };
     setrlimit (RLIMIT_CORE, &core_limits);
-
+#endif
     /* restore default SIGABRT handler */
     signal (SIGABRT, SIG_DFL);
 

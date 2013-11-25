@@ -9,9 +9,10 @@
 #include "socket.hpp"
 
 #include "gu_monitor.hpp"
-
+#ifndef _MSC_VER
 #pragma GCC diagnostic ignored "-Weffc++"
 #pragma GCC diagnostic ignored "-Wold-style-cast"
+#endif
 #include "asio.hpp"
 #ifdef HAVE_ASIO_SSL_HPP
 #include "asio/ssl.hpp"
