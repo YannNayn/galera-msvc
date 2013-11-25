@@ -182,10 +182,6 @@ if sysname == 'darwin' and extra_sysroot == '':
         extra_sysroot = '/usr/local'
     elif os.system('which -s fink') == 0 and os.path.isfile('/sw/bin/fink'):
         extra_sysroot = '/sw'
-if sysname == 'windows' and extra_sysroot=='':
-    extra_sysroot=os.path.join(os.environ["PBA"],"SE","Win32")
-    env.Append(LIBPATH = [extra_sysroot + '/libs'])
-    env.Append(CPPFLAGS = ' -I' + extra_sysroot + '/include' + ' -I' + extra_sysroot + '/include/boost-1_55'+ ' -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501')
 elif extra_sysroot != '':
     env.Append(LIBPATH = [extra_sysroot + '/lib'])
     env.Append(CPPFLAGS = ' -I' + extra_sysroot + '/include')
