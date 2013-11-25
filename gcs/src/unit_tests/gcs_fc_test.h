@@ -8,5 +8,8 @@
 #include <check.h>
 
 Suite *gcs_fc_suite(void);
-
+#ifdef _MSC_VER
+#include <msvc_sup.h>
+#define usleep(x) Sleep(x/1000)
+#endif
 #endif /* __gcs_fc_test__ */
