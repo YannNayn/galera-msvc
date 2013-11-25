@@ -12,7 +12,9 @@
 
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
-
+#ifdef _MSC_VER
+#define tcase_set_timeout(x,y)
+#endif
 static volatile bool stop(false);
 
 using namespace galera;

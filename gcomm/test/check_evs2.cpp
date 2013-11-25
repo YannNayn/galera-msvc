@@ -29,7 +29,9 @@
 
 #include "check.h"
 
-
+#ifdef _MSC_VER
+#define tcase_set_timeout(x,y)
+#endif
 using namespace std;
 using namespace std::rel_ops;
 using namespace gu;

@@ -10,7 +10,9 @@
 #include <time.h>
 #include "gu_dbug_test.h"
 #include "../src/gu_dbug.h"
-
+#ifdef _MSC_VER
+#define tcase_set_timeout(x,y)
+#endif
 static void cf()
 {
     GU_DBUG_ENTER("cf");

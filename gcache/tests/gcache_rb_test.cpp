@@ -7,7 +7,9 @@
 #include "gcache_rb_store.hpp"
 #include "gcache_bh.hpp"
 #include "gcache_rb_test.hpp"
-
+#ifdef _MSC_VER
+#define tcase_set_timeout(x,y)
+#endif
 using namespace gcache;
 
 START_TEST(test1)

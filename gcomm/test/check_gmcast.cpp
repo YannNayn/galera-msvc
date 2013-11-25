@@ -19,7 +19,9 @@ using namespace gu::datetime;
 #define UUID gcomm::UUID
 #define DeleteObject gu::DeleteObject
 #endif
-
+#ifdef _MSC_VER
+#define tcase_set_timeout(x,y)
+#endif
 // Note: Not all tests are run by default as they require default port to be
 // used or listen port to be known beforehand.
 static bool run_all_tests(false);

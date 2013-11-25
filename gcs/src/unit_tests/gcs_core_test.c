@@ -48,6 +48,9 @@
 #ifdef _MSC_VER
 #define usleep(x) Sleep(x/1000)
 #endif
+#ifdef _MSC_VER
+#define tcase_set_timeout(x,y)
+#endif
 extern ssize_t gcs_tests_get_allocated();
 
 static const long UNKNOWN_SIZE = 1234567890; // some unrealistic number

@@ -31,7 +31,9 @@ using namespace gcomm::pc;
 #define UUID gcomm::UUID
 #define DeleteObject gu::DeleteObject
 #endif
-
+#ifdef _MSC_VER
+#define tcase_set_timeout(x,y)
+#endif
 START_TEST(test_pc_messages)
 {
     StateMessage pcs(0);
