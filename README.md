@@ -21,7 +21,7 @@ clone https://github.com/YannNayn/check_msvc.git
 pushd check_msvc
 set src_dir=%CD%
 call %msys_bat% -c "cd %src_dir:\=/% && configure --prefix=%temp_inst:\=/% && make && make install"
-LIB /DEF:src\.libs\libcheck-0.dll.def /MACHINE:X86 /OUT:%inst_temp%lib\libcheck.lib
+LIB /DEF:src\.libs\libcheck-0.dll.def /NAME:libcheck-0 /MACHINE:X86 /OUT:%inst_temp%lib\libcheck.lib
 popd
 
 clone https://github.com/YannNayn/hsregex_msvc.git
@@ -35,12 +35,7 @@ copy /Y hsregex_msvc\hsregex.h %inst_temp%include
 
 clone https://github.com/YannNayn/galera_msvc.git
 pushd galera_msvc
-scons galerautils
-scons gcache
-scons galera
-scons gcomm
-scons gcs
-scons garb
+scons
 popd
 
 
