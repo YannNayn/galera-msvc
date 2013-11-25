@@ -12,7 +12,9 @@
 #include "gu_arch.h"
 
 #include <check.h>
-
+#ifdef _MSC_VER
+#define tcase_set_timeout(x,y)
+#endif
 // Message tests
 
 START_TEST(test_ist_message)
