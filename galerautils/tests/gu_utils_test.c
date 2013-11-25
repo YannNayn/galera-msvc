@@ -13,7 +13,8 @@ START_TEST (gu_strconv_test)
 {
     long long   llret;
     const char* strret;
-
+    bool b;
+    
     strret = gu_str2ll ("-1a", &llret);
     fail_if (strret[0] != 'a');
     fail_if (-1 != llret);
@@ -38,7 +39,7 @@ START_TEST (gu_strconv_test)
     fail_if (strret[0] != '\0');
     fail_if (LLONG_MIN != llret);
 
-    bool b;
+    
 
     strret = gu_str2bool ("-1a", &b);
     fail_if (strret[0] != '-');

@@ -15,7 +15,7 @@
 START_TEST (gu_uuid_test)
 {
     size_t    uuid_num = 10;
-    gu_uuid_t uuid[uuid_num];
+    gu_uuid_t *uuid=alloca(sizeof(gu_uuid_t)*uuid_num);
     size_t i;
 
     uuid[0] = GU_UUID_NIL;
