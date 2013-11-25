@@ -14,6 +14,7 @@ START_TEST (gu_strconv_test)
     long long   llret;
     const char* strret;
     bool b;
+    void* ptr;
     
     strret = gu_str2ll ("-1a", &llret);
     fail_if (strret[0] != 'a');
@@ -109,7 +110,7 @@ START_TEST (gu_strconv_test)
     fail_if (strret[0] != 'f');
     fail_if (false != b);
 
-    void* ptr;
+    
     strret = gu_str2ptr ("-01234abc", &ptr);
     fail_if (strret[0] != '\0');
     fail_if (-0x1234abcLL != (intptr_t)ptr, "Expected %lld, got %lld",
