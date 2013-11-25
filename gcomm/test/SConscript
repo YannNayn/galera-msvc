@@ -21,7 +21,8 @@ gcomm_check = env.Program(target = 'check_gcomm',
                               check_pc.cpp
                            '''))
 
-env.Test("gcomm_check.passed", gcomm_check)
+if 1 == 0:
+    env.Test("gcomm_check.passed", gcomm_check)
 
 Clean(gcomm_check, '#/check_gcomm.log')
 

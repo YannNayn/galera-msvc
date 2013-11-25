@@ -26,7 +26,8 @@ gu_tests = env.Program(target = 'gu_tests',
                             gu_utils_test.c
                          '''))
 
-env.Test("gu_tests.passed", gu_tests)
+if 1 == 0:
+    env.Test("gu_tests.passed", gu_tests)
 env.Alias("test", "gu_tests.passed")
 
 Clean(gu_tests, '#/gu_tests.log')
@@ -40,7 +41,8 @@ gu_testspp = env.Program(target = 'gu_tests++',
                               gu_datetime_test.cpp
                               gu_vlq_test.cpp
                            '''))
-env.Test("gu_tests++.passed", gu_testspp)
+if 1 == 0:
+    env.Test("gu_tests++.passed", gu_testspp)
 env.Alias("test", "gu_tests++.passed")
 
 Clean(gu_testspp, '#/gu_tests++.log')
