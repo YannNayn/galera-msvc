@@ -162,7 +162,7 @@ env.Replace(LIBPATH = [os.getenv('LIBPATH', '')])
 
 # Set -pthread flag explicitly to make sure that pthreads are
 # enabled on all platforms.
-if not "PBA" in os.environ:
+if sysname != 'windows':
     env.Append(CPPFLAGS = ' -pthread')
 
 # Freebsd ports are installed under /usr/local
@@ -182,16 +182,15 @@ if sysname == 'darwin' and extra_sysroot == '':
         extra_sysroot = '/usr/local'
     elif os.system('which -s fink') == 0 and os.path.isfile('/sw/bin/fink'):
         extra_sysroot = '/sw'
-if "PBA" in os.environ and extra_sysroot=='':
+if sysname == 'windows' and extra_sysroot=='':
     extra_sysroot=os.path.join(os.environ["PBA"],"SE","Win32")
     env.Append(LIBPATH = [extra_sysroot + '/libs'])
     env.Append(CPPFLAGS = ' -I' + extra_sysroot + '/include' + ' -I' + extra_sysroot + '/include/boost-1_55'+ ' -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501')
-    env['ENV']['LIB'] = os.environ['LIB']
-    env['ENV']['INCLUDE'] = os.environ['INCLUDE']
-    env['ENV']['TMP'] = os.environ['TMP'] 
 elif extra_sysroot != '':
     env.Append(LIBPATH = [extra_sysroot + '/lib'])
     env.Append(CPPFLAGS = ' -I' + extra_sysroot + '/include')
+if sysname == 'windows' :
+    env.Append(CPPFLAGS = ' -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501')
 
 # print env.Dump()
 #
