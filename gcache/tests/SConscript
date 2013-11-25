@@ -8,15 +8,17 @@ env.Prepend(LIBS=File('#/galerautils/src/galerautils++.lib'))
 env.Prepend(LIBS=File('#/gcache/src/gcache.lib'))
 
 source = Glob('*.cpp')
-gcache_tests = env.Program(target = 'gcache_tests', source = source)
+if sys.platform.find("win")==0:
+    gcache_tests = env.Program(target = 'gcache_tests.exe', source = source)
+else:
+    gcache_tests = env.Program(target = 'gcache_tests', source = source)
 
 #                           source = Split('''
 #                                 gcache_tests.cpp
 #                           '''))
 
 stamp="gcache_tests.passed"
-if 1 == 0:
-    env.Test(stamp, gcache_tests)
+env.Test(stamp, gcache_tests)
 env.Alias("test", stamp)
 
 Clean(gcache_tests, ['#/gcache_tests.log', '#/gcache.page.000000', '#/rb_test'])
