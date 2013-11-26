@@ -115,6 +115,9 @@ START_TEST (gu_lock_step_race)
     fail_if (LS.enabled != true);
 
     ret = gu_thread_create (&thr1, NULL, lock_step_race, NULL);
+#ifdef _MSC_VER
+	usleep(1000);
+#endif
     fail_if (ret != 0);
 
     for (i = 0; i < RACE_ITERATIONS; i++) {
