@@ -57,6 +57,26 @@ uuid_get_time ()
 }
 
 #ifndef UUID_URAND
+#ifdef _MSC_VER
+static int
+uuid_urand_node (uint8_t* node, size_t node_len)
+{
+    size_t      i = 0;
+    double         c;
+	static int initialized=0;
+	if(!initialized)
+	{
+		srand( (unsigned)time( NULL ) );
+		initialized=1;
+	}
+    while (i < node_len) {
+		c = (double)rand() / (RAND_MAX + 1) * 256.0;
+        node[i] = (uint8_t) c;
+        i++;
+    }
+    return 0;
+}
+#else
 // This function can't be called too often,
 // apparently due to lack of entropy in the pool.
 /** Fills node part of the uuid with true random data from /dev/urand */
@@ -83,6 +103,7 @@ uuid_urand_node (uint8_t* node, size_t node_len)
 
     return 0;
 }
+#endif
 #else
 #define uuid_urand_node(a,b) true
 #endif
