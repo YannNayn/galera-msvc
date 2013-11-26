@@ -1,15 +1,23 @@
-
+import sys
 Import('check_env')
 
 env = check_env.Clone()
-env.Append(LIBS=File('#/gcache/src/gcache.lib'))
-env.Append(LIBS=File('#/galera/src/galera++.lib'))
-env.Append(LIBS=File('#/galerautils/src/galerautils++.lib'))
-env.Append(LIBS=File('#/galerautils/src/galerautils.lib'))
 #env.Append(LIBS = ['pthread',
 #                   'rt'])
+if sys.platform.find("win")==0:
+    target='galera_check.exe'
+    env.Append(LIBS=File('#/gcache/src/gcache.lib'))
+    env.Append(LIBS=File('#/galera/src/galera++.lib'))
+    env.Append(LIBS=File('#/galerautils/src/galerautils++.lib'))
+    env.Append(LIBS=File('#/galerautils/src/galerautils.lib'))
+else:
+    target='galera_check'
+    env.Append(LIBS=File('#/gcache/src/libgcache.a'))
+    env.Append(LIBS=File('#/galera/src/libgalera++.a'))
+    env.Append(LIBS=File('#/galerautils/src/libgalerautils++.a'))
+    env.Append(LIBS=File('#/galerautils/src/libgalerautils.a'))
 
-galera_check = env.Program(target='galera_check',
+galera_check = env.Program(target=target,
                            source=Split('''
                                galera_check.cpp
                                write_set_check.cpp
@@ -20,8 +28,7 @@ galera_check = env.Program(target='galera_check',
                            '''))
 
 stamp = "galera_check.passed"
-if 1 == 0:
-    env.Test(stamp, galera_check)
+env.Test(stamp, galera_check)
 env.Alias("test", stamp)
 
 Clean(galera_check, ['#/galera_check.log', 'ist_check.cache'])
