@@ -186,7 +186,9 @@ elif extra_sysroot != '':
     env.Append(LIBPATH = [extra_sysroot + '/lib'])
     env.Append(CPPFLAGS = ' -I' + extra_sysroot + '/include')
 if sysname == 'windows' :
-    env.Append(CPPFLAGS = ' -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501')
+    env.Append(CPPFLAGS = ' -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 -DSIZET_PRINTF_SPEC=\"%lu\"')
+else:
+    env.Append(CPPFLAGS = ' -DSIZET_PRINTF_SPEC=\"%zu\"')
 
 # print env.Dump()
 #

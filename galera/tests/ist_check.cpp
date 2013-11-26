@@ -26,10 +26,10 @@ START_TEST(test_ist_message)
 
 #if 0 /* This is a check for the old (broken) format */
 #if GU_WORDSIZE == 32
-    fail_unless(serial_size(m3) == 20, "serial size %zu != 20",
+    fail_unless(serial_size(m3) == 20, "serial size SIZET_PRINTF_SPEC != 20",
                 serial_size(m3));
 #elif GU_WORDSIZE == 64
-    fail_unless(serial_size(m3) == 24, "serial size %zu != 24",
+    fail_unless(serial_size(m3) == 24, "serial size SIZET_PRINTF_SPEC != 24",
                 serial_size(m3));
 #endif
 #endif /* 0 */

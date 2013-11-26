@@ -126,7 +126,7 @@ static bool COMMON_RECV_CHECKS(action_t*      act,
     FAIL_IF (act->type != type,
              "type does not match: expected %d, got %d", type, act->type);
     FAIL_IF (act->size > 0 && act->data == NULL,
-             "null buffer with positive size: %zu", act->size);
+             "null buffer with positive size: SIZET_PRINTF_SPEC", act->size);
 
     // action is ordered only if it is of type GCS_ACT_TORDERED and not an error
     if (act->seqno >= GCS_SEQNO_NIL) {
@@ -416,7 +416,7 @@ START_TEST (gcs_core_test_api)
     while (i--) {
         long     frags    = (act_size - 1)/FRAG_SIZE + 1;
 
-        gu_info ("Iteration %ld: act: %s, size: %zu, frags: %ld",
+        gu_info ("Iteration %ld: act: %s, size: SIZET_PRINTF_SPEC, frags: %ld",
                  i, ACT, act_size, frags);
 
         fail_if (CORE_SEND_START (&act_s));

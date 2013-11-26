@@ -39,7 +39,7 @@ START_TEST (gcs_fifo_lite_test)
         *item = i;
         gcs_fifo_lite_push_tail (fifo);
     }
-    fail_if (fifo->used != FIFO_LENGTH, "fifo->used is %zu, expected %zu", 
+    fail_if (fifo->used != FIFO_LENGTH, "fifo->used is SIZET_PRINTF_SPEC, expected SIZET_PRINTF_SPEC", 
              fifo->used, FIFO_LENGTH);
 
     // test remove
@@ -47,7 +47,7 @@ START_TEST (gcs_fifo_lite_test)
         ret = gcs_fifo_lite_remove (fifo);
         fail_if (0 == ret, "gcs_fifo_lite_remove() failed, i = %ld", i);
     }
-    fail_if (fifo->used != 0, "fifo->used is %zu, expected %zu", 
+    fail_if (fifo->used != 0, "fifo->used is SIZET_PRINTF_SPEC, expected SIZET_PRINTF_SPEC", 
              fifo->used, 0);
 
     // try remove on empty queue
@@ -61,7 +61,7 @@ START_TEST (gcs_fifo_lite_test)
         *item = i;
         gcs_fifo_lite_push_tail (fifo);
     }
-    fail_if (fifo->used != FIFO_LENGTH, "fifo->used is %zu, expected %zu", 
+    fail_if (fifo->used != FIFO_LENGTH, "fifo->used is SIZET_PRINTF_SPEC, expected SIZET_PRINTF_SPEC", 
              fifo->used, FIFO_LENGTH);
 
     // test get

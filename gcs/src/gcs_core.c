@@ -247,7 +247,7 @@ core_msg_send (gcs_core_t*    core,
                 GCS_MSG_ACTION != msg_type) {
                 // could not send message in one piece
                 gu_error ("Failed to send complete message of %s type: "
-                          "sent %zd out of %zu bytes.",
+                          "sent %zd out of SIZET_PRINTF_SPEC bytes.",
                           gcs_msg_type_string[msg_type], ret, msg_len);
                 ret = -EMSGSIZE;
             }
@@ -349,14 +349,14 @@ gcs_core_send (gcs_core_t*      const conn,
 
 #ifdef GCS_CORE_TESTING
         gu_lock_step_wait (&conn->ls); // pause after every fragment
-        gu_info ("Sent %p of size %zu. Total sent: %zu, left: %zu",
+        gu_info ("Sent %p of size SIZET_PRINTF_SPEC. Total sent: SIZET_PRINTF_SPEC, left: SIZET_PRINTF_SPEC",
                  (char*)conn->send_buf + hdr_size, chunk_size, sent, act_size);
 #endif
         ret = core_msg_send_retry (conn, conn->send_buf, send_size,
                                    GCS_MSG_ACTION);
 #ifdef GCS_CORE_TESTING
 //        gu_lock_step_wait (&conn->ls); // pause after every fragment
-//        gu_info ("Sent %p of size %zu, ret: %zd. Total sent: %zu, left: %zu",
+//        gu_info ("Sent %p of size SIZET_PRINTF_SPEC, ret: %zd. Total sent: SIZET_PRINTF_SPEC, left: SIZET_PRINTF_SPEC",
 //                 conn->send_buf + hdr_size, chunk_size, ret, sent, act_size);
 #endif
 

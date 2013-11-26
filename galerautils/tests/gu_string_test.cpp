@@ -53,7 +53,7 @@ START_TEST(test_tokenize)
     fail_unless(vec[2] == "baz");
 
     vec = gu::tokenize("foo\\;;bar;;baz;", ';', '\\', true);
-    fail_unless(vec.size() == 5, "vetor length %zu, expected 5", vec.size());
+    fail_unless(vec.size() == 5, "vetor length SIZET_PRINTF_SPEC, expected 5", vec.size());
     fail_unless(vec[0] == "foo;");
     fail_unless(vec[1] == "bar");
     fail_unless(vec[2] == "");
