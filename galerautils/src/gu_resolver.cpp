@@ -123,7 +123,7 @@ private:
             family,
             socktype,
             protocol,
-#if defined(__FreeBSD__)
+#if defined(__FreeBSD__) || defined(_MSC_VER)
 	    0, // FreeBSD gives ENOMEM error with non-zero value
 #else
             sizeof(struct sockaddr),
