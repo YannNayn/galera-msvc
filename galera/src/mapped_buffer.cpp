@@ -88,7 +88,7 @@ void galera::MappedBuffer::reserve(size_t sz)
 
         if (fd_ == -1)
         {
-            file_ = working_dir_ + "/gmb_XXXXXX";
+            file_ = working_dir_ + DIR_SEP_S "gmb_XXXXXX";
             fd_ = mkstemp(&file_[0]);
             if (fd_ == -1)
             {
