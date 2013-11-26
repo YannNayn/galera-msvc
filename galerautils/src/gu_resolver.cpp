@@ -27,6 +27,28 @@
 }
 #define if_nametoindex pgm_if_nametoindex
  #endif
+ class WSAManager
+ {
+ public :
+	int err;
+	WSAManager()
+	{
+		WORD wVersionRequested;
+		WSADATA wsaData;
+ 
+		wVersionRequested = MAKEWORD( 2, 2 );
+ 
+		err = WSAStartup( wVersionRequested, &wsaData );
+		if ( err != 0 ) {
+			printf("Failed to initialize\n");
+		    exit(1);
+		}
+	}
+	~WSAManager()
+	{
+		WSACleanup( );
+	}
+ }_WSAManager;
 #else
 #include <unistd.h> // for close()
 #include <netdb.h>
