@@ -116,7 +116,7 @@ START_TEST (gu_lock_step_race)
 
     ret = gu_thread_create (&thr1, NULL, lock_step_race, NULL);
 #ifdef _MSC_VER
-	usleep(1000);
+	Sleep(1000);
 #endif
     fail_if (ret != 0);
 
