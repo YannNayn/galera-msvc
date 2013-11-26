@@ -590,8 +590,9 @@ gu::net::Addrinfo gu::net::resolve(const URI& uri)
         addrinfo* ai(0);
         try
         {
+			const addrinfo* addr_info=SchemeMap::get_addrinfo(i);
             err = getaddrinfo(host.c_str(), uri.get_port().c_str(),
-                              SchemeMap::get_addrinfo(i), &ai);
+                              addr_info, &ai);
         }
         catch (NotSet&)
         {
