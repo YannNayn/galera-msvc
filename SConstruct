@@ -127,7 +127,6 @@ print 'Signature: version: ' + GALERA_VER + ', revision: ' + GALERA_REV
 LIBBOOST_PROGRAM_OPTIONS_A = ARGUMENTS.get('bpostatic', '')
 LIBBOOST_SYSTEM_A = string.replace(LIBBOOST_PROGRAM_OPTIONS_A, 'boost_program_options', 'boost_system')
 
-#sys.exit(0)
 #
 # Set up and export default build environment
 #
@@ -183,22 +182,13 @@ if sysname == 'darwin' and extra_sysroot == '':
         extra_sysroot = '/usr/local'
     elif os.system('which -s fink') == 0 and os.path.isfile('/sw/bin/fink'):
         extra_sysroot = '/sw'
-print('"PBA" in os.environ',"PBA" in os.environ)        
-print("extra_sysroot==''",extra_sysroot=='')        
-if "PBA" in os.environ and extra_sysroot=='':
-    print("Ha")
-    extra_sysroot=os.path.join(os.environ["PBA"],"SE","Win32")
-    env.Append(LIBPATH = [extra_sysroot + '/libs'])
-    env.Append(CPPFLAGS = ' -I' + extra_sysroot + '/include' + ' -I' + extra_sysroot + '/include/boost-1_55'+ ' -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h')
-    env.Append(LINKFLAGS = ' /debug ')
-    env.Append(SHLINKFLAGS = ' /debug ')
-    env['ENV']['LIB'] = os.environ['LIB']
-    env['ENV']['INCLUDE'] = os.environ['INCLUDE']
-    env['ENV']['TMP'] = os.environ['TMP'] 
 elif extra_sysroot != '':
     env.Append(LIBPATH = [extra_sysroot + '/lib'])
     env.Append(CPPFLAGS = ' -I' + extra_sysroot + '/include')
-
+if sysname == 'windows' :
+    env.Append(CPPFLAGS = ' -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /FImsvc_sup.h')
+else:
+	env.Append(CPPFLAGS = ' /FImsvc_sup.h')
 # print env.Dump()
 #
 # Set up build and link paths
