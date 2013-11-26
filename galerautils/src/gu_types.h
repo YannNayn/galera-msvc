@@ -17,7 +17,7 @@
 #include <windows.h>  /* ssize_t */
 #define __attribute__(x)
 #define GU_NORETURN
-typedef unsigned int ssize_t;
+typedef int ssize_t;
 #define inline __inline
 #endif
 #endif /* _gu_types_h_ */

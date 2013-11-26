@@ -5,7 +5,7 @@
 
 #include <sys/types.h>
 #ifdef _MSC_VER
-typedef unsigned int ssize_t;
+typedef int ssize_t;
 
 #endif
 using std::string;

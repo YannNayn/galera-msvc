@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #ifdef _MSC_VER
 #include <windows.h>
-typedef unsigned int ssize_t;
+typedef int ssize_t;
 #define inline __inline
 #else
 #include <unistd.h>

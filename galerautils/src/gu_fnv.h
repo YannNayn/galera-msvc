@@ -36,7 +36,7 @@
 #undef GU_FORCE_INLINE
 #endif
 #define GU_FORCE_INLINE __inline
-typedef unsigned int ssize_t;
+typedef int ssize_t;
 #endif
 #define GU_FNV32_PRIME 16777619UL
 #define GU_FNV32_SEED  2166136261UL
