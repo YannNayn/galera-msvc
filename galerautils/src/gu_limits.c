@@ -97,11 +97,11 @@ const gu_uint128_t *GET_GU_FNV128_PRIME()
         if(!init_done)
         {
 #if defined(GU_LITTLE_ENDIAN)
-            _GU_FNV128_PRIME.u64[0]=0x0000000001000000ULL;
-            _GU_FNV128_PRIME.u64[1]=0x000000000000013BULL;
-#else
             _GU_FNV128_PRIME.u64[1]=0x0000000001000000ULL;
             _GU_FNV128_PRIME.u64[0]=0x000000000000013BULL;
+#else
+            _GU_FNV128_PRIME.u64[0]=0x0000000001000000ULL;
+            _GU_FNV128_PRIME.u64[1]=0x000000000000013BULL;
 #endif            
             init_done=1;
         }
@@ -113,11 +113,11 @@ const gu_uint128_t *GET_GU_FNV128_SEED()
         if(!init_done)
         {
 #if defined(GU_LITTLE_ENDIAN)
-            _GU_FNV128_SEED.u64[0]=0x6C62272E07BB0142ULL;
-            _GU_FNV128_SEED.u64[1]=0x62B821756295C58DULL;
-#else
             _GU_FNV128_SEED.u64[1]=0x6C62272E07BB0142ULL;
             _GU_FNV128_SEED.u64[0]=0x62B821756295C58DULL;
+#else
+            _GU_FNV128_SEED.u64[0]=0x6C62272E07BB0142ULL;
+            _GU_FNV128_SEED.u64[1]=0x62B821756295C58DULL;
 #endif            
             init_done=1;
         }
