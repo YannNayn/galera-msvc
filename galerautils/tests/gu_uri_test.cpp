@@ -112,7 +112,7 @@ START_TEST (uri_test1) // checking normal URI
 
         URIQueryList ql = uri.get_query_list();
 
-        fail_if (ql.size() != 2, "Query list size SIZET_PRINTF_SPEC, expected 2", ql.size());
+        fail_if (ql.size() != 2, "Query list size " SIZET_PRINTF_SPEC ", expected 2", ql.size());
 
         URIQueryList::const_iterator i = ql.begin();
 

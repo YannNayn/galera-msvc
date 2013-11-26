@@ -45,7 +45,7 @@ START_TEST (gu_fifo_test)
     }
 
     used = i;
-    fail_if (gu_fifo_length(fifo) != used, "used is SIZET_PRINTF_SPEC, expected SIZET_PRINTF_SPEC", 
+    fail_if (gu_fifo_length(fifo) != used, "used is " SIZET_PRINTF_SPEC ", expected " SIZET_PRINTF_SPEC "", 
              used, gu_fifo_length(fifo));
 
     // test pop
@@ -96,7 +96,7 @@ cancel_thread (void* arg)
     
     /* try to get from non-empty queue */
     item = gu_fifo_get_head (q, &err);
-    fail_if (NULL != item, "Got item %p: SIZET_PRINTF_SPEC", item, item ? *item : 0);
+    fail_if (NULL != item, "Got item %p: " SIZET_PRINTF_SPEC "", item, item ? *item : 0);
     fail_if (-ECANCELED != err);
 
     /* signal end of the first gu_fifo_get_head() */

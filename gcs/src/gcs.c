@@ -258,7 +258,7 @@ gcs_create (gu_config_t* const conf, gcache_t* const gcache,
 
     recv_q_len = gu_avphys_bytes() / sizeof(struct gcs_recv_act) / 4;
 
-    gu_debug ("Requesting recv queue len: SIZET_PRINTF_SPEC", recv_q_len);
+    gu_debug ("Requesting recv queue len: " SIZET_PRINTF_SPEC "", recv_q_len);
     conn->recv_q = gu_fifo_create (recv_q_len, sizeof(struct gcs_recv_act));
 
     if (!conn->recv_q) {

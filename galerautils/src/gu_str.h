@@ -13,12 +13,6 @@
 #define snprintf _snprintf
 #endif
 
-#ifdef _MSC_VER
-#define SIZET_PRINTF_SPEC "%lu"
-#else
-#define SIZET_PRINTF_SPEC "%zu"
-#endif
-
 
 /*!
  * Append after position
@@ -86,7 +80,7 @@ static inline const char* gu_str_table_get_name(const char* str)
 static inline char* gu_str_table_append_size(char* str, size_t* off, size_t n)
 {
     char buf[10];
-    size_t len = snprintf(buf, sizeof(buf), "SIZET_PRINTF_SPEC", n);
+    size_t len = snprintf(buf, sizeof(buf), SIZET_PRINTF_SPEC, n);
     return gu_str_append(str, off, buf, len);
 }
 

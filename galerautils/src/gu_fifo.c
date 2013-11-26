@@ -94,7 +94,7 @@ gu_fifo_t *gu_fifo_create (size_t length, size_t item_size)
         alloc_size = array_size + sizeof (gu_fifo_t);
 
         if (alloc_size > (size_t)-1) {
-            gu_error ("Initial FIFO size %llu exceeds size_t range SIZET_PRINTF_SPEC",
+            gu_error ("Initial FIFO size %llu exceeds size_t range " SIZET_PRINTF_SPEC "",
                       alloc_size, (size_t)-1);
             return NULL;
         }
@@ -102,7 +102,7 @@ gu_fifo_t *gu_fifo_create (size_t length, size_t item_size)
         max_size = array_len * row_size + alloc_size;
 
         if (max_size > (size_t)-1) {
-            gu_error ("Maximum FIFO size %llu exceeds size_t range SIZET_PRINTF_SPEC",
+            gu_error ("Maximum FIFO size %llu exceeds size_t range " SIZET_PRINTF_SPEC "",
                       max_size, (size_t)-1);
             return NULL;
         }
@@ -121,7 +121,7 @@ gu_fifo_t *gu_fifo_create (size_t length, size_t item_size)
 
 
         gu_debug ("Creating FIFO buffer of %llu elements of size %llu, "
-                  "memory min used: SIZET_PRINTF_SPEC, max used: SIZET_PRINTF_SPEC",
+                  "memory min used: " SIZET_PRINTF_SPEC ", max used: " SIZET_PRINTF_SPEC "",
                   array_len * row_len, item_size, alloc_size,
                   alloc_size + array_len*row_size);
 
@@ -141,7 +141,7 @@ gu_fifo_t *gu_fifo_create (size_t length, size_t item_size)
             gu_cond_init  (&ret->put_cond, NULL);
         }
         else {
-            gu_error ("Failed to allocate SIZET_PRINTF_SPEC bytes for FIFO", alloc_size);
+            gu_error ("Failed to allocate " SIZET_PRINTF_SPEC " bytes for FIFO", alloc_size);
         }
     }
 

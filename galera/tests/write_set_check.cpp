@@ -382,7 +382,7 @@ START_TEST(test_cert_hierarchical_v1)
         fail_unless(result == wsi[i].result, "g: %lld r: %d er: %d",
                     trx->global_seqno(), result, wsi[i].result);
         fail_unless(trx->depends_seqno() == wsi[i].expected_depends_seqno,
-                    "wsi: SIZET_PRINTF_SPEC g: %lld ld: %lld eld: %lld",
+                    "wsi: " SIZET_PRINTF_SPEC " g: %lld ld: %lld eld: %lld",
                     i, trx->global_seqno(), trx->depends_seqno(),
                     wsi[i].expected_depends_seqno);
         cert.set_trx_committed(trx);
@@ -502,7 +502,7 @@ START_TEST(test_cert_hierarchical_v2)
         fail_unless(result == wsi[i].result, "g: %lld res: %d exp: %d",
                     trx->global_seqno(), result, wsi[i].result);
         fail_unless(trx->depends_seqno() == wsi[i].expected_depends_seqno,
-                    "wsi: SIZET_PRINTF_SPEC g: %lld ld: %lld eld: %lld",
+                    "wsi: " SIZET_PRINTF_SPEC " g: %lld ld: %lld eld: %lld",
                     i, trx->global_seqno(), trx->depends_seqno(),
                     wsi[i].expected_depends_seqno);
         cert.set_trx_committed(trx);

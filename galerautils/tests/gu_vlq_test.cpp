@@ -63,7 +63,7 @@ START_TEST(test_uleb128_encode)
         size_t offset(gu::uleb128_encode(valarr[i].val, &buf[0],
                                          buf.size(), 0));
         fail_unless(offset == valarr[i].size,
-                    "got offset SIZET_PRINTF_SPEC, expected SIZET_PRINTF_SPEC for value 0x%llx",
+                    "got offset " SIZET_PRINTF_SPEC ", expected " SIZET_PRINTF_SPEC " for value 0x%llx",
                     offset, valarr[i].size, valarr[i].val);
     }
 }
@@ -83,7 +83,7 @@ START_TEST(test_uleb128_decode)
         {
             offset = gu::uleb128_decode(&buf[0], buf.size(), 0, val);
             fail_unless(offset == valarr[i].size,
-                        "got offset SIZET_PRINTF_SPEC, expected SIZET_PRINTF_SPEC for value 0x%llx",
+                        "got offset " SIZET_PRINTF_SPEC ", expected " SIZET_PRINTF_SPEC " for value 0x%llx",
                         offset, valarr[i].size, valarr[i].val);
             fail_unless(val == valarr[i].val,
                         "got value 0x%llx, expected 0x%llx",
@@ -91,7 +91,7 @@ START_TEST(test_uleb128_decode)
         }
         catch (gu::Exception& e)
         {
-            fail("Exception in round SIZET_PRINTF_SPEC for encoding of size SIZET_PRINTF_SPEC: %s",
+            fail("Exception in round " SIZET_PRINTF_SPEC " for encoding of size " SIZET_PRINTF_SPEC ": %s",
                  i, valarr[i].size, e.what());
         }
     }
