@@ -150,9 +150,11 @@ typedef union gu_uint128 {
     GU_MUL128_INPLACE (_a, _b);                                         \
     (_a).u32[GU_32HI] |= sign;                                          \
 }
-
+#ifdef _MSC_VER
+#define GU_EQ128(_a, _b) (!memcmp(_a.u64,_b.u64,sizeof(_a.u64)))
+#else
 #define GU_EQ128(_a, _b) (!memcmp(&_a,&_b,sizeof(_a)))
-
+#endif
 #endif /* __SIZEOF_INT128__ */
 
 /* Not sure how to make it both portable, efficient and still follow the
