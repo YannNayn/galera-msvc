@@ -2,16 +2,18 @@ import sys
 Import('check_env')
 
 env = check_env.Clone()
-
-env.Prepend(LIBS=File('#/galerautils/src/galerautils.lib'))
-env.Prepend(LIBS=File('#/galerautils/src/galerautils++.lib'))
-env.Prepend(LIBS=File('#/gcache/src/gcache.lib'))
-
-source = Glob('*.cpp')
 if sys.platform.find("win")==0:
-    gcache_tests = env.Program(target = 'gcache_tests.exe', source = source)
+	target='gcache_tests.exe'
+	env.Prepend(LIBS=File('#/galerautils/src/galerautils.lib'))
+	env.Prepend(LIBS=File('#/galerautils/src/galerautils++.lib'))
+	env.Prepend(LIBS=File('#/gcache/src/gcache.lib'))
 else:
-    gcache_tests = env.Program(target = 'gcache_tests', source = source)
+	target='gcache_tests'
+	env.Prepend(LIBS=File('#/galerautils/src/libgalerautils.a'))
+	env.Prepend(LIBS=File('#/galerautils/src/libgalerautils++.a'))
+	env.Prepend(LIBS=File('#/gcache/src/libgcache.a'))
+source = Glob('*.cpp')
+gcache_tests = env.Program(target = target, source = source)
 
 #                           source = Split('''
 #                                 gcache_tests.cpp
