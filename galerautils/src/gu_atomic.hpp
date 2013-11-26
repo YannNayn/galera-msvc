@@ -243,6 +243,98 @@ namespace mongo {
     };
 
 }  // namespace mongo
+namespace Ha {
+
+    /**
+     * Default instantiation of AtomicIntrinsics<>, for unsupported types.
+     */
+    template <typename T, typename _IsTSupported=void>
+    class AtomicIntrinsics {
+    private:
+        AtomicIntrinsics();
+        ~AtomicIntrinsics();
+    };
+template <typename T>
+    class AtomicIntrinsics<T, typename boost::enable_if_c<sizeof(T) == sizeof(LONG)>::type> {
+    public:
+
+
+
+
+        static T fetchAndAdd(volatile T* dest, T increment) {
+            return InterlockedAdd(reinterpret_cast<volatile LONG*>(dest), LONG(increment));
+        }
+
+    private:
+        AtomicIntrinsics();
+        ~AtomicIntrinsics();
+    };
+
+    /**
+     * Instantiation of AtomicIntrinsics<> for 64-bit word sizes.
+     */
+    template <typename T>
+    class AtomicIntrinsics<T, typename boost::enable_if_c<sizeof(T) == sizeof(LONGLONG)>::type> {
+    public:
+
+#if defined(NTDDI_VERSION) && defined(NTDDI_WS03SP2) && (NTDDI_VERSION >= NTDDI_WS03SP2)
+        static const bool kHaveInterlocked64 = true;
+#else
+        static const bool kHaveInterlocked64 = false;
+#endif
+
+
+        static T addAndFetch(volatile T* dest, T increment) {
+            return InterlockedImpl<kHaveInterlocked64>::addAndFetch(dest, increment);
+        }
+
+    private:
+        AtomicIntrinsics();
+        ~AtomicIntrinsics();
+
+        template <bool>
+        struct InterlockedImpl;
+
+        // Implementation of 64-bit Interlocked operations via Windows API calls.
+        template<>
+        struct InterlockedImpl<true> {
+            static T addAndFetch(volatile T* dest, T increment) {
+                return InterlockedAdd64(
+                    reinterpret_cast<volatile LONGLONG*>(dest),
+                    LONGLONG(increment));
+            }
+        };
+
+        // Implementation of 64-bit Interlocked operations for systems where the API does not
+        // yet provide the Interlocked...64 operations.
+        template<>
+        struct InterlockedImpl<false> {
+            static T compareAndSwap(volatile T* dest, T expected, T newValue) {
+                // NOTE: We must use the compiler intrinsic here: WinXP does not offer
+                // InterlockedCompareExchange64 as an API call.
+                return _InterlockedCompareExchange64(
+                    reinterpret_cast<volatile LONGLONG*>(dest),
+                    LONGLONG(newValue),
+                    LONGLONG(expected));
+            }
+
+
+            static T addAndFetch(volatile T* dest, T increment) {
+                // NOTE: See note for 'swap' on why we roll this ourselves.
+                T currentValue = *dest;
+                while (true) {
+                    const T incremented = currentValue + increment;
+                    const T result = compareAndSwap(dest, currentValue, incremented);
+                    if (result == currentValue)
+                        return incremented;
+                    currentValue = result;
+                }
+            }	
+        };
+
+    };
+
+}
 #endif // __cplusplus
 
 namespace gu
@@ -279,17 +371,23 @@ namespace gu
 
         I add_and_fetch(const I i)
         {
+			return Ha::AtomicIntrinsics<I>::addAndFetch(&i_,i);
+			/*
             I ret = mongo::AtomicIntrinsics<I>::load(&i_) + i;
             mongo::AtomicIntrinsics<I>::swap(&i_,ret);
             return ret;
+			*/
             //return __sync_add_and_fetch(&i_, i);
         }
 
         I sub_and_fetch(const I i)
         {
+			return Ha::AtomicIntrinsics<I>::addAndFetch(&i_,-i);
+			/*
             I ret = mongo::AtomicIntrinsics<I>::load(&i_) - i;
             mongo::AtomicIntrinsics<I>::swap(&i_,ret);
             return ret;
+			*/
             //return __sync_sub_and_fetch(&i_, i);
         }
 
