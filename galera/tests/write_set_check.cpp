@@ -256,8 +256,12 @@ END_TEST
 
 START_TEST(test_mapped_buffer)
 {
-    string wd("/tmp");
-    MappedBuffer mb(wd, 1 << 8);
+#ifdef _MSC_VER
+	string wd(getenv("TEMP"));
+#else
+	string wd("/tmp");
+#endif
+	MappedBuffer mb(wd, 1 << 8);
 
     mb.resize(16);
     for (size_t i = 0; i < 16; ++i)

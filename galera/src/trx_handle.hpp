@@ -24,7 +24,12 @@ namespace galera
 
 //    class KeyEntry; // Forward declaration
 
-    static const std::string working_dir = "/tmp";
+#ifdef _MSC_VER
+	static const std::string working_dir = getenv("TEMP");
+#else
+	static const std::string working_dir = "/tmp";
+#endif
+	
 
     class TrxHandle
     {
