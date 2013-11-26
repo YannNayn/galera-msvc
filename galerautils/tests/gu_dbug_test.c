@@ -54,8 +54,11 @@ START_TEST(gu_dbug_test)
     pthread_t th[N_THREADS];
 
     /* Log > /dev/null */
+#ifdef _MSC_VER
+    GU_DBUG_FILE = fopen("NUL", "a+");
+#else
     GU_DBUG_FILE = fopen("/dev/null", "a+");
-
+#endif    
     /* These should not produce output yet */
     af();
     af();

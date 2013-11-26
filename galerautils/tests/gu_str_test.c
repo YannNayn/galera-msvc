@@ -97,7 +97,12 @@ START_TEST(test_str_table)
 
     mark_point();
 
+#ifdef _MSC_VER
+    tmp = fopen("NUL", "w");
+#else
     tmp = fopen("/dev/null", "w");
+#endif    
+    
     fail_if (NULL == tmp);
 
     gu_str_table_print(tmp, str);

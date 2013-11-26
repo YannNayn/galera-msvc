@@ -72,7 +72,11 @@ become_daemon ()
     // Bind standard fds (0, 1, 2) to /dev/null
     for (int fd = 0; fd < 3; ++fd)
     {
-        if (open("/dev/null", O_RDONLY) < 0)
+#ifdef _MSC_VER
+    if (open("NUL", O_RDONLY) < 0)
+#else
+    if (open("/dev/null", O_RDONLY) < 0)
+#endif    
         {
             gu_throw_error(errno) << "Unable to open /dev/null for fd " << fd;
         }
