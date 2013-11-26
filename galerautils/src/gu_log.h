@@ -73,7 +73,7 @@ extern gu_log_severity_t gu_log_max_level;
                ## __VA_ARGS__, NULL)
 #else
 #define GU_LOG_C(level, ...)\
-        gu_log(level, __FILE__, "???func???", __LINE__,\
+        gu_log(level, __FILE__, __FUNCTION__, __LINE__,\
                ## __VA_ARGS__, NULL)
 #endif
 /**
