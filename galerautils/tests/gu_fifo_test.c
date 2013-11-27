@@ -53,7 +53,15 @@ START_TEST (gu_fifo_test)
         int err;
         item = gu_fifo_get_head (fifo, &err);
         fail_if (item == NULL, "could not get item %ld", i);
+#ifdef _MSC_VER
+#if GU_WORDSIZE == 32        
         fail_if (*item != (ulong)i, "got %ld, expected %ld", *item, i);
+#else
+        fail_if (*item != (size_t)i, "got %ld, expected %ld", *item, i);
+#endif        
+#else        
+        fail_if (*item != (ulong)i, "got %ld, expected %ld", *item, i);
+#endif        
         gu_fifo_pop_head (fifo);
     }
 
