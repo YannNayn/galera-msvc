@@ -76,8 +76,8 @@ START_TEST (gcs_state_msg_test_basic)
 
     {
         size_t str_len = 1024;
-        char   send_str=alloca(sizeof(char) *str_len);
-        char   recv_str=alloca(sizeof(char) *str_len);
+        char   *send_str=alloca(sizeof(char) *str_len);
+        char   *recv_str=alloca(sizeof(char) *str_len);
 
         fail_if (gcs_state_msg_snprintf (send_str, str_len, send_state) <= 0);
         fail_if (gcs_state_msg_snprintf (recv_str, str_len, recv_state) <= 0);
