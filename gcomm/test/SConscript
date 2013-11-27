@@ -8,7 +8,7 @@ if sys.platform.find("win") == 0:
     env.Prepend(LIBS=File('#/galerautils/src/galerautils++.lib'))
     env.Prepend(LIBS=File('#/gcomm/src/gcomm.lib'))
 else:
-	target = 'check_gcomm'
+    target = 'check_gcomm'
     env.Prepend(LIBS=File('#/galerautils/src/libgalerautils.a'))
     env.Prepend(LIBS=File('#/galerautils/src/libgalerautils++.a'))
     env.Prepend(LIBS=File('#/gcomm/src/libgcomm.a'))
