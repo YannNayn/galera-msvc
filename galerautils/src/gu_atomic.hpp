@@ -304,7 +304,7 @@ template <typename T>
                         return incremented;
                     currentValue = result;
                 }
-
+			}
 
     private:
         AtomicIntrinsics();
