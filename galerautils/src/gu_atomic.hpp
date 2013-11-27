@@ -38,8 +38,8 @@
 #include <windows.h>
 #include <intrin.h>
 #pragma intrinsic(_InterlockedCompareExchange64)
-#pragma intrinsic(_InterlockedAdd)
-#pragma intrinsic(_InterlockedAdd64)
+//#pragma intrinsic(_InterlockedAdd)
+//#pragma intrinsic(_InterlockedAdd64)
 namespace mongo {
 
     /**
@@ -278,16 +278,33 @@ template <typename T>
     class AtomicIntrinsics<T, typename boost::enable_if_c<sizeof(T) == sizeof(LONGLONG)>::type> {
     public:
 
-#if defined(NTDDI_VERSION) && defined(NTDDI_WS03SP2) && (NTDDI_VERSION >= NTDDI_WS03SP2)
+#if defined(NTDDI_VERSION) && defined(NTDDI_WS03SP2) && (NTDDI_VERSION >= NTDDI_WS03SP2) && 1==0
         static const bool kHaveInterlocked64 = true;
 #else
         static const bool kHaveInterlocked64 = false;
 #endif
 
-
-        static T addAndFetch(volatile T* dest, T increment) {
-            return InterlockedImpl<kHaveInterlocked64>::addAndFetch(dest, increment);
+        static T compareAndSwap(volatile T* dest, T expected, T newValue) {
+            // NOTE: We must use the compiler intrinsic here: WinXP does not offer
+            // InterlockedCompareExchange64 as an API call.
+            return _InterlockedCompareExchange(
+                reinterpret_cast<volatile LONGLONG*>(dest),
+                LONGLONG(newValue),
+                LONGLONG(expected));
         }
+
+
+            static T addAndFetch(volatile T* dest, T increment) {
+                // NOTE: See note for 'swap' on why we roll this ourselves.
+                T currentValue = *dest;
+                while (true) {
+                    const T incremented = currentValue + increment;
+                    const T result = compareAndSwap(dest, currentValue, incremented);
+                    if (result == currentValue)
+                        return incremented;
+                    currentValue = result;
+                }
+
 
     private:
         AtomicIntrinsics();
