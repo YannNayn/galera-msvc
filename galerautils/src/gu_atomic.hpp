@@ -266,7 +266,7 @@ template <typename T>
             // NOTE: We must use the compiler intrinsic here: WinXP does not offer
             // InterlockedCompareExchange64 as an API call.
             return _InterlockedCompareExchange(
-                reinterpret_cast<volatile LONGLONG*>(dest),
+                reinterpret_cast<volatile LONG*>(dest),
                 LONGLONG(newValue),
                 LONGLONG(expected));
         }
