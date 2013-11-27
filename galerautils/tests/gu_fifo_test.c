@@ -51,15 +51,19 @@ START_TEST (gu_fifo_test)
     // test pop
     for (i = 0; i < used; i++) {
         int err;
+        size_t _item;
+        size_t _i;
         item = gu_fifo_get_head (fifo, &err);
         fail_if (item == NULL, "could not get item %ld", i);
 #ifdef _MSC_VER
 #if GU_WORDSIZE == 32        
         fail_if (*item != (ulong)i, "got %ld, expected %ld", *item, i);
 #else
-        size_t _item = *item;
-        size_t _i = i;
-        DebugBreak();
+        _item = *item;
+        _i = (size_t)i;
+        {
+            DebugBreak();
+        }
         fail_if (_item != _i, "got %ld, expected %ld", *item, i);
 #endif        
 #else        
