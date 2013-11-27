@@ -19,6 +19,7 @@ import platform
 import string
 import sys
 if sys.platform.find("win") == 0:
+    is_64= sys.version.find("64 bit") >=0
     sysname="windows"
     machine = "X86"
     os.putenv('CC', 'cl')
@@ -26,11 +27,20 @@ if sys.platform.find("win") == 0:
     pthreadLib='pthreadVC2.lib'
     os.putenv('LIBPATH',os.environ['LIB'])
 else:
+    is_64=False
     sysname = os.uname()[0].lower()
     machine = platform.machine()
     pthreadLib='pthread'
-print 'Host: ' + sysname + ' ' + machine
+if is_64:    
+    print ('Host: ' + sysname + ' ' + machine + " 64bits")
+else:
+    print ('Host: ' + sysname + ' ' + machine + " 32bits")
 
+
+if is_64:
+    TARGET_ARCH='x86_64'
+else:
+    TARGET_ARCH='x86'
 #
 # Print Help
 #
@@ -131,9 +141,9 @@ LIBBOOST_SYSTEM_A = string.replace(LIBBOOST_PROGRAM_OPTIONS_A, 'boost_program_op
 # Set up and export default build environment
 #
 if sysname != 'windows':
-    env = Environment(ENV = {'PATH' : os.environ['PATH'], 'HOME' : os.environ['HOME']})
+    env = Environment(ENV = {'PATH' : os.environ['PATH'], 'HOME' : os.environ['HOME'],'TARGET_ARCH' : TARGET_ARCH})
 else:
-    env = Environment(ENV = {'PATH' : os.environ['PATH'], 'HOME' : os.environ['HOMEPATH']})
+    env = Environment(ENV = {'PATH' : os.environ['PATH'], 'HOME' : os.environ['HOMEPATH'],'TARGET_ARCH' : TARGET_ARCH})
 env['ENV']['MSVC_USE_SCRIPT']="False"
 # Set up environment for ccache and distcc
 # env['ENV']['HOME']          = os.environ['HOME']
