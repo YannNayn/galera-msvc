@@ -3,11 +3,17 @@ Import('check_env')
 
 env = check_env.Clone()
 
-env.Prepend(LIBS=File('#/galerautils/src/galerautils.lib'))
-env.Prepend(LIBS=File('#/galerautils/src/galerautils++.lib'))
 
-    
-gu_tests = env.Program(target = 'gu_tests',
+if sys.platform.find("win")==0:
+    target = 'gu_tests.exe'
+    env.Prepend(LIBS=File('#/galerautils/src/galerautils.lib'))
+    env.Prepend(LIBS=File('#/galerautils/src/galerautils++.lib'))
+else:
+    target = 'gu_tests'
+    env.Prepend(LIBS=File('#/galerautils/src/libgalerautils.a'))
+    env.Prepend(LIBS=File('#/galerautils/src/libgalerautils++.a'))
+
+gu_tests = env.Program(target = target,
                        source = Split('''
                          
                             gu_tests.c
@@ -26,13 +32,15 @@ gu_tests = env.Program(target = 'gu_tests',
                             gu_utils_test.c
                          '''))
 
-if 1 == 0:
-    env.Test("gu_tests.passed", gu_tests)
+env.Test("gu_tests.passed", gu_tests)
 env.Alias("test", "gu_tests.passed")
 
 Clean(gu_tests, '#/gu_tests.log')
-
-gu_testspp = env.Program(target = 'gu_tests++',
+if sys.platform.find("win")==0:
+    target = 'gu_tests++'
+else:
+    target = 'gu_tests++.exe'
+gu_testspp = env.Program(target = target,
                          source = Split('''
                               gu_tests++.cpp
                               gu_string_test.cpp
@@ -41,8 +49,7 @@ gu_testspp = env.Program(target = 'gu_tests++',
                               gu_datetime_test.cpp
                               gu_vlq_test.cpp
                            '''))
-if 1 == 0:
-    env.Test("gu_tests++.passed", gu_testspp)
+env.Test("gu_tests++.passed", gu_testspp)
 env.Alias("test", "gu_tests++.passed")
 
 Clean(gu_testspp, '#/gu_tests++.log')

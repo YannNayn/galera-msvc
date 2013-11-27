@@ -11,7 +11,7 @@ void gcomm::Protostack::push_proto(Protolay* p)
     Critical<Protostack> crit(*this);
     std::deque<Protolay*>::iterator prev_begin(protos_.begin());
     protos_.push_front(p);
-    if (prev_begin != protos_.end())
+    if (prev_begin != protos_.end() && protos_.size()>1)
     {
         gcomm::connect(*prev_begin, p);
     }
