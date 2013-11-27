@@ -42,6 +42,9 @@ if sys.platform.find("win") == 0:
     env.Append(LIBS = File('#/gcache/src/gcache.lib'))
     env.Append(LIBS = File('#/galerautils/src/galerautils++.lib'))
     env.Append(LIBS = File('#/galerautils/src/galerautils.lib'))
+    gcs_tests = env.Program(target    = target,
+                        source    = gcs_tests_sources,
+                        OBJPREFIX = 'gcs-tests-')
 else:
     target    = 'gcs_tests'
     env.Append(LIBS = File('#/gcache/src/libgcache.a'))
@@ -49,10 +52,10 @@ else:
     env.Append(LIBS = File('#/galerautils/src/libgalerautils.a'))
     env.Append(LIBS = ['m'])
 
-gcs_tests = env.Program(target    = target,
-                        source    = gcs_tests_sources,
-                        OBJPREFIX = 'gcs-tests-',
-                        LINK      = env['CXX'])
+    gcs_tests = env.Program(target    = target,
+                            source    = gcs_tests_sources,
+                            OBJPREFIX = 'gcs-tests-',
+                            LINK      = env['CXX'])
 
 env.Test("gcs_tests.passed", gcs_tests)
 env.Alias("test", "gcs_tests.passed")

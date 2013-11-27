@@ -68,7 +68,7 @@ namespace gcache
             struct timeval time;
 
             gettimeofday (&time, NULL);
-            localtime_r  (&time.tv_sec, &date);
+            localtime_rl  (&time.tv_sec, &date);
 
             // save original format flags
 //            ios_base::fmtflags original_flags = os.flags();

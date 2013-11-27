@@ -78,7 +78,7 @@ log_tstamp (char* tstamp, size_t const len)
     struct timeval time;
 
     gettimeofday (&time, NULL);
-    localtime_r  (&time.tv_sec, &date);
+    localtime_rl  (&time.tv_sec, &date);
 
     /* 23 symbols */
     ret = snprintf (tstamp, len, "%04d-%02d-%02d %02d:%02d:%02d.%03d ",
