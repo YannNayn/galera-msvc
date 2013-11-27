@@ -261,7 +261,7 @@ template <typename T>
 
 
 
-        static T fetchAndAdd(volatile T* dest, T increment) {
+        static T addAndFetch(volatile T* dest, T increment) {
             return InterlockedAdd(reinterpret_cast<volatile LONG*>(dest), LONG(increment));
         }
 
