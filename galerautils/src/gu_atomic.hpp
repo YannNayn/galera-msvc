@@ -302,6 +302,11 @@ template <typename T>
         static const bool kHaveInterlocked64 = false;
 #endif
 
+        static T addAndFetch(volatile T* dest, T increment)
+        {
+            return InterlockedImpl<kHaveInterlocked64>::addAndFetch(dest, increment);
+        }
+
 
     private:
         AtomicIntrinsics();
@@ -346,7 +351,6 @@ template <typename T>
                 }
             }	
         };
-
     };
 
 }
