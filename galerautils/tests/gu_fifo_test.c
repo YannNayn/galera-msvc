@@ -15,9 +15,17 @@ START_TEST (gu_fifo_test)
     int err;
     gu_fifo_t* fifo;
     long i;
+#ifdef _MSC_VER
+	unsigned __int32 * item;
+#else
     size_t* item;
+#endif
     long used;
-
+#ifdef _MSC_VER
+#if GU_WORDSIZE == 64
+	printf("\n______________________________\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nWARNING ....\nWARNING ...\nWARNING ..\nWARNING .\nWARNING:\n64 bits issue:Treating item as 32 bits unsigned int in test %s(%d)-%s\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n______________________________\n",__FILE__,__LINE__,__FUNCTION__);
+#endif
+#endif
     fifo = gu_fifo_create (0, 1);
     fail_if (fifo != NULL);
 
@@ -51,20 +59,20 @@ START_TEST (gu_fifo_test)
     // test pop
     for (i = 0; i < used; i++) {
         int err;
-        size_t _item;
-        size_t _i;
+        
         item = gu_fifo_get_head (fifo, &err);
         fail_if (item == NULL, "could not get item %ld", i);
 #ifdef _MSC_VER
 #if GU_WORDSIZE == 32        
         fail_if (*item != (ulong)i, "got %ld, expected %ld", *item, i);
 #else
-        _item = *item;
-        _i = (size_t)i;
-        {
-            DebugBreak();
-        }
-        fail_if (_item != _i, "got %ld, expected %ld", *item, i);
+		{
+			unsigned __int32 _item;
+			size_t _i;
+			_item = *item;
+			_i = (size_t)i;
+	        fail_if (_item != _i, "got %ld, expected %ld", *item, i);
+		}
 #endif        
 #else        
         fail_if (*item != (ulong)i, "got %ld, expected %ld", *item, i);
