@@ -262,7 +262,27 @@ template <typename T>
 
 
 
-        static T addAndFetch(volatile T* dest, T increment);
+        static T compareAndSwap(volatile T* dest, T expected, T newValue) {
+            // NOTE: We must use the compiler intrinsic here: WinXP does not offer
+            // InterlockedCompareExchange64 as an API call.
+            return _InterlockedCompareExchange(
+                reinterpret_cast<volatile LONGLONG*>(dest),
+                LONGLONG(newValue),
+                LONGLONG(expected));
+        }
+
+
+        static T addAndFetch(volatile T* dest, T increment) {
+            // NOTE: See note for 'swap' on why we roll this ourselves.
+            T currentValue = *dest;
+            while (true) {
+                const T incremented = currentValue + increment;
+                const T result = compareAndSwap(dest, currentValue, incremented);
+                if (result == currentValue)
+                    return incremented;
+                currentValue = result;
+            }
+		}
 
     private:
         AtomicIntrinsics();
@@ -282,27 +302,6 @@ template <typename T>
         static const bool kHaveInterlocked64 = false;
 #endif
 
-        static T compareAndSwap(volatile T* dest, T expected, T newValue) {
-            // NOTE: We must use the compiler intrinsic here: WinXP does not offer
-            // InterlockedCompareExchange64 as an API call.
-            return _InterlockedCompareExchange(
-                reinterpret_cast<volatile LONGLONG*>(dest),
-                LONGLONG(newValue),
-                LONGLONG(expected));
-        }
-
-
-            static T addAndFetch(volatile T* dest, T increment) {
-                // NOTE: See note for 'swap' on why we roll this ourselves.
-                T currentValue = *dest;
-                while (true) {
-                    const T incremented = currentValue + increment;
-                    const T result = compareAndSwap(dest, currentValue, incremented);
-                    if (result == currentValue)
-                        return incremented;
-                    currentValue = result;
-                }
-			}
 
     private:
         AtomicIntrinsics();
