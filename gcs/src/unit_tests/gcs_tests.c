@@ -44,8 +44,12 @@ static suite_creator_t suites[] =
 
 int main(int argc, char* argv[])
 {
+#ifdef _MSC_VER
+    int no_fork = 1;
+#else    
   int no_fork = ((argc > 1) && !strcmp(argv[1], "nofork")) ? 1 : 0;
-  int i       = 0;
+#endif
+    int i       = 0;
   int failed  = 0;
 
   FILE* log_file = NULL;
