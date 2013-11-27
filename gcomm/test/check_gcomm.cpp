@@ -49,10 +49,13 @@ int main(int argc, char* argv[])
 
     SRunner* sr = srunner_create(0);
     vector<string>* suits = 0;
-
+#ifdef _MSC_VER
+	srunner_set_fork_status(sr, CK_NOFORK);
+#else
     if (argc > 1 && !strcmp(argv[1],"nofork")) {
         srunner_set_fork_status(sr, CK_NOFORK);
     }
+#endif
     else if (argc > 1 && strcmp(argv[1], "nolog") == 0)
     { /* no log redirection */}
     else { // running in the background, loggin' to file
