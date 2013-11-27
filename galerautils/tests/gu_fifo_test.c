@@ -57,7 +57,10 @@ START_TEST (gu_fifo_test)
 #if GU_WORDSIZE == 32        
         fail_if (*item != (ulong)i, "got %ld, expected %ld", *item, i);
 #else
-        fail_if (*item != (size_t)i, "got %ld, expected %ld", *item, i);
+        size_t _item = *item;
+        size_t _i = i;
+        DebugBreak();
+        fail_if (_item != _i, "got %ld, expected %ld", *item, i);
 #endif        
 #else        
         fail_if (*item != (ulong)i, "got %ld, expected %ld", *item, i);
