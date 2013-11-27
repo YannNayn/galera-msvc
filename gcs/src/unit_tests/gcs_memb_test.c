@@ -467,7 +467,7 @@ START_TEST(gcs_memb_test_465)
     fail_if (verify_node_state_across_group (&group, 1, GCS_NODE_STATE_SYNCED));
     
     ret = gcs_group_act_conf (&group.nodes[1]->group, &act, &proto_ver);
-    fail_if (ret <= 0, "gcs_group_act_cnf() retruned %zd (%s)",
+    fail_if (ret <= 0, "gcs_group_act_cnf() retruned " SSIZET_PRINTF_SPEC " (%s)",
              ret, strerror (-ret));
     fail_if (ret != act.buf_len);
     fail_if (proto_ver != 0 /* current version */, "proto_ver = %d", proto_ver);

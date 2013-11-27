@@ -499,7 +499,7 @@ state_quorum_remerge (const gcs_state_msg_t* const states[],
     int candidates_found = 0;
     const gcs_state_msg_t* rep = NULL;
     if (!candidates) {
-        gu_error ("Quorum: could not allocate %zd bytes for re-merge check.",
+        gu_error ("Quorum: could not allocate " SSIZET_PRINTF_SPEC " bytes for re-merge check.",
                   states_num * sizeof(struct candidate));
         return NULL;
     }
@@ -625,7 +625,7 @@ state_quorum_bootstrap (const gcs_state_msg_t* const states[],
     struct candidate* candidates = GU_CALLOC(states_num, struct candidate);
 
     if (!candidates) {
-        gu_error ("Quorum: could not allocate %zd bytes for re-merge check.",
+        gu_error ("Quorum: could not allocate " SSIZET_PRINTF_SPEC " bytes for re-merge check.",
                   states_num * sizeof(struct candidate));
         return NULL;
     }

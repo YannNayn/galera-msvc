@@ -21,7 +21,7 @@ START_TEST(test1)
     std::map<int64_t, const void*> s2p;
     RingBuffer rb(rb_name, rb_size, s2p);
 
-    fail_if (rb.size() != rb_size, "Expected %zd, got %zd", rb_size, rb.size());
+    fail_if (rb.size() != rb_size, "Expected " SSIZET_PRINTF_SPEC ", got " SSIZET_PRINTF_SPEC "", rb_size, rb.size());
 
     void* buf1 = rb.malloc (3 + bh_size);
     fail_if (NULL != buf1); // > 1/2 size

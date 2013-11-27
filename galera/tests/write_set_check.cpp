@@ -163,7 +163,7 @@ START_TEST(test_write_set1)
         + 1 + 1 + 6 + 1 + 4 // key2
 #endif
         + 4 + 6; // rbr
-    fail_unless(buf.size() == expected_size, "%zd <-> %zd <-> %zd",
+    fail_unless(buf.size() == expected_size, "" SSIZET_PRINTF_SPEC " <-> " SSIZET_PRINTF_SPEC " <-> " SSIZET_PRINTF_SPEC "",
                 buf.size(), expected_size, serial_size(ws));
 
 
@@ -230,7 +230,7 @@ START_TEST(test_write_set2)
         + 1 + 1 + 6 + 1 + 4 // key2
 #endif
         + 4 + 6; // rbr
-    fail_unless(buf.size() == expected_size, "%zd <-> %zd <-> %zd",
+    fail_unless(buf.size() == expected_size, "" SSIZET_PRINTF_SPEC " <-> " SSIZET_PRINTF_SPEC " <-> " SSIZET_PRINTF_SPEC "",
                 buf.size(), expected_size, serial_size(ws));
 
 

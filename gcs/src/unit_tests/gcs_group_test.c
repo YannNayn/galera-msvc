@@ -235,7 +235,7 @@ START_TEST (gcs_group_configuration)
     fail_if (act->buf != NULL);
 //    ret = gcs_group_handle_act_msg (&group, &msg3, &r_act);
     TRY_MESSAGE(msg3);
-    fail_if (ret != act_len, "Expected ret = %zd, got %zd", act_len, ret);
+    fail_if (ret != act_len, "Expected ret = " SSIZET_PRINTF_SPEC ", got " SSIZET_PRINTF_SPEC "", act_len, ret);
     fail_if (act->buf_len != act_len);
     fail_if (act->buf == NULL);
     fail_if (strncmp(act->buf, act_buf, act_len),

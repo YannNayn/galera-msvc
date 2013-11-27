@@ -42,14 +42,14 @@ START_TEST (gcs_state_msg_test_basic)
     fail_if (NULL == send_state);
 
     send_len = gcs_state_msg_len (send_state);
-    fail_if (send_len < 0, "gcs_state_msg_len() returned %zd (%s)",
+    fail_if (send_len < 0, "gcs_state_msg_len() returned " SSIZET_PRINTF_SPEC " (%s)",
              send_len, strerror (-send_len));
     {
         uint8_t *send_buf = alloca(sizeof(uint8_t) *send_len);
 
         ret = gcs_state_msg_write (send_buf, send_state);
         fail_if (ret != send_len, "Return value does not match send_len: "
-                 "expected %zd, got %zd", send_len, ret);
+                 "expected " SSIZET_PRINTF_SPEC ", got " SSIZET_PRINTF_SPEC "", send_len, ret);
 
         recv_state = gcs_state_msg_read (send_buf, send_len);
         fail_if (NULL == recv_state);

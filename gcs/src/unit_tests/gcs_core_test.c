@@ -121,7 +121,7 @@ static bool COMMON_RECV_CHECKS(action_t*      act,
                                gcs_seqno_t*   seqno)
 {
     FAIL_IF (size != UNKNOWN_SIZE && size != act->size,
-             "gcs_core_recv(): expected %lld, returned %zd (%s)",
+             "gcs_core_recv(): expected %lld, returned " SSIZET_PRINTF_SPEC " (%s)",
              (long long) size, act->size, strerror (-act->size));
     FAIL_IF (act->type != type,
              "type does not match: expected %d, got %d", type, act->type);
@@ -273,14 +273,14 @@ core_test_set_payload_size (ssize_t s)
 
     ret = gcs_core_set_pkt_size (Core, arbitrary_pkt_size);
     if (ret <= 0) {
-        gu_error("set_pkt_size(%zd) returned: %ld (%s)", arbitrary_pkt_size,
+        gu_error("set_pkt_size(" SSIZET_PRINTF_SPEC ") returned: %ld (%s)", arbitrary_pkt_size,
                  ret, strerror (-ret));
         return ret;
     }
 
     ret = gcs_core_set_pkt_size (Core, arbitrary_pkt_size - ret + s);
     if (ret != s) {
-        gu_error("set_pkt_size() returned: %ld instead of %zd", ret, s);
+        gu_error("set_pkt_size() returned: %ld instead of " SSIZET_PRINTF_SPEC "", ret, s);
         return ret;
     }
 
@@ -385,7 +385,7 @@ core_test_cleanup ()
         ssize_t   allocated;
         allocated = gcs_tests_get_allocated();
         fail_if (0 != allocated,
-                 "Expected 0 allocated bytes, found %zd", allocated);
+                 "Expected 0 allocated bytes, found " SSIZET_PRINTF_SPEC "", allocated);
     }
 }
 

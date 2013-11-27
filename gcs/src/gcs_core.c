@@ -247,7 +247,7 @@ core_msg_send (gcs_core_t*    core,
                 GCS_MSG_ACTION != msg_type) {
                 // could not send message in one piece
                 gu_error ("Failed to send complete message of %s type: "
-                          "sent %zd out of " SIZET_PRINTF_SPEC " bytes.",
+                          "sent " SSIZET_PRINTF_SPEC " out of " SIZET_PRINTF_SPEC " bytes.",
                           gcs_msg_type_string[msg_type], ret, msg_len);
                 ret = -EMSGSIZE;
             }
@@ -356,7 +356,7 @@ gcs_core_send (gcs_core_t*      const conn,
                                    GCS_MSG_ACTION);
 #ifdef GCS_CORE_TESTING
 //        gu_lock_step_wait (&conn->ls); // pause after every fragment
-//        gu_info ("Sent %p of size " SIZET_PRINTF_SPEC ", ret: %zd. Total sent: " SIZET_PRINTF_SPEC ", left: " SIZET_PRINTF_SPEC "",
+//        gu_info ("Sent %p of size " SIZET_PRINTF_SPEC ", ret: " SSIZET_PRINTF_SPEC ". Total sent: " SIZET_PRINTF_SPEC ", left: " SIZET_PRINTF_SPEC "",
 //                 conn->send_buf + hdr_size, chunk_size, ret, sent, act_size);
 #endif
 
@@ -481,7 +481,7 @@ core_handle_act_msg (gcs_core_t*          core,
         ret = gcs_act_proto_read (&frg, msg->buf, msg->size);
 
         if (gu_unlikely(ret)) {
-            gu_fatal ("Error parsing action fragment header: %zd (%s).",
+            gu_fatal ("Error parsing action fragment header: " SSIZET_PRINTF_SPEC " (%s).",
                       ret, strerror (-ret));
             assert (0);
             return -ENOTRECOVERABLE;
@@ -523,7 +523,7 @@ core_handle_act_msg (gcs_core_t*          core,
                         ret = -ENOTRECOVERABLE;
                     }
                     if (gu_unlikely(act->act.buf_len != ret)) {
-                        gu_fatal ("Send/recv action size mismatch: %zd/%zd",
+                        gu_fatal ("Send/recv action size mismatch: " SSIZET_PRINTF_SPEC "/" SSIZET_PRINTF_SPEC "",
                                   act->act.buf_len, ret);
                         ret = -ENOTRECOVERABLE;
                     }
@@ -570,7 +570,7 @@ core_handle_act_msg (gcs_core_t*          core,
 //          gu_debug ("%s", (char*) act->buf);
         }
         else if (gu_unlikely(ret < 0)){
-            gu_fatal ("Failed to handle action fragment: %zd (%s)",
+            gu_fatal ("Failed to handle action fragment: " SSIZET_PRINTF_SPEC " (%s)",
                       ret, strerror(-ret));
             assert (0);
             return -ENOTRECOVERABLE;

@@ -27,7 +27,7 @@ gcs_fc_init (gcs_fc_t* fc,
     assert (fc);
 
     if (hard_limit < 0) {
-        gu_error ("Bad value for slave queue hard limit: %zd (should be > 0)",
+        gu_error ("Bad value for slave queue hard limit: " SSIZET_PRINTF_SPEC " (should be > 0)",
                   hard_limit);
         return -EINVAL;
     }
@@ -114,7 +114,7 @@ gcs_fc_process (gcs_fc_t* fc, ssize_t act_size)
     if (fc->size <= fc->soft_limit) {
         /* normal operation */
         if (gu_unlikely(fc->debug > 0 && !(fc->act_count % fc->debug))) {
-            gu_info ("FC: queue size: %zdb (%4.1f%% of soft limit)",
+            gu_info ("FC: queue size: " SSIZET_PRINTF_SPEC "b (%4.1f%% of soft limit)",
                      fc->size, ((double)fc->size)/fc->soft_limit*100.0);
         }
         return 0;
@@ -170,10 +170,10 @@ gcs_fc_process (gcs_fc_t* fc, ssize_t act_size)
             - interval;
 
         if (gu_unlikely(fc->debug > 0 && !(fc->act_count % fc->debug))) {
-            gu_info ("FC: queue size: %zdb, length: %zd, "
+            gu_info ("FC: queue size: " SSIZET_PRINTF_SPEC "b, length: " SSIZET_PRINTF_SPEC ", "
                      "measured rate: %fb/s, desired rate: %fb/s, "
                      "interval: %5.3fs, sleep: %5.4fs. "
-                     "Sleeps initiated: %zd, for a total of %6.3fs",
+                     "Sleeps initiated: " SSIZET_PRINTF_SPEC ", for a total of %6.3fs",
                      fc->size, fc->act_count,
                      ((double)(fc->size - fc->last_sleep))/interval,
                      desired_rate, interval, sleep, fc->sleep_count,
@@ -186,7 +186,7 @@ gcs_fc_process (gcs_fc_t* fc, ssize_t act_size)
 #if 0
             gu_info ("Skipping sleep: desired_rate = %f, sleep = %f (%f), "
                      "interval = %f, fc->scale = %f, fc->offset = %f, "
-                     "fc->size = %zd",
+                     "fc->size = " SSIZET_PRINTF_SPEC "",
                      desired_rate, sleep, min_sleep, interval,
                      fc->scale, fc->offset, fc->size);
 #endif

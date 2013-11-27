@@ -80,7 +80,7 @@ START_TEST(test3) // check that all page size is efficiently used
     void* ptr2 = ps.malloc (ptr_size);
     fail_if (0 == ptr2);
 
-    fail_if (ps.count() != 1, "ps.count() = %zd, expected 1", ps.count());
+    fail_if (ps.count() != 1, "ps.count() = " SSIZET_PRINTF_SPEC ", expected 1", ps.count());
 
     // check that ptr2 is adjacent to ptr1
     void* tmp = static_cast<uint8_t*>(ptr1) + ptr_size;

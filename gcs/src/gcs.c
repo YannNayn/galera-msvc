@@ -665,7 +665,7 @@ gcs_become_donor (gcs_conn_t* conn)
         err = gcs_join (conn, -EPROTO);
         if (err < 0 && !(err == -ENOTCONN || err == -EBADFD)) {
             gu_fatal ("Failed to send State Transfer Request rejection: "
-                      "%zd (%s)", err, (strerror (-err)));
+                      "" SSIZET_PRINTF_SPEC " (%s)", err, (strerror (-err)));
             assert (0);
             return -ENOTRECOVERABLE; // failed to clear donor status,
         }
@@ -973,7 +973,7 @@ gcs_handle_state_change (gcs_conn_t*           conn,
         return 1;
     }
     else {
-        gu_fatal ("Could not allocate state change action (%zd bytes)",
+        gu_fatal ("Could not allocate state change action (" SSIZET_PRINTF_SPEC " bytes)",
                   act->buf_len);
         abort();
         return -ENOMEM;
@@ -1228,7 +1228,7 @@ static void *gcs_recv_thread (void *arg)
         else if (conn->my_idx == rcvd.sender_idx)
         {
             gu_fatal("Protocol violation: unordered local action not in repl_q:"
-                     " { {%p, %zd, %s}, %ld, %lld }.",
+                     " { {%p, " SSIZET_PRINTF_SPEC ", %s}, %ld, %lld }.",
                      rcvd.act.buf, rcvd.act.buf_len,
                      gcs_act_type_to_str(rcvd.act.type), rcvd.sender_idx,
                      rcvd.id);
@@ -1239,7 +1239,7 @@ static void *gcs_recv_thread (void *arg)
         else
         {
             gu_fatal ("Protocol violation: unordered remote action: "
-                      "{ {%p, %zd, %s}, %ld, %lld }",
+                      "{ {%p, " SSIZET_PRINTF_SPEC ", %s}, %ld, %lld }",
                       rcvd.act.buf, rcvd.act.buf_len,
                       gcs_act_type_to_str(rcvd.act.type), rcvd.sender_idx,
                       rcvd.id);
@@ -1526,7 +1526,7 @@ long gcs_repl (gcs_conn_t*        conn,      //!<in
 
                 if (ret < 0) {
                     /* remove item from the queue, it will never be delivered */
-                    gu_warn ("Send action {%p, %zd, %s} returned %d (%s)",
+                    gu_warn ("Send action {%p, " SSIZET_PRINTF_SPEC ", %s} returned %d (%s)",
                              act->buf, act->size,gcs_act_type_to_str(act->type),
                              ret, strerror(-ret));
 
