@@ -38,7 +38,8 @@
 #include <windows.h>
 #include <intrin.h>
 #pragma intrinsic(_InterlockedCompareExchange64)
-
+#pragma intrinsic(_InterlockedAdd)
+#pragma intrinsic(_InterlockedAdd64)
 namespace mongo {
 
     /**
@@ -299,7 +300,7 @@ template <typename T>
         template<>
         struct InterlockedImpl<true> {
             static T addAndFetch(volatile T* dest, T increment) {
-                return InterlockedAdd64(
+                return _InterlockedAdd64(
                     reinterpret_cast<volatile LONGLONG*>(dest),
                     LONGLONG(increment));
             }
