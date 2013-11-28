@@ -55,10 +55,10 @@
 # include <stdint.h>
 # define GU_WORDSIZE __WORDSIZE
 #elif defined(WIN32)|| defined(_MSC_VER)
-#ifdef _M_X86
-#define GU_WORDSIZE 32
-#elif defined(_M_X64)
+#if defined(_M_X64)
 #define GU_WORDSIZE 64
+#else
+#define GU_WORDSIZE 32
 #endif
 #else
 # include <bits/wordsize.h>
