@@ -839,6 +839,9 @@ wsrep_status_t galera_unlock (wsrep_t* gh,
     return WSREP_OK;
 }
 
+extern "C" void galera_free_options(wsrep_t* gh,void *opts)
+{
+}
 
 extern "C"
 bool galera_is_locked (wsrep_t* gh,
@@ -889,6 +892,7 @@ static wsrep_t galera_str = {
     GALERA_VER"(r"GALERA_REV")",
     "Codership Oy <info@codership.com>",
     &galera_tear_down,
+    &galera_free_options,
     NULL,
     NULL
 };
