@@ -12,8 +12,7 @@
 
 #include <time.h>
 #ifdef _MSC_VER
-#include <windows.h>
-typedef int ssize_t;
+#include <msvc_sup.h>
 #else
 #include <unistd.h>
 #endif

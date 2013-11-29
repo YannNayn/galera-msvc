@@ -14,10 +14,9 @@
 #ifndef _MSC_VER
 #include <unistd.h>  /* ssize_t */
 #else
-#include <windows.h>  /* ssize_t */
+#include <msvc_sup.h>  /* ssize_t */
 #define __attribute__(x)
 #define GU_NORETURN
-typedef int ssize_t;
 #define inline __inline
 #endif
 #endif /* _gu_types_h_ */

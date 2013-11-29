@@ -20,7 +20,7 @@
 
 #include "gu_macros.h"
 #ifdef _MSC_VER
-typedef int ssize_t;
+#include <msvc_sup.h>
 #endif
 #define GU_VLQ_CHECKS
 //#define GU_VLQ_ALEX

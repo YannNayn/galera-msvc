@@ -54,6 +54,7 @@ public:
         case 1: return overflow_char  (ret);
         case 2: return overflow_short (ret);
         case 4: return overflow_int   (ret);
+		case 8: return overflow_longlong   (ret);
         }
 
         return ret;
@@ -132,6 +133,9 @@ private:
 
     static int
     overflow_int(long long ret);
+	
+	static long long
+    overflow_longlong(long long ret);
 
     void set_longlong (const std::string& key, long long value);
 

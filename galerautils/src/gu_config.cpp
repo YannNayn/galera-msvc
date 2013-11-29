@@ -154,6 +154,15 @@ gu::Config::overflow_int(long long ret)
                            << " too large for requested type (int).";
 }
 
+long long
+gu::Config::overflow_longlong(long long ret)
+{
+    if (ret >= LLONG_MIN && ret <= LLONG_MAX) return ret;
+
+    gu_throw_error(ERANGE) << "Value " << ret
+                           << " too large for requested type (long long).";
+}
+
 std::ostream& gu::operator<<(std::ostream& ost, const gu::Config& c)
 {
     const gu::Config::param_map_t& pmap = c.params();

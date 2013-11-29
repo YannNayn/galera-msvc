@@ -21,8 +21,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #ifdef _MSC_VER
-#include <windows.h>
-typedef int ssize_t;
+#include <msvc_sup.h>
 #define inline __inline
 #else
 #include <unistd.h>
