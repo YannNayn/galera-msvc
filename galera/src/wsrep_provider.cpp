@@ -12,6 +12,7 @@
 #include "wsrep_params.hpp"
 
 #include <cassert>
+#include <memory.h>
 
 using galera::Key;
 using galera::WriteSet;
