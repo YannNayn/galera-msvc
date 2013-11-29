@@ -906,7 +906,7 @@ int wsrep_loader(wsrep_t *hptr)
 
     try
     {
-        *hptr = galera_str;
+        memcpy(hptr,&galera_str,sizeof(wsrep_t));
     }
     catch (...)
     {
