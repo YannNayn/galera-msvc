@@ -13,7 +13,6 @@
 #include <stdint.h>
 #ifdef _MSC_VER
 #include <msvc_sup.h>
-typedef int ssize_t;
 #else
 #include <unistd.h>
 #endif
