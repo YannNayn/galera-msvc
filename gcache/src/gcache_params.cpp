@@ -63,7 +63,10 @@ size_value (gu::Config& cfg, const std::string& key, ssize_t def)
     {
         cfg.set<ssize_t> (key, def);
     }
-
+	catch (gu::Exception&)
+    {
+        cfg.set<ssize_t> (key, def);
+    }
     return cfg.get<ssize_t> (key);
 }
 
