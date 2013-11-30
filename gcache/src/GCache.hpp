@@ -185,10 +185,10 @@ namespace gcache
             Params(gu::Config&, const std::string&);
             std::string const rb_name;
             std::string const dir_name;
-            ssize_t           mem_size;
-            ssize_t     const rb_size;
-            ssize_t           page_size;
-            ssize_t           keep_pages_size;
+            long long           mem_size;
+            long long     const rb_size;
+            long long           page_size;
+            long long           keep_pages_size;
         }
             params;
 

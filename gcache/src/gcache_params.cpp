@@ -52,12 +52,12 @@ name_value (gu::Config& cfg, const std::string& data_dir)
     return cfg.get (GCACHE_PARAMS_RB_NAME);
 }
 
-static ssize_t
+static __int64
 size_value (gu::Config& cfg, const std::string& key, ssize_t def)
 {
     try
     {
-        return cfg.get<ssize_t> (key);
+        return cfg.get<__int64> (key);
     }
     catch (gu::NotFound&)
     {
