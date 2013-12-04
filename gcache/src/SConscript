@@ -22,8 +22,8 @@ test_env = gcache_env.Clone()
 
 
 if sys.platform.find("win")==0:
-    test_env.Prepend(LIBS=File('#/galerautils/src/galerautils.lib'))
-    test_env.Prepend(LIBS=File('#/galerautils/src/galerautils++.lib'))
+    test_env.Prepend(LIBS=File('galerautils/src/galerautils.lib'))
+    test_env.Prepend(LIBS=File('galerautils/src/galerautils++.lib'))
     test_env.Prepend(LIBS=File('gcache.lib'))
 else:
     test_env.Prepend(LIBS=File('#/galerautils/src/libgalerautils.a'))

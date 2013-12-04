@@ -4,9 +4,9 @@ Import('check_env')
 env = check_env.Clone()
 if sys.platform.find("win") == 0:
     target = 'check_gcomm.exe'
-    env.Prepend(LIBS=File('#/galerautils/src/galerautils.lib'))
-    env.Prepend(LIBS=File('#/galerautils/src/galerautils++.lib'))
-    env.Prepend(LIBS=File('#/gcomm/src/gcomm.lib'))
+    env.Prepend(LIBS=File('galerautils/src/galerautils.lib'))
+    env.Prepend(LIBS=File('galerautils/src/galerautils++.lib'))
+    env.Prepend(LIBS=File('gcomm/src/gcomm.lib'))
 else:
     target = 'check_gcomm'
     env.Prepend(LIBS=File('#/galerautils/src/libgalerautils.a'))

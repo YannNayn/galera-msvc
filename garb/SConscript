@@ -3,12 +3,19 @@
 Import('env', 'libboost_program_options')
 
 garb_env = env.Clone()
-
-garb_env.Prepend(LIBS=File('#/galerautils/src/galerautils.lib'))
-garb_env.Prepend(LIBS=File('#/galerautils/src/galerautils++.lib'))
-garb_env.Prepend(LIBS=File('#/gcomm/src/gcomm.lib'))
-garb_env.Prepend(LIBS=File('#/gcs/src/gcs4garb.lib'))
-
+if sys.platform.find("win")==0:
+    target = 'garbd.exe'
+    garb_env.Prepend(LIBS=File('galerautils/src/galerautils.lib'))
+    garb_env.Prepend(LIBS=File('galerautils/src/galerautils++.lib'))
+    garb_env.Prepend(LIBS=File('gcomm/src/gcomm.lib'))
+    garb_env.Prepend(LIBS=File('gcs/src/gcs4garb.lib'))
+else:
+    target = 'garbd'
+    garb_env.Prepend(LIBS=File('#/galerautils/src/galerautils.a'))
+    garb_env.Prepend(LIBS=File('#/galerautils/src/galerautils++.a'))
+    garb_env.Prepend(LIBS=File('#/gcomm/src/gcomm.a'))
+    garb_env.Prepend(LIBS=File('#/gcs/src/gcs4garb.a'))
+    
 if libboost_program_options:
     garb_env.Append(LIBS=libboost_program_options)
 
@@ -18,7 +25,7 @@ Import('GALERA_VER', 'GALERA_REV')
 conf_env.Append(CPPFLAGS = ' -DGALERA_VER=\\"' + GALERA_VER + '\\"')
 conf_env.Append(CPPFLAGS = ' -DGALERA_REV=\\"' + GALERA_REV + '\\"')
 
-garb = garb_env.Program(target = 'garbd',
+garb = garb_env.Program(target = target,
                         source = Split('''
                                        garb_logger.cpp
                                        garb_gcs.cpp
