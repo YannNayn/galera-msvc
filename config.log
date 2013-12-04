@@ -1,0 +1,462 @@
+file C:\temporary\galera\galera\SConstruct,line 306:
+	Configure(confdir = .sconf_temp)
+scons: Configure: Checking for C library pthreadVC2.lib... 
+scons: Configure: ".sconf_temp\conftest_0.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_0.c <-
+  |  |
+  |  |
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp\conftest_0.obj" is up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_0.obj /c .sconf_temp\conftest_0.c /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: ".sconf_temp\conftest_0.exe" is up to date.
+scons: Configure: The original builder output was:
+  |link /nologo /debug /OUT:.sconf_temp\conftest_0.exe /LIBPATH:C:\temporary\galera\.build\Win32 /LIBPATH:W:\PBA\SE\Win32\mariadb-galera\lib /LIBPATH:W:\PBA\SE\Win32\libs pthreadVC2.lib .sconf_temp\conftest_0.obj
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking for C header file sys/epoll.h... 
+scons: Configure: ".sconf_temp\conftest_1.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_1.c <-
+  |  |
+  |  |#include <sys/epoll.h>
+  |  |
+  |  |
+  |
+scons: Configure: Building ".sconf_temp\conftest_1.obj" failed in a previous run and all its sources are up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_1.obj /c .sconf_temp\conftest_1.c /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: (cached) no
+
+scons: Configure: Checking for C header file byteswap.h... 
+scons: Configure: ".sconf_temp\conftest_2.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_2.c <-
+  |  |
+  |  |#include <byteswap.h>
+  |  |
+  |  |
+  |
+scons: Configure: Building ".sconf_temp\conftest_2.obj" failed in a previous run and all its sources are up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_2.obj /c .sconf_temp\conftest_2.c /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: (cached) no
+
+scons: Configure: Checking for C header file endian.h... 
+scons: Configure: ".sconf_temp\conftest_3.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_3.c <-
+  |  |
+  |  |#include <endian.h>
+  |  |
+  |  |
+  |
+scons: Configure: Building ".sconf_temp\conftest_3.obj" failed in a previous run and all its sources are up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_3.obj /c .sconf_temp\conftest_3.c /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: (cached) no
+
+scons: Configure: Checking for C header file sys/endian.h... 
+scons: Configure: ".sconf_temp\conftest_4.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_4.c <-
+  |  |
+  |  |#include <sys/endian.h>
+  |  |
+  |  |
+  |
+scons: Configure: Building ".sconf_temp\conftest_4.obj" failed in a previous run and all its sources are up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_4.obj /c .sconf_temp\conftest_4.c /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: (cached) no
+
+scons: Configure: Checking for C header file sys/byteorder.h... 
+scons: Configure: ".sconf_temp\conftest_5.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_5.c <-
+  |  |
+  |  |#include <sys/byteorder.h>
+  |  |
+  |  |
+  |
+scons: Configure: Building ".sconf_temp\conftest_5.obj" failed in a previous run and all its sources are up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_5.obj /c .sconf_temp\conftest_5.c /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: (cached) no
+
+scons: Configure: Checking for C++ header file boost/shared_ptr.hpp... 
+scons: Configure: ".sconf_temp\conftest_6.cpp" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_6.cpp <-
+  |  |
+  |  |#include "boost/shared_ptr.hpp"
+  |  |
+  |  |
+  |
+scons: Configure: ".sconf_temp\conftest_6.obj" is up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_6.obj /c .sconf_temp\conftest_6.cpp /TP /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking for C++ header file tr1/unordered_map... 
+scons: Configure: ".sconf_temp\conftest_7.cpp" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_7.cpp <-
+  |  |
+  |  |#include "tr1/unordered_map"
+  |  |
+  |  |
+  |
+scons: Configure: Building ".sconf_temp\conftest_7.obj" failed in a previous run and all its sources are up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_7.obj /c .sconf_temp\conftest_7.cpp /TP /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H -DHAVE_BOOST_SHARED_PTR_HPP /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: (cached) no
+
+scons: Configure: Checking for C++ header file boost/unordered_map.hpp... 
+scons: Configure: ".sconf_temp\conftest_8.cpp" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_8.cpp <-
+  |  |
+  |  |#include "boost/unordered_map.hpp"
+  |  |
+  |  |
+  |
+scons: Configure: ".sconf_temp\conftest_8.obj" is up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_8.obj /c .sconf_temp\conftest_8.cpp /TP /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H -DHAVE_BOOST_SHARED_PTR_HPP /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking for C++ header file boost/pool/pool_alloc.hpp... 
+scons: Configure: ".sconf_temp\conftest_9.cpp" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_9.cpp <-
+  |  |
+  |  |#include "boost/pool/pool_alloc.hpp"
+  |  |
+  |  |
+  |
+scons: Configure: ".sconf_temp\conftest_9.obj" is up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_9.obj /c .sconf_temp\conftest_9.cpp /TP /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H -DHAVE_BOOST_SHARED_PTR_HPP -DHAVE_BOOST_UNORDERED_MAP_HPP -DBOOST_DATE_TIME_POSIX_TIME_STD_CONFIG=1 /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking for C++ header file boost/system/error_code.hpp... 
+scons: Configure: ".sconf_temp\conftest_10.cpp" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_10.cpp <-
+  |  |
+  |  |#include "boost/system/error_code.hpp"
+  |  |
+  |  |
+  |
+scons: Configure: ".sconf_temp\conftest_10.obj" is up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_10.obj /c .sconf_temp\conftest_10.cpp /TP /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H -DHAVE_BOOST_SHARED_PTR_HPP -DHAVE_BOOST_UNORDERED_MAP_HPP -DBOOST_DATE_TIME_POSIX_TIME_STD_CONFIG=1 -DGALERA_USE_BOOST_POOL_ALLOC=1 /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking for C++ header file boost/program_options.hpp... 
+scons: Configure: ".sconf_temp\conftest_11.cpp" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_11.cpp <-
+  |  |
+  |  |#include "boost/program_options.hpp"
+  |  |
+  |  |
+  |
+scons: Configure: ".sconf_temp\conftest_11.obj" is up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_11.obj /c .sconf_temp\conftest_11.cpp /TP /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H -DHAVE_BOOST_SHARED_PTR_HPP -DHAVE_BOOST_UNORDERED_MAP_HPP -DBOOST_DATE_TIME_POSIX_TIME_STD_CONFIG=1 -DGALERA_USE_BOOST_POOL_ALLOC=1 /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking for C++ header file asio.hpp... 
+scons: Configure: ".sconf_temp\conftest_12.cpp" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_12.cpp <-
+  |  |
+  |  |#include "asio.hpp"
+  |  |
+  |  |
+  |
+scons: Configure: ".sconf_temp\conftest_12.obj" is up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_12.obj /c .sconf_temp\conftest_12.cpp /TP /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H -DHAVE_BOOST_SHARED_PTR_HPP -DHAVE_BOOST_UNORDERED_MAP_HPP -DBOOST_DATE_TIME_POSIX_TIME_STD_CONFIG=1 -DGALERA_USE_BOOST_POOL_ALLOC=1 /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking for C header file unistd.h... 
+scons: Configure: ".sconf_temp\conftest_13.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_13.c <-
+  |  |
+  |  |#include <unistd.h>
+  |  |
+  |  |
+  |
+scons: Configure: ".sconf_temp\conftest_13.obj" is up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_13.obj /c .sconf_temp\conftest_13.c /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H -DHAVE_BOOST_SHARED_PTR_HPP -DHAVE_BOOST_UNORDERED_MAP_HPP -DBOOST_DATE_TIME_POSIX_TIME_STD_CONFIG=1 -DGALERA_USE_BOOST_POOL_ALLOC=1 -DHAVE_ASIO_HPP /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking for C header file msvc_sup.h... 
+scons: Configure: ".sconf_temp\conftest_14.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_14.c <-
+  |  |
+  |  |#include <msvc_sup.h>
+  |  |
+  |  |
+  |
+scons: Configure: ".sconf_temp\conftest_14.obj" is up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_14.obj /c .sconf_temp\conftest_14.c /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H -DHAVE_BOOST_SHARED_PTR_HPP -DHAVE_BOOST_UNORDERED_MAP_HPP -DBOOST_DATE_TIME_POSIX_TIME_STD_CONFIG=1 -DGALERA_USE_BOOST_POOL_ALLOC=1 -DHAVE_ASIO_HPP /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking for C library msvc_sup.lib... 
+scons: Configure: ".sconf_temp\conftest_15.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_15.c <-
+  |  |
+  |  |
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp\conftest_15.obj" is up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_15.obj /c .sconf_temp\conftest_15.c /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H -DHAVE_BOOST_SHARED_PTR_HPP -DHAVE_BOOST_UNORDERED_MAP_HPP -DBOOST_DATE_TIME_POSIX_TIME_STD_CONFIG=1 -DGALERA_USE_BOOST_POOL_ALLOC=1 -DHAVE_ASIO_HPP /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: ".sconf_temp\conftest_15.exe" is up to date.
+scons: Configure: The original builder output was:
+  |link /nologo /debug /OUT:.sconf_temp\conftest_15.exe /LIBPATH:C:\temporary\galera\.build\Win32 /LIBPATH:W:\PBA\SE\Win32\mariadb-galera\lib /LIBPATH:W:\PBA\SE\Win32\libs pthreadVC2.lib W:\PBA\SE\Win32\libs\boost_system-vc100-mt-1_55.lib msvc_sup.lib .sconf_temp\conftest_15.obj
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking for C++ header file asio/ssl.hpp... 
+scons: Configure: ".sconf_temp\conftest_16.cpp" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_16.cpp <-
+  |  |
+  |  |#include "asio/ssl.hpp"
+  |  |
+  |  |
+  |
+scons: Configure: ".sconf_temp\conftest_16.obj" is up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_16.obj /c .sconf_temp\conftest_16.cpp /TP /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H -DHAVE_BOOST_SHARED_PTR_HPP -DHAVE_BOOST_UNORDERED_MAP_HPP -DBOOST_DATE_TIME_POSIX_TIME_STD_CONFIG=1 -DGALERA_USE_BOOST_POOL_ALLOC=1 -DHAVE_ASIO_HPP /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking for C library ssleay32.lib... 
+scons: Configure: ".sconf_temp\conftest_17.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_17.c <-
+  |  |
+  |  |
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp\conftest_17.obj" is up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_17.obj /c .sconf_temp\conftest_17.c /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H -DHAVE_BOOST_SHARED_PTR_HPP -DHAVE_BOOST_UNORDERED_MAP_HPP -DBOOST_DATE_TIME_POSIX_TIME_STD_CONFIG=1 -DGALERA_USE_BOOST_POOL_ALLOC=1 -DHAVE_ASIO_HPP -DHAVE_ASIO_SSL_HPP /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: ".sconf_temp\conftest_17.exe" is up to date.
+scons: Configure: The original builder output was:
+  |link /nologo /debug /OUT:.sconf_temp\conftest_17.exe /LIBPATH:C:\temporary\galera\.build\Win32 /LIBPATH:W:\PBA\SE\Win32\mariadb-galera\lib /LIBPATH:W:\PBA\SE\Win32\libs pthreadVC2.lib W:\PBA\SE\Win32\libs\boost_system-vc100-mt-1_55.lib msvc_sup.lib ssleay32.lib .sconf_temp\conftest_17.obj
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking for C library libeay32.lib... 
+scons: Configure: ".sconf_temp\conftest_18.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_18.c <-
+  |  |
+  |  |
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp\conftest_18.obj" is up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_18.obj /c .sconf_temp\conftest_18.c /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H -DHAVE_BOOST_SHARED_PTR_HPP -DHAVE_BOOST_UNORDERED_MAP_HPP -DBOOST_DATE_TIME_POSIX_TIME_STD_CONFIG=1 -DGALERA_USE_BOOST_POOL_ALLOC=1 -DHAVE_ASIO_HPP -DHAVE_ASIO_SSL_HPP /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: ".sconf_temp\conftest_18.exe" is up to date.
+scons: Configure: The original builder output was:
+  |link /nologo /debug /OUT:.sconf_temp\conftest_18.exe /LIBPATH:C:\temporary\galera\.build\Win32 /LIBPATH:W:\PBA\SE\Win32\mariadb-galera\lib /LIBPATH:W:\PBA\SE\Win32\libs pthreadVC2.lib W:\PBA\SE\Win32\libs\boost_system-vc100-mt-1_55.lib msvc_sup.lib ssleay32.lib libeay32.lib .sconf_temp\conftest_18.obj
+  |
+scons: Configure: (cached) yes
+
+
+file C:\temporary\galera\galera\SConstruct,line 517:
+	Configure(confdir = .sconf_temp)
+scons: Configure: Checking for C header file check.h... 
+scons: Configure: ".sconf_temp\conftest_19.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_19.c <-
+  |  |
+  |  |#include <check.h>
+  |  |
+  |  |
+  |
+scons: Configure: ".sconf_temp\conftest_19.obj" is up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_19.obj /c .sconf_temp\conftest_19.c /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H -DHAVE_BOOST_SHARED_PTR_HPP -DHAVE_BOOST_UNORDERED_MAP_HPP -DBOOST_DATE_TIME_POSIX_TIME_STD_CONFIG=1 -DGALERA_USE_BOOST_POOL_ALLOC=1 -DHAVE_ASIO_HPP -DHAVE_ASIO_SSL_HPP /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking for C library msvc_sup.lib... 
+scons: Configure: ".sconf_temp\conftest_20.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_20.c <-
+  |  |
+  |  |
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp\conftest_20.obj" is up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_20.obj /c .sconf_temp\conftest_20.c /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H -DHAVE_BOOST_SHARED_PTR_HPP -DHAVE_BOOST_UNORDERED_MAP_HPP -DBOOST_DATE_TIME_POSIX_TIME_STD_CONFIG=1 -DGALERA_USE_BOOST_POOL_ALLOC=1 -DHAVE_ASIO_HPP -DHAVE_ASIO_SSL_HPP /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: ".sconf_temp\conftest_20.exe" is up to date.
+scons: Configure: The original builder output was:
+  |link /nologo /debug /OUT:.sconf_temp\conftest_20.exe /LIBPATH:C:\temporary\galera\.build\Win32 /LIBPATH:W:\PBA\SE\Win32\mariadb-galera\lib /LIBPATH:W:\PBA\SE\Win32\libs pthreadVC2.lib W:\PBA\SE\Win32\libs\boost_system-vc100-mt-1_55.lib msvc_sup.lib ssleay32.lib libeay32.lib msvc_sup.lib .sconf_temp\conftest_20.obj
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking for C library libcheck.lib... 
+scons: Configure: ".sconf_temp\conftest_21.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_21.c <-
+  |  |
+  |  |
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp\conftest_21.obj" is up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_21.obj /c .sconf_temp\conftest_21.c /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H -DHAVE_BOOST_SHARED_PTR_HPP -DHAVE_BOOST_UNORDERED_MAP_HPP -DBOOST_DATE_TIME_POSIX_TIME_STD_CONFIG=1 -DGALERA_USE_BOOST_POOL_ALLOC=1 -DHAVE_ASIO_HPP -DHAVE_ASIO_SSL_HPP /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: ".sconf_temp\conftest_21.exe" is up to date.
+scons: Configure: The original builder output was:
+  |link /nologo /debug /OUT:.sconf_temp\conftest_21.exe /LIBPATH:C:\temporary\galera\.build\Win32 /LIBPATH:W:\PBA\SE\Win32\mariadb-galera\lib /LIBPATH:W:\PBA\SE\Win32\libs pthreadVC2.lib W:\PBA\SE\Win32\libs\boost_system-vc100-mt-1_55.lib msvc_sup.lib ssleay32.lib libeay32.lib msvc_sup.lib libcheck.lib .sconf_temp\conftest_21.obj
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking for C library ws2_32.lib... 
+scons: Configure: ".sconf_temp\conftest_22.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_22.c <-
+  |  |
+  |  |
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp\conftest_22.obj" is up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_22.obj /c .sconf_temp\conftest_22.c /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H -DHAVE_BOOST_SHARED_PTR_HPP -DHAVE_BOOST_UNORDERED_MAP_HPP -DBOOST_DATE_TIME_POSIX_TIME_STD_CONFIG=1 -DGALERA_USE_BOOST_POOL_ALLOC=1 -DHAVE_ASIO_HPP -DHAVE_ASIO_SSL_HPP /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: ".sconf_temp\conftest_22.exe" is up to date.
+scons: Configure: The original builder output was:
+  |link /nologo /debug /OUT:.sconf_temp\conftest_22.exe /LIBPATH:C:\temporary\galera\.build\Win32 /LIBPATH:W:\PBA\SE\Win32\mariadb-galera\lib /LIBPATH:W:\PBA\SE\Win32\libs pthreadVC2.lib W:\PBA\SE\Win32\libs\boost_system-vc100-mt-1_55.lib msvc_sup.lib ssleay32.lib libeay32.lib msvc_sup.lib libcheck.lib ws2_32.lib .sconf_temp\conftest_22.obj
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking for C library hsregex.lib... 
+scons: Configure: ".sconf_temp\conftest_23.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_23.c <-
+  |  |
+  |  |
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp\conftest_23.obj" is up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_23.obj /c .sconf_temp\conftest_23.c /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H -DHAVE_BOOST_SHARED_PTR_HPP -DHAVE_BOOST_UNORDERED_MAP_HPP -DBOOST_DATE_TIME_POSIX_TIME_STD_CONFIG=1 -DGALERA_USE_BOOST_POOL_ALLOC=1 -DHAVE_ASIO_HPP -DHAVE_ASIO_SSL_HPP /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: ".sconf_temp\conftest_23.exe" is up to date.
+scons: Configure: The original builder output was:
+  |link /nologo /debug /OUT:.sconf_temp\conftest_23.exe /LIBPATH:C:\temporary\galera\.build\Win32 /LIBPATH:W:\PBA\SE\Win32\mariadb-galera\lib /LIBPATH:W:\PBA\SE\Win32\libs pthreadVC2.lib W:\PBA\SE\Win32\libs\boost_system-vc100-mt-1_55.lib msvc_sup.lib ssleay32.lib libeay32.lib msvc_sup.lib libcheck.lib ws2_32.lib hsregex.lib .sconf_temp\conftest_23.obj
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking for C library iphlpapi.lib... 
+scons: Configure: ".sconf_temp\conftest_24.c" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp\conftest_24.c <-
+  |  |
+  |  |
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp\conftest_24.obj" is up to date.
+scons: Configure: The original builder output was:
+  |cl /Fo.sconf_temp\conftest_24.obj /c .sconf_temp\conftest_24.c /nologo -IC:\temporary\galera\galera\include -Iw:\PBA\SE\Win32/include -Iw:\PBA\SE\Win32/include/boost-1_55 -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /Zi /Od /FImsvc_sup.h -DNO_MM -DNO_LOCALE_DLL -DHAVE_COMMON_H -DHAVE_BOOST_SHARED_PTR_HPP -DHAVE_BOOST_UNORDERED_MAP_HPP -DBOOST_DATE_TIME_POSIX_TIME_STD_CONFIG=1 -DGALERA_USE_BOOST_POOL_ALLOC=1 -DHAVE_ASIO_HPP -DHAVE_ASIO_SSL_HPP /Icommon /Iasio /Igalerautils\src /Igcomm\src /Igcomm\src\gcomm /Igcache\src /Igcs\src /Iwsdb\src /Igalera\src
+  |
+scons: Configure: ".sconf_temp\conftest_24.exe" is up to date.
+scons: Configure: The original builder output was:
+  |link /nologo /debug /OUT:.sconf_temp\conftest_24.exe /LIBPATH:C:\temporary\galera\.build\Win32 /LIBPATH:W:\PBA\SE\Win32\mariadb-galera\lib /LIBPATH:W:\PBA\SE\Win32\libs pthreadVC2.lib W:\PBA\SE\Win32\libs\boost_system-vc100-mt-1_55.lib msvc_sup.lib ssleay32.lib libeay32.lib msvc_sup.lib libcheck.lib ws2_32.lib hsregex.lib iphlpapi.lib .sconf_temp\conftest_24.obj
+  |
+scons: Configure: (cached) yes
+
+
