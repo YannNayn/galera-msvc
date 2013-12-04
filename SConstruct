@@ -38,8 +38,11 @@ if sys.platform.find("win") == 0:
     f  =open(unistd_path,"w")
     f.write("""
 #ifndef __UNISTD_H__
-#define __UNISTD_H__
-#include <msvc_sup.h>
+#   define __UNISTD_H__
+#   include <msvc_sup.h>
+#   ifndef usleep
+#       define usleep(x) Sleep(x/1000)
+#   endif /* usleep */
 #endif  /* __UNISTD_H__ */
 """)
     f.close()
