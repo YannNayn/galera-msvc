@@ -49,7 +49,7 @@ if sys.platform.find("win") == 0:
 #endif  /* __UNISTD_H__ */
 """)
     f.close()
-    sys.exit(1)
+
 else:
     is_64=False
     sysname = os.uname()[0].lower()
