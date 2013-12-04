@@ -14,9 +14,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #ifdef _MSC_VER
-#include <windows.h>
+#include <unistd.h>
 #include <io.h>
-#include <msvc_sup.h>
 #else
 #include <sys/mman.h>
 #include <unistd.h>

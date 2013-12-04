@@ -11,7 +11,7 @@
 #include <unistd.h>
 #include <sys/sysctl.h>
 #else
-#include <windows.h>
+#include <unistd.h>
 #endif
 #include <sys/types.h>
 

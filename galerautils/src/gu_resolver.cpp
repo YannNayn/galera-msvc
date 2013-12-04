@@ -10,8 +10,7 @@
 #include <cerrno>
 #include <cstdlib>
 #ifdef _MSC_VER
-#include <windows.h>
-#include "msvc_sup.h"
+#include <unistd.h>
 #include <ws2ipdef.h>
 #include <ws2tcpip.h>
 #include <io.h>

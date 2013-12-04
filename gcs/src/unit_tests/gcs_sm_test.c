@@ -7,7 +7,7 @@
 #include "gcs_sm_test.h"
 #include "../gcs_sm.h"
 #ifdef _MSC_VER
-#include <windows.h>
+#include <unistd.h> 
 #else
 #include <unistd.h>
 #endif

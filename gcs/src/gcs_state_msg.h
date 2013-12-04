@@ -15,7 +15,7 @@
 #include "gcs_seqno.h"
 #include "gcs_act_proto.h"
 #ifdef _MSC_VER
-#include <windows.h>
+#include <unistd.h> 
 #else
 #include <unistd.h>
 #endif

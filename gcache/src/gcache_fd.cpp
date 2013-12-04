@@ -16,9 +16,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #ifdef _MSC_VER
-#include <windows.h>
+#include <unistd.h> 
 #include <io.h>
-#include <msvc_sup.h>
 #define open _open
 # define S_IRUSR S_IREAD
 # define S_IWUSR S_IWRITE

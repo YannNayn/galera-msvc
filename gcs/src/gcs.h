@@ -18,7 +18,7 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 #ifdef _MSC_VER
-#include <windows.h>
+#include <unistd.h> 
 #define EBADFD WSAENOTSOCK
 #else
 #include <unistd.h>

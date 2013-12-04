@@ -14,7 +14,7 @@
 #ifndef _MSC_VER
 #include <unistd.h>  /* ssize_t */
 #else
-#include <msvc_sup.h>  /* ssize_t */
+#include <unistd.h>  /* ssize_t */
 #define __attribute__(x)
 #define GU_NORETURN
 #define inline __inline

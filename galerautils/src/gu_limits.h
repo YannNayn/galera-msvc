@@ -9,7 +9,7 @@
 #ifndef _gu_limits_h_
 #define _gu_limits_h_
 #ifdef _MSC_VER
-#include <windows.h>
+#include <unistd.h>
 #define inline __inline
 #else
 #include <unistd.h>

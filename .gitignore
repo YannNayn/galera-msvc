@@ -7,6 +7,6 @@
 *.exp
 *.pdb
 msvc100
-
+/.sconf_temp
 
 

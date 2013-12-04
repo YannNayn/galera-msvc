@@ -12,7 +12,7 @@
 
 #include <stdint.h>
 #ifdef _MSC_VER
-#include <msvc_sup.h>
+#include <unistd.h>
 #else
 #include <unistd.h>
 #endif

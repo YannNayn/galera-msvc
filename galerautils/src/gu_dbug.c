@@ -86,8 +86,7 @@
 #ifndef _MSC_VER
 #include <unistd.h>
 #else
-
-#include <windows.h>
+#include <unistd.h>
 #define __WIN__
 #undef FALSE
 #undef TRUE

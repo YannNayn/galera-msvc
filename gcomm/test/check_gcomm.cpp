@@ -15,7 +15,7 @@
 #include <check.h>
 #include <string.h>
 #ifdef _MSC_VER
-#include <windows.h>
+#include <unistd.h> 
 #include <io.h>
 #define dup2 _dup2
 #else

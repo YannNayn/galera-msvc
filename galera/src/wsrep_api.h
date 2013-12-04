@@ -21,7 +21,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #ifdef _MSC_VER
-#include <msvc_sup.h>
+#include <unistd.h>
 #define inline __inline
 #else
 #include <unistd.h>

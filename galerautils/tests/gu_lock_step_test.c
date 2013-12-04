@@ -6,8 +6,7 @@
 
 #include <check.h>
 #ifdef _MSC_VER
-#include <windows.h> // usleep()
-#define usleep(x) Sleep(x/1000)
+#include <unistd.h> // usleep()
 #else
 #include <unistd.h> // usleep()
 #endif

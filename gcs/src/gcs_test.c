@@ -12,8 +12,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #ifdef _MSC_VER
-#include <windows.h>
-#include <msvc_sup.h>
+#include <unistd.h> 
 #else
 #include <unistd.h>
 #endif
