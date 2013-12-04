@@ -9,7 +9,7 @@
 
 #include <stdlib.h> // exit()
 #ifdef _MSC_VER
-#include <windows.h>
+#include <unistd.h> 
 #else
 #include <unistd.h> // setsid(), chdir()
 #endif
