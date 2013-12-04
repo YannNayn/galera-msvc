@@ -31,7 +31,7 @@ if sys.platform.find("win") == 0:
         plat_sdir="Win64"
     else:
         plat_sdir="Win32"
-    inc_path=os.path.join(os.dirname(__file__),"include")
+    inc_path=os.path.join(os.path.dirname(__file__),"include")
     if not os.path.exists(inc_path):
         os.makedirs(inc_path)
     unistd_path=os.path.join(inc_path,"unistd.h")
