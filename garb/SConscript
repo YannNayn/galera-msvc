@@ -5,10 +5,10 @@ Import('env', 'libboost_program_options')
 garb_env = env.Clone()
 if sys.platform.find("win")==0:
     target = 'garbd.exe'
-    garb_env.Prepend(LIBS=File('galerautils/src/galerautils.lib'))
-    garb_env.Prepend(LIBS=File('galerautils/src/galerautils++.lib'))
-    garb_env.Prepend(LIBS=File('gcomm/src/gcomm.lib'))
-    garb_env.Prepend(LIBS=File('gcs/src/gcs4garb.lib'))
+    garb_env.Prepend(LIBS=File('../galerautils/src/galerautils.lib'))
+    garb_env.Prepend(LIBS=File('../galerautils/src/galerautils++.lib'))
+    garb_env.Prepend(LIBS=File('../gcomm/src/gcomm.lib'))
+    garb_env.Prepend(LIBS=File('../gcs/src/gcs4garb.lib'))
 else:
     target = 'garbd'
     garb_env.Prepend(LIBS=File('#/galerautils/src/galerautils.a'))
