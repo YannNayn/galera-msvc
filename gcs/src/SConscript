@@ -48,11 +48,11 @@ if sys.platform.find("win") != 0:
                         LINK      = env['CXX'])
 else:
     target = 'gcs_test.exe'
-    gcs_test_env.Prepend(LIBS = File('#/galerautils/src/galerautils.lib'))
-    gcs_test_env.Prepend(LIBS = File('#/galerautils/src/galerautils++.lib'))
-    gcs_test_env.Prepend(LIBS = File('#/gcomm/src/gcomm.lib'))
-    gcs_test_env.Prepend(LIBS = File('#/gcache/src/gcache.lib'))
-    gcs_test_env.Prepend(LIBS = File('#/gcs/src/gcs.lib'))
+    gcs_test_env.Prepend(LIBS = File('../../galerautils/src/galerautils.lib'))
+    gcs_test_env.Prepend(LIBS = File('../../galerautils/src/galerautils++.lib'))
+    gcs_test_env.Prepend(LIBS = File('../../gcomm/src/gcomm.lib'))
+    gcs_test_env.Prepend(LIBS = File('../../gcache/src/gcache.lib'))
+    gcs_test_env.Prepend(LIBS = File('../src/gcs.lib'))
     gcs_test_env.Program(target = target,
                          source = 'gcs_test.c')
 

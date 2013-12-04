@@ -39,9 +39,9 @@ gcs_tests_sources = Split('''
 env.Append(CPPFLAGS = ' -DGCS_USE_GCOMM -DGCS_CORE_TESTING -DGCS_DUMMY_TESTING')
 if sys.platform.find("win") == 0:
     target    = 'gcs_tests.exe'
-    env.Append(LIBS = File('#/gcache/src/gcache.lib'))
-    env.Append(LIBS = File('#/galerautils/src/galerautils++.lib'))
-    env.Append(LIBS = File('#/galerautils/src/galerautils.lib'))
+    env.Append(LIBS = File('../../../gcache/src/gcache.lib'))
+    env.Append(LIBS = File('../../../galerautils/src/galerautils++.lib'))
+    env.Append(LIBS = File('../../../galerautils/src/galerautils.lib'))
     gcs_tests = env.Program(target    = target,
                         source    = gcs_tests_sources,
                         OBJPREFIX = 'gcs-tests-')
