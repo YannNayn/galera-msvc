@@ -26,6 +26,24 @@ if sys.platform.find("win") == 0:
     os.putenv('CXX', 'cl')
     pthreadLib='pthreadVC2.lib'
     os.putenv('LIBPATH',os.environ['LIB'])
+    
+    if is_64:
+        plat_sdir="Win64"
+    else:
+        plat_sdir="Win32"
+    inc_path=os.path.join(os.dirname(__file__),"include")
+    if not os.path.exists(inc_path):
+        os.makedirs(inc_path)
+    unistd_path=os.path.join(inc_path,"unistd.h")
+    f  =open(unistd_path,"w")
+    f.write("""
+#ifndef __UNISTD_H__
+#define __UNISTD_H__
+#include <msvc_sup.h>
+#endif  /* __UNISTD_H__ */
+""")
+    f.close()
+    sys.exit(1)
 else:
     is_64=False
     sysname = os.uname()[0].lower()
@@ -196,7 +214,7 @@ elif extra_sysroot != '':
     env.Append(LIBPATH = [extra_sysroot + '/lib'])
     env.Append(CPPFLAGS = ' -I' + extra_sysroot + '/include')
 if sysname == 'windows' :
-    env.Append(CPPFLAGS = ' -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /FImsvc_sup.h')
+    env.Append(CPPFLAGS = ' -I' + inc_path + ' -MD -DBOOST_ALL_DYN_LINK -DNOMINMAX /EHsc -Dinline=__inline -Dstrtoll=_strtoi64 -DHAVE_MMAP -D_WIN32_WINNT=0x0501 /FImsvc_sup.h')
 else:
 	env.Append(CPPFLAGS = ' /FImsvc_sup.h')
 # print env.Dump()
