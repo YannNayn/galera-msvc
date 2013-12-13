@@ -3,9 +3,11 @@
 #include "garb_logger.hpp"
 
 #include <cstdio>
-
+#ifndef _MSC_VER
 #include <syslog.h>
-
+#else
+#include <stdio.h>
+#endif
 namespace garb
 {
     void set_logfile (const std::string& fname)
@@ -20,7 +22,7 @@ namespace garb
 
         gu_conf_set_log_file (log_file);
     }
-
+#ifndef _MSC_VER
     static void log_to_syslog (int level, const char* msg)
     {
         int p = LOG_NOTICE;
@@ -42,5 +44,10 @@ namespace garb
         openlog ("garbd", LOG_PID, LOG_DAEMON);
         gu_conf_set_log_callback (log_to_syslog);
     }
-
+#else
+    void set_syslog ()
+    {
+        printf("syslog not used with msvc\n");
+    }
+#endif    
 } /* namespace garb */

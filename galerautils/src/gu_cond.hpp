@@ -43,7 +43,13 @@ namespace gu
         {
             register int ret;
             while (EBUSY == (ret = pthread_cond_destroy(&cond)))
-                { usleep (100); }
+            {
+#ifdef _MSC_VER
+				usleep (1000); 
+#else
+				usleep (100); 
+#endif
+			}
             if (gu_unlikely(ret != 0))
                 throw Exception("pthread_cond_destroy() failed", ret);
         }
